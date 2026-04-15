@@ -7,7 +7,15 @@
   border: 2px solid transparent;
   transition: border-color 0.3s;
   margin-bottom: 24px;
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden;
+}
 
+* {
+  box-sizing: border-box;
+}
   &:hover {
     border-color: var(--accent-border);
   }
