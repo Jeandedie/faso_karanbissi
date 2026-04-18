@@ -52,8 +52,8 @@ const CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
   html { -webkit-text-size-adjust:100%; }
-  html, body { width:100%; max-width:100%; overflow-x:hidden; }
-  body { font-family:'Inter',sans-serif; background:#f3f3f3; margin:0; padding:0; }
+  html, body { width:100%; max-width:100%; overflow-x:hidden; margin:0; padding:0; }
+  body { font-family:'Inter',sans-serif; background:white; margin:0; padding:0; }
   img { max-width:100%; display:block; }
   input,select,textarea,button { font-family:'Inter',sans-serif; }
 
@@ -137,8 +137,9 @@ const CSS = `
   @keyframes marquee { 0% { transform:translateX(0); } 100% { transform:translateX(-50%); } }
   .marquee { display:flex; white-space:nowrap; animation:marquee 28s linear infinite; }
   .marquee:hover { animation-play-state:paused; }
-  .hero-features { display:none; }
-  .hero-text { flex:1; min-width:0; }
+  .hero-inner { display:flex; flex-direction:column; }
+  .hero-features { display:none !important; }
+  .hero-text { flex:1; min-width:0; width:100%; max-width:100%; }
   ::-webkit-scrollbar { width:4px; }
   ::-webkit-scrollbar-thumb { background:#C8102E; border-radius:2px; }
 
@@ -158,6 +159,7 @@ const CSS = `
     .hdr-search { display:flex !important; }
     .mob-search { display:none !important; }
     .hero-features { display:flex !important; }
+    .hero-inner { flex-direction:row; }
   }
 `;
 
@@ -654,8 +656,8 @@ export default function App() {
         <div style={{maxWidth:1280,margin:"0 auto",display:"flex",alignItems:"center",gap:8,height:54,padding:"0 12px",overflow:"hidden"}}>
           {/* Logo */}
           <div style={{flexShrink:0,cursor:"pointer"}} onClick={()=>setPage("guest")}>
-            <div style={{color:"white",fontWeight:700,fontSize:"clamp(12px,3.5vw,15px)"}}>Faso_Karanbissi</div>
-            <div style={{color:"#ff9999",fontSize:9,letterSpacing:2,textTransform:"uppercase",fontWeight:600}}>Plateforme universitaire</div>
+            <div style={{color:"white",fontWeight:700,fontSize:14}}>Faso_Karanbissi</div>
+            <div className="hdr-search" style={{color:"#ff9999",fontSize:9,letterSpacing:2,textTransform:"uppercase",fontWeight:600,display:"none"}}>Plateforme universitaire</div>
           </div>
 
           {/* Search — desktop only */}
@@ -745,10 +747,10 @@ export default function App() {
           </div>
         </div>
         {/* Hero */}
-        <div style={{maxWidth:1280,margin:"0 auto",padding:"clamp(14px,3vw,32px) 14px clamp(20px,4vw,40px)",display:"flex",alignItems:"center",justifyContent:"space-between",gap:16,flexWrap:"nowrap"}}>
+        <div className="hero-inner" style={{maxWidth:1280,margin:"0 auto",padding:"20px 14px 28px",alignItems:"center",justifyContent:"space-between",gap:16}}>
           <div className="hero-text" style={{color:"white",minWidth:0}}>
-            <div style={{fontSize:"clamp(17px,4vw,26px)",fontWeight:700,lineHeight:1.3,marginBottom:10}}>La plateforme des étudiants entrepreneurs</div>
-            <div style={{fontSize:"clamp(12px,2.5vw,14px)",opacity:0.85,lineHeight:1.7,marginBottom:16,maxWidth:480}}>Vendez vos articles, proposez vos services et connectez-vous avec les étudiants de votre campus.</div>
+            <div style={{fontSize:"clamp(20px,5vw,26px)",fontWeight:700,lineHeight:1.3,marginBottom:8}}>La plateforme des étudiants entrepreneurs</div>
+            <div style={{fontSize:13,opacity:0.85,lineHeight:1.6,marginBottom:14,maxWidth:480}}>Vendez vos articles, proposez vos services et connectez-vous avec les étudiants de votre campus.</div>
             <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
               {["Livres & Cours","Electronique","Services","Vetements"].map(label=>(
                 <button key={label} onClick={()=>setTag(label)} style={{background:"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:20,padding:"6px 14px",color:"white",fontSize:12,cursor:"pointer",fontWeight:500}}>
@@ -757,7 +759,7 @@ export default function App() {
               ))}
             </div>
           </div>
-          <div className="hero-features" style={{display:"flex",flexDirection:"column",gap:8,minWidth:200,flexShrink:0}}>
+          <div className="hero-features" style={{flexDirection:"column",gap:8,minWidth:200,flexShrink:0}}>
             {[["Annonces publiées","Voir les offres de vos camarades"],["Services disponibles","Cours, design, traduction et plus"],["Messagerie intégrée","Échangez avec les vendeurs"]].map(([t,d])=>(
               <div key={t} style={{background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.18)",borderRadius:6,padding:"9px 12px",display:"flex",alignItems:"center",gap:10}}>
                 <div style={{width:7,height:7,borderRadius:"50%",background:"white",flexShrink:0}}/>
@@ -769,7 +771,7 @@ export default function App() {
       </div>
 
       {/* ── ANNONCES ── */}
-      <div style={{maxWidth:1280,margin:"0 auto",padding:"16px 16px 40px"}}>
+      <div style={{maxWidth:1280,margin:"0 auto",padding:"16px 16px 40px",background:"white"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
           <div style={{fontSize:13,color:"#555"}}>{filtered.length} résultat{filtered.length>1?"s":""}{tag!=="Tout"&&` dans "${tag}"`}</div>
           <button onClick={fetchListings} style={{background:"none",border:"1px solid #ddd",borderRadius:3,padding:"5px 12px",fontSize:12,cursor:"pointer",color:"#555"}}>Actualiser</button>
