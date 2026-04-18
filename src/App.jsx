@@ -52,6 +52,7 @@ const CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
   html { -webkit-text-size-adjust:100%; }
+  html, body { width:100%; max-width:100%; overflow-x:hidden; }
   body { font-family:'Inter',sans-serif; background:#f3f3f3; }
   img { max-width:100%; display:block; }
   input,select,textarea,button { font-family:'Inter',sans-serif; }
@@ -75,10 +76,10 @@ const CSS = `
   .ok-box { background:#f0faf0; border:1px solid #b3dfb3; border-radius:4px; padding:10px 14px; font-size:13px; color:#2d7a2d; }
 
   /* Auth pages — mobile first */
-  .auth-page { min-height:100vh; background:#f3f3f3; display:flex; align-items:flex-start; }
-  .auth-card { width:100%; min-height:100vh; background:white; display:flex; flex-direction:column; }
+  .auth-page { min-height:100vh; width:100%; background:#f3f3f3; display:flex; align-items:flex-start; justify-content:center; }
+  .auth-card { width:100%; min-height:100vh; max-width:100%; background:white; display:flex; flex-direction:column; }
   .auth-left { display:none; }
-  .auth-body { flex:1; padding:32px 20px; display:flex; flex-direction:column; justify-content:center; overflow-y:auto; }
+  .auth-body { flex:1; padding:28px 20px; display:flex; flex-direction:column; justify-content:center; overflow-y:auto; max-width:460px; width:100%; margin:0 auto; }
   .form-2col { display:grid; grid-template-columns:1fr; gap:14px; }
   .sexe-btn { flex:1; padding:11px; border-radius:4px; cursor:pointer; font-weight:500; font-size:14px; border:1px solid #adb1b8; background:white; color:#333; transition:all 0.15s; }
   .sexe-btn.on { background:#C8102E; color:white; border-color:#C8102E; }
@@ -90,7 +91,8 @@ const CSS = `
   .nav-btn.on { background:white; color:#C8102E; }
 
   /* Cards grid — 2 cols mobile */
-  .cards-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:10px; }
+  .cards-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
+  @media (max-width:380px) { .cards-grid { grid-template-columns:1fr; } }
   .card { background:white; border:1px solid #ddd; border-radius:6px; overflow:hidden; cursor:pointer; transition:box-shadow 0.15s; }
   .card:hover { box-shadow:0 2px 14px rgba(0,0,0,0.12); }
 
@@ -140,10 +142,10 @@ const CSS = `
 
   /* ── DESKTOP >= 768px ── */
   @media (min-width:768px) {
-    .auth-page { align-items:center; justify-content:center; padding:24px; }
-    .auth-card { min-height:auto; max-width:860px; flex-direction:row; border-radius:8px; box-shadow:0 2px 24px rgba(0,0,0,0.10); overflow:hidden; }
+    .auth-page { align-items:center; padding:24px; min-height:100vh; }
+    .auth-card { min-height:auto; max-width:860px; flex-direction:row; border-radius:8px; box-shadow:0 2px 24px rgba(0,0,0,0.10); overflow:hidden; width:100%; }
     .auth-left { display:flex; width:36%; background:#C8102E; padding:48px 36px; flex-direction:column; justify-content:center; flex-shrink:0; }
-    .auth-body { padding:48px 44px; }
+    .auth-body { padding:48px 44px; max-width:none; margin:0; }
     .form-2col { grid-template-columns:1fr 1fr; }
     .overlay { align-items:center; padding:20px; }
     .modal { border-radius:6px; max-width:580px; max-height:90vh; }
@@ -198,7 +200,27 @@ const Badge = ({n,style={}}) => n>0 ? <span style={{background:"#C8102E",color:"
 
 export default function App() {
   // page: "guest" | "login" | "register" | "forgot" | "reset" | "marketplace"
-  const [page, setPage] = useState("guest");
+  // Navigation avec historique navigateur
+  const getInitialPage = () => {
+    const p = window.location.pathname.replace("/","") || "guest";
+    const valid = ["guest","login","register","forgot","reset","marketplace"];
+    return valid.includes(p) ? p : "guest";
+  };
+  const [page, setPageState] = useState(getInitialPage);
+
+  const setPage = (p) => {
+    window.history.pushState({page:p}, "", p === "guest" ? "/" : "/"+p);
+    setPageState(p);
+  };
+
+  useEffect(() => {
+    const onPop = (e) => {
+      const p = e.state?.page || window.location.pathname.replace("/","") || "guest";
+      setPageState(p);
+    };
+    window.addEventListener("popstate", onPop);
+    return () => window.removeEventListener("popstate", onPop);
+  }, []);
   const [authToken, setAuthToken] = useState(null);
   const [user, setUser] = useState(null);
   const [showDD, setShowDD] = useState(false);
@@ -626,7 +648,7 @@ export default function App() {
 
       {/* ── HEADER ── */}
       <div style={{background:"#1B0007",position:"sticky",top:0,zIndex:100}}>
-        <div style={{maxWidth:1280,margin:"0 auto",display:"flex",alignItems:"center",gap:10,height:54,padding:"0 14px"}}>
+        <div style={{maxWidth:1280,margin:"0 auto",display:"flex",alignItems:"center",gap:8,height:54,padding:"0 12px",overflow:"hidden"}}>
           {/* Logo */}
           <div style={{flexShrink:0,cursor:"pointer"}} onClick={()=>setPage("guest")}>
             <div style={{color:"white",fontWeight:700,fontSize:"clamp(12px,3.5vw,15px)"}}>Faso_Karanbissi</div>
@@ -697,7 +719,7 @@ export default function App() {
       </div>
 
       {/* ── NAV ── */}
-      <div style={{background:"#C8102E",overflowX:"auto",WebkitOverflowScrolling:"touch"}}>
+      <div style={{background:"#C8102E",overflowX:"auto",WebkitOverflowScrolling:"touch",msOverflowStyle:"none",scrollbarWidth:"none"}}>
         <div style={{display:"flex",alignItems:"center",height:44,padding:"0 10px",minWidth:"max-content",gap:2}}>
           {[["all","Tout"],["product","Produits"],["service","Services"]].map(([v,l])=>(
             <button key={v} className={`nav-btn ${tab===v?"on":""}`} onClick={()=>setTab(v)}>{l}</button>
@@ -744,7 +766,7 @@ export default function App() {
       </div>
 
       {/* ── ANNONCES ── */}
-      <div style={{maxWidth:1280,margin:"0 auto",padding:"clamp(12px,3vw,22px) 14px"}}>
+      <div style={{maxWidth:1280,margin:"0 auto",padding:"12px 12px 32px"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
           <div style={{fontSize:13,color:"#555"}}>{filtered.length} résultat{filtered.length>1?"s":""}{tag!=="Tout"&&` dans "${tag}"`}</div>
           <button onClick={fetchListings} style={{background:"none",border:"1px solid #ddd",borderRadius:3,padding:"5px 12px",fontSize:12,cursor:"pointer",color:"#555"}}>Actualiser</button>
