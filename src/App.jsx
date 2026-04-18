@@ -53,7 +53,7 @@ const CSS = `
   *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
   html { -webkit-text-size-adjust:100%; }
   html, body { width:100%; max-width:100%; overflow-x:hidden; }
-  body { font-family:'Inter',sans-serif; background:#f3f3f3; }
+  body { font-family:'Inter',sans-serif; background:#f3f3f3; margin:0; padding:0; }
   img { max-width:100%; display:block; }
   input,select,textarea,button { font-family:'Inter',sans-serif; }
 
@@ -76,7 +76,7 @@ const CSS = `
   .ok-box { background:#f0faf0; border:1px solid #b3dfb3; border-radius:4px; padding:10px 14px; font-size:13px; color:#2d7a2d; }
 
   /* Auth pages — mobile first */
-  .auth-page { min-height:100vh; width:100%; background:#f3f3f3; display:flex; align-items:flex-start; justify-content:center; }
+  .auth-page { min-height:100vh; width:100%; background:#f3f3f3; display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; }
   .auth-card { width:100%; min-height:100vh; max-width:100%; background:white; display:flex; flex-direction:column; }
   .auth-left { display:none; }
   .auth-body { flex:1; padding:28px 20px; display:flex; flex-direction:column; justify-content:center; overflow-y:auto; max-width:460px; width:100%; margin:0 auto; }
@@ -137,6 +137,8 @@ const CSS = `
   @keyframes marquee { 0% { transform:translateX(0); } 100% { transform:translateX(-50%); } }
   .marquee { display:flex; white-space:nowrap; animation:marquee 28s linear infinite; }
   .marquee:hover { animation-play-state:paused; }
+  .hero-features { display:none; }
+  .hero-text { flex:1; min-width:0; }
   ::-webkit-scrollbar { width:4px; }
   ::-webkit-scrollbar-thumb { background:#C8102E; border-radius:2px; }
 
@@ -155,6 +157,7 @@ const CSS = `
     .cards-grid { grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px; }
     .hdr-search { display:flex !important; }
     .mob-search { display:none !important; }
+    .hero-features { display:flex !important; }
   }
 `;
 
@@ -643,7 +646,7 @@ export default function App() {
 
   /* ═══════════ MARKETPLACE (guest + connecté) ═══════════ */
   return (
-    <div style={{fontFamily:"'Inter',sans-serif",background:"#f3f3f3",minHeight:"100vh"}}>
+    <div style={{fontFamily:"'Inter',sans-serif",background:"white",minHeight:"100vh",width:"100%",maxWidth:"100%"}}>
       <style>{CSS}</style>
 
       {/* ── HEADER ── */}
@@ -676,8 +679,8 @@ export default function App() {
           {/* Visiteur */}
           {!user?(
             <div style={{display:"flex",gap:6,flexShrink:0}}>
-              <button onClick={()=>setPage("login")} style={{background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.25)",borderRadius:4,padding:"7px 10px",color:"white",fontSize:12,cursor:"pointer",fontWeight:500,whiteSpace:"nowrap"}}>Connexion</button>
-              <button onClick={()=>{setPage("register");setRegStep(1);}} style={{background:"white",border:"none",borderRadius:4,padding:"7px 10px",color:"#C8102E",fontSize:12,cursor:"pointer",fontWeight:700,whiteSpace:"nowrap"}}>S'inscrire</button>
+              <button onClick={()=>setPage("login")} style={{background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.25)",borderRadius:4,padding:"7px 9px",color:"white",fontSize:11,cursor:"pointer",fontWeight:500,whiteSpace:"nowrap"}}>Connexion</button>
+              <button onClick={()=>{setPage("register");setRegStep(1);}} style={{background:"white",border:"none",borderRadius:4,padding:"7px 9px",color:"#C8102E",fontSize:11,cursor:"pointer",fontWeight:700,whiteSpace:"nowrap"}}>S'inscrire</button>
             </div>
           ):(
             /* Menu déroulant */
@@ -742,8 +745,8 @@ export default function App() {
           </div>
         </div>
         {/* Hero */}
-        <div style={{maxWidth:1280,margin:"0 auto",padding:"clamp(18px,4vw,36px) 16px",display:"flex",alignItems:"center",justifyContent:"space-between",gap:20,flexWrap:"wrap"}}>
-          <div style={{color:"white",flex:1,minWidth:220}}>
+        <div style={{maxWidth:1280,margin:"0 auto",padding:"clamp(14px,3vw,32px) 14px clamp(20px,4vw,40px)",display:"flex",alignItems:"center",justifyContent:"space-between",gap:16,flexWrap:"nowrap"}}>
+          <div className="hero-text" style={{color:"white",minWidth:0}}>
             <div style={{fontSize:"clamp(17px,4vw,26px)",fontWeight:700,lineHeight:1.3,marginBottom:10}}>La plateforme des étudiants entrepreneurs</div>
             <div style={{fontSize:"clamp(12px,2.5vw,14px)",opacity:0.85,lineHeight:1.7,marginBottom:16,maxWidth:480}}>Vendez vos articles, proposez vos services et connectez-vous avec les étudiants de votre campus.</div>
             <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
@@ -754,7 +757,7 @@ export default function App() {
               ))}
             </div>
           </div>
-          <div style={{display:"flex",flexDirection:"column",gap:8,minWidth:200}}>
+          <div className="hero-features" style={{display:"flex",flexDirection:"column",gap:8,minWidth:200,flexShrink:0}}>
             {[["Annonces publiées","Voir les offres de vos camarades"],["Services disponibles","Cours, design, traduction et plus"],["Messagerie intégrée","Échangez avec les vendeurs"]].map(([t,d])=>(
               <div key={t} style={{background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.18)",borderRadius:6,padding:"9px 12px",display:"flex",alignItems:"center",gap:10}}>
                 <div style={{width:7,height:7,borderRadius:"50%",background:"white",flexShrink:0}}/>
@@ -766,7 +769,7 @@ export default function App() {
       </div>
 
       {/* ── ANNONCES ── */}
-      <div style={{maxWidth:1280,margin:"0 auto",padding:"12px 12px 32px"}}>
+      <div style={{maxWidth:1280,margin:"0 auto",padding:"16px 16px 40px"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
           <div style={{fontSize:13,color:"#555"}}>{filtered.length} résultat{filtered.length>1?"s":""}{tag!=="Tout"&&` dans "${tag}"`}</div>
           <button onClick={fetchListings} style={{background:"none",border:"1px solid #ddd",borderRadius:3,padding:"5px 12px",fontSize:12,cursor:"pointer",color:"#555"}}>Actualiser</button>
