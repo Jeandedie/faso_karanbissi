@@ -132,6 +132,10 @@ const CSS = `
   .photo-del { position:absolute; top:2px; right:2px; background:rgba(0,0,0,0.65); color:white; border:none; border-radius:50%; width:20px; height:20px; font-size:11px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
 
   /* Misc */
+  .pwd-wrap { position:relative; display:flex; align-items:center; }
+  .pwd-wrap .inp { padding-right:42px; }
+  .pwd-eye { position:absolute; right:10px; background:none; border:none; cursor:pointer; color:#888; padding:4px; display:flex; align-items:center; }
+  .pwd-eye:hover { color:#333; }
   .spinner { width:14px; height:14px; border:2px solid rgba(255,255,255,0.4); border-top-color:white; border-radius:50%; animation:spin 0.7s linear infinite; display:inline-block; margin-right:6px; vertical-align:middle; }
   @keyframes spin { to { transform:rotate(360deg); } }
   @keyframes marquee { 0% { transform:translateX(0); } 100% { transform:translateX(-50%); } }
@@ -196,6 +200,8 @@ const Ic = ({n,s=18,c="currentColor"}) => {
     x:<><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></>,
     srch:<><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></>,
     send:<line x1="22" y1="2" x2="11" y2="13"/>,
+    eye:<><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></>,
+    eyeoff:<><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></>,
   };
   return <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke={c} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{display:"block",flexShrink:0}}>{d[n]}</svg>;
 };
@@ -229,6 +235,8 @@ export default function App() {
   const [authToken, setAuthToken] = useState(null);
   const [user, setUser] = useState(null);
   const [showDD, setShowDD] = useState(false);
+  const [showPwd, setShowPwd] = useState({login:false, reg:false, regConf:false, reset:false, resetConf:false});
+  const togglePwd = (key) => setShowPwd(p=>({...p,[key]:!p[key]}));
 
   // Auth
   const [loginEmail, setLoginEmail] = useState("");
@@ -384,7 +392,12 @@ export default function App() {
       let photoUrl=null;
       if(reg.photo&&reg.photoFile){try{photoUrl=await uploadPhoto(reg.photo,`profils/${Date.now()}.jpg`,tk);}catch(e){}}
       const [nu] = await sb("utilisateurs",{method:"POST",token:tk,body:JSON.stringify({auth_id:ad.user?.id,nom:reg.nom,prenom:reg.prenom,date_naissance:reg.dateNaissance,sexe:reg.sexe,filiere:reg.filiere,annee:reg.annee,telephone:reg.telephone,photo_url:photoUrl})});
-      setAuthToken(tk);setUser({...nu,photo:photoUrl||reg.photo,email:reg.email});setPage("marketplace");
+      // Re-fetcher le profil pour avoir les données complètes depuis Supabase
+      const profil = await sb(`utilisateurs?auth_id=eq.${ad.user?.id}`,{token:tk});
+      const profilData = profil?.length>0 ? profil[0] : nu;
+      setAuthToken(tk);
+      setUser({...profilData, photo:profilData.photo_url||photoUrl||null, email:reg.email});
+      setPage("marketplace");
     } catch(e){setRegError("Erreur : "+e.message);}
     finally{setRegLoading(false);}
   };
@@ -527,7 +540,12 @@ export default function App() {
   if(page==="login") return A("Connexion","Connectez-vous à votre compte",
     <div style={{display:"flex",flexDirection:"column",gap:16}}>
       <div><label className="lbl">Email</label><input className="inp" type="email" placeholder="exemple@email.com" value={loginEmail} onChange={e=>setLoginEmail(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleLogin()}/></div>
-      <div><label className="lbl">Mot de passe</label><input className="inp" type="password" placeholder="••••••••" value={loginPwd} onChange={e=>setLoginPwd(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleLogin()}/></div>
+      <div><label className="lbl">Mot de passe</label>
+        <div className="pwd-wrap">
+          <input className="inp" type={showPwd.login?"text":"password"} placeholder="••••••••" value={loginPwd} onChange={e=>setLoginPwd(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleLogin()}/>
+          <button className="pwd-eye" type="button" onClick={()=>togglePwd("login")}><Ic n={showPwd.login?"eyeoff":"eye"} s={16} c="#888"/></button>
+        </div>
+      </div>
       <div style={{textAlign:"right"}}><button className="a-link" onClick={()=>{setPage("forgot");setForgotErr("");setForgotOk(false);}}>Mot de passe oublié ?</button></div>
       {loginErr&&<div className="err-box">{loginErr}</div>}
       <button className="btn btn-red btn-block" onClick={handleLogin} disabled={loginLoading}>{loginLoading?<><span className="spinner"/>Connexion...</>:"Se connecter"}</button>
@@ -557,8 +575,18 @@ export default function App() {
   if(page==="reset") return A("Nouveau mot de passe","Choisissez un nouveau mot de passe",
     !resetOk?(
       <div style={{display:"flex",flexDirection:"column",gap:16}}>
-        <div><label className="lbl">Nouveau mot de passe</label><input className="inp" type="password" placeholder="Minimum 6 caractères" value={newPwd} onChange={e=>setNewPwd(e.target.value)}/></div>
-        <div><label className="lbl">Confirmer</label><input className="inp" type="password" placeholder="Répétez" value={confPwd} onChange={e=>setConfPwd(e.target.value)}/></div>
+        <div><label className="lbl">Nouveau mot de passe</label>
+          <div className="pwd-wrap">
+            <input className="inp" type={showPwd.reset?"text":"password"} placeholder="Minimum 6 caractères" value={newPwd} onChange={e=>setNewPwd(e.target.value)}/>
+            <button className="pwd-eye" type="button" onClick={()=>togglePwd("reset")}><Ic n={showPwd.reset?"eyeoff":"eye"} s={16} c="#888"/></button>
+          </div>
+        </div>
+        <div><label className="lbl">Confirmer</label>
+          <div className="pwd-wrap">
+            <input className="inp" type={showPwd.resetConf?"text":"password"} placeholder="Répétez" value={confPwd} onChange={e=>setConfPwd(e.target.value)}/>
+            <button className="pwd-eye" type="button" onClick={()=>togglePwd("resetConf")}><Ic n={showPwd.resetConf?"eyeoff":"eye"} s={16} c="#888"/></button>
+          </div>
+        </div>
         {resetErr&&<div className="err-box">{resetErr}</div>}
         <button className="btn btn-red btn-block" onClick={handleReset} disabled={resetLoading}>{resetLoading?<><span className="spinner"/>Mise à jour...</>:"Mettre à jour"}</button>
       </div>
@@ -630,10 +658,16 @@ export default function App() {
         <div style={{display:"flex",flexDirection:"column",gap:14}}>
           <div><label className="lbl">Email *</label><input className={`inp ${regErr.email?"err":""}`} type="email" placeholder="exemple@email.com" value={reg.email} onChange={e=>setReg(r=>({...r,email:e.target.value}))}/></div>
           <div><label className="lbl">Mot de passe * <span style={{fontWeight:400,color:"#aaa",fontSize:12,textTransform:"none"}}>(min. 6 caractères)</span></label>
-            <input className={`inp ${regErr.password?"err":""}`} type="password" placeholder="••••••••" value={reg.password} onChange={e=>setReg(r=>({...r,password:e.target.value}))}/>
+            <div className="pwd-wrap">
+            <input className={`inp ${regErr.password?"err":""}`} type={showPwd.reg?"text":"password"} placeholder="••••••••" value={reg.password} onChange={e=>setReg(r=>({...r,password:e.target.value}))}/>
+            <button className="pwd-eye" type="button" onClick={()=>togglePwd("reg")}><Ic n={showPwd.reg?"eyeoff":"eye"} s={16} c="#888"/></button>
+          </div>
           </div>
           <div><label className="lbl">Confirmer *</label>
-            <input className={`inp ${regErr.confirmPassword?"err":""}`} type="password" placeholder="••••••••" value={reg.confirmPassword} onChange={e=>setReg(r=>({...r,confirmPassword:e.target.value}))}/>
+            <div className="pwd-wrap">
+              <input className={`inp ${regErr.confirmPassword?"err":""}`} type={showPwd.regConf?"text":"password"} placeholder="••••••••" value={reg.confirmPassword} onChange={e=>setReg(r=>({...r,confirmPassword:e.target.value}))}/>
+              <button className="pwd-eye" type="button" onClick={()=>togglePwd("regConf")}><Ic n={showPwd.regConf?"eyeoff":"eye"} s={16} c="#888"/></button>
+            </div>
             {regErr.confirmPassword&&<div style={{fontSize:12,color:"#C8102E",marginTop:5}}>Les mots de passe ne correspondent pas</div>}
           </div>
           {regError&&<div className="err-box">{regError}</div>}
