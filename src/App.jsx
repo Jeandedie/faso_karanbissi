@@ -53,7 +53,7 @@ const CSS = `
   *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
   html { -webkit-text-size-adjust:100%; }
   html, body { width:100%; max-width:100%; overflow-x:hidden; margin:0; padding:0; }
-  body { font-family:'Inter',sans-serif; background:white; margin:0; padding:0; }
+  body { font-family:'Inter',sans-serif; background:#f3f3f3; margin:0; padding:0; }
   img { max-width:100%; display:block; }
   input,select,textarea,button { font-family:'Inter',sans-serif; }
 
@@ -109,7 +109,7 @@ const CSS = `
 
   /* Dropdown */
   .dropdown { position:relative; }
-  .dd-menu { position:absolute; top:calc(100% + 8px); right:0; background:white; border:1px solid #eee; border-radius:6px; box-shadow:0 4px 20px rgba(0,0,0,0.14); min-width:185px; z-index:150; overflow:hidden; }
+  .dd-menu { position:absolute; top:calc(100% + 8px); right:0; background:white; border:1px solid #eee; border-radius:6px; box-shadow:0 4px 20px rgba(0,0,0,0.14); min-width:185px; z-index:2000; overflow:hidden; }
   .dd-item { display:flex; align-items:center; gap:10px; padding:12px 16px; font-size:14px; color:#111; cursor:pointer; border:none; background:none; width:100%; text-align:left; transition:background 0.12s; }
   .dd-item:hover { background:#f5f5f5; }
   .dd-item.red { color:#C8102E; }
@@ -682,11 +682,11 @@ export default function App() {
 
   /* ═══════════ MARKETPLACE (guest + connecté) ═══════════ */
   return (
-    <div style={{fontFamily:"'Inter',sans-serif",background:"white",minHeight:"100vh",width:"100%",maxWidth:"100%"}}>
+    <div style={{fontFamily:"'Inter',sans-serif",background:"#f3f3f3",minHeight:"100vh",width:"100%",maxWidth:"100vw",overflowX:"hidden"}}>
       <style>{CSS}</style>
 
       {/* ── HEADER ── */}
-      <div style={{background:"#1B0007",position:"sticky",top:0,zIndex:100}}>
+      <div style={{background:"#1B0007",position:"sticky",top:0,zIndex:1000}}>
         <div style={{maxWidth:1280,margin:"0 auto",display:"flex",alignItems:"center",gap:8,height:54,padding:"0 12px",overflow:"hidden"}}>
           {/* Logo */}
           <div style={{flexShrink:0,cursor:"pointer"}} onClick={()=>setPage("guest")}>
@@ -721,14 +721,14 @@ export default function App() {
           ):(
             /* Menu déroulant */
             <div className="dropdown" ref={ddRef} style={{flexShrink:0}}>
-              <div style={{display:"flex",alignItems:"center",gap:7,cursor:"pointer",background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:6,padding:"5px 10px"}} onClick={()=>setShowDD(v=>!v)}>
+              <button type="button" style={{display:"flex",alignItems:"center",gap:7,cursor:"pointer",background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:6,padding:"5px 10px"}} onClick={()=>setShowDD(v=>!v)}>
                 <div style={{width:28,height:28,borderRadius:"50%",overflow:"hidden",flexShrink:0,border:"2px solid rgba(255,255,255,0.5)"}}>
                   {user.photo?<img src={user.photo} style={{width:"100%",height:"100%",objectFit:"cover"}} alt=""/>:<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",background:"#C8102E",color:"white",fontSize:11,fontWeight:700}}>{user.prenom?.[0]}{user.nom?.[0]}</div>}
                 </div>
                 <span style={{fontSize:12,fontWeight:600,color:"white",maxWidth:70,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{user.prenom}</span>
                 <Ic n="chev" s={12} c="rgba(255,255,255,0.7)"/>
                 {unread>0&&<Badge n={unread} style={{border:"1px solid white",fontSize:10}}/>}
-              </div>
+              </button>
               {showDD&&(
                 <div className="dd-menu">
                   <button className="dd-item" onClick={openProfil}><Ic n="user" s={15} c="#555"/>Mon profil</button>
@@ -805,7 +805,7 @@ export default function App() {
       </div>
 
       {/* ── ANNONCES ── */}
-      <div style={{maxWidth:1280,margin:"0 auto",padding:"16px 16px 40px",background:"white"}}>
+      <div style={{maxWidth:1280,margin:"0 auto",padding:"16px 16px 40px"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
           <div style={{fontSize:13,color:"#555"}}>{filtered.length} résultat{filtered.length>1?"s":""}{tag!=="Tout"&&` dans "${tag}"`}</div>
           <button onClick={fetchListings} style={{background:"none",border:"1px solid #ddd",borderRadius:3,padding:"5px 12px",fontSize:12,cursor:"pointer",color:"#555"}}>Actualiser</button>
