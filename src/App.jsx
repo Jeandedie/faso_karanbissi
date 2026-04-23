@@ -682,12 +682,12 @@ export default function App() {
 
   /* ═══════════ MARKETPLACE (guest + connecté) ═══════════ */
   return (
-    <div style={{fontFamily:"'Inter',sans-serif",background:"#f3f3f3",minHeight:"100vh",width:"100%",maxWidth:"100vw",overflowX:"hidden"}}>
+    <div style={{fontFamily:"'Inter',sans-serif",background:"#f3f3f3",minHeight:"100vh",width:"100%",maxWidth:"100vw"}}>
       <style>{CSS}</style>
 
       {/* ── HEADER ── */}
       <div style={{background:"#1B0007",position:"sticky",top:0,zIndex:1000}}>
-        <div style={{maxWidth:1280,margin:"0 auto",display:"flex",alignItems:"center",gap:8,height:54,padding:"0 12px",overflow:"hidden"}}>
+        <div style={{maxWidth:1280,margin:"0 auto",display:"flex",alignItems:"center",gap:8,height:54,padding:"0 12px"}}>
           {/* Logo */}
           <div style={{flexShrink:0,cursor:"pointer"}} onClick={()=>setPage("guest")}>
             <div style={{color:"white",fontWeight:700,fontSize:14}}>Faso_Karanbissi</div>
