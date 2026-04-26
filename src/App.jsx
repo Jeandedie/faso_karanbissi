@@ -136,6 +136,12 @@ const CSS = `
   .pwd-wrap .inp { padding-right:42px; }
   .pwd-eye { position:absolute; right:10px; background:none; border:none; cursor:pointer; color:#888; padding:4px; display:flex; align-items:center; }
   .pwd-eye:hover { color:#333; }
+  .notif-panel { position:absolute; top:calc(100% + 8px); right:0; background:white; border:1px solid #eee; border-radius:8px; box-shadow:0 4px 24px rgba(0,0,0,0.15); width:320px; z-index:2000; overflow:hidden; max-height:420px; display:flex; flex-direction:column; }
+  .notif-item { padding:12px 16px; border-bottom:1px solid #f5f5f5; cursor:pointer; transition:background 0.12s; display:flex; gap:10px; align-items:flex-start; }
+  .notif-item:hover { background:#fafafa; }
+  .notif-item.unread { background:#fff8f8; border-left:3px solid #C8102E; }
+  .notif-dot { width:8px; height:8px; border-radius:50%; background:#C8102E; flex-shrink:0; margin-top:4px; }
+  .notif-dot.read { background:#ddd; }
   .spinner { width:14px; height:14px; border:2px solid rgba(255,255,255,0.4); border-top-color:white; border-radius:50%; animation:spin 0.7s linear infinite; display:inline-block; margin-right:6px; vertical-align:middle; }
   @keyframes spin { to { transform:rotate(360deg); } }
   @keyframes marquee { 0% { transform:translateX(0); } 100% { transform:translateX(-50%); } }
@@ -235,6 +241,9 @@ export default function App() {
   const [authToken, setAuthToken] = useState(null);
   const [user, setUser] = useState(null);
   const [showDD, setShowDD] = useState(false);
+  const [notifs, setNotifs] = useState([]);
+  const [showNotifs, setShowNotifs] = useState(false);
+  const [notifCount, setNotifCount] = useState(0);
   const [showPwd, setShowPwd] = useState({login:false, reg:false, regConf:false, reset:false, resetConf:false});
   const togglePwd = (key) => setShowPwd(p=>({...p,[key]:!p[key]}));
 
@@ -324,7 +333,9 @@ export default function App() {
   useEffect(() => {
     if (page==="marketplace" && user) {
       fetchConvs();
-      const iv = setInterval(fetchConvs, 30000);
+      fetchNotifs();
+      requestBrowserNotifPermission();
+      const iv = setInterval(() => { fetchConvs(); fetchNotifs(); }, 30000);
       return () => clearInterval(iv);
     }
   }, [page, user]);
@@ -477,6 +488,64 @@ export default function App() {
     finally{setProfilLoading(false);}
   };
 
+  // ── NOTIFICATIONS ──
+  const fetchNotifs = async () => {
+    if (!user) return;
+    try {
+      const rows = await sb(
+        `notifications?user_id=eq.${user.id}&order=created_at.desc&limit=20`,
+        { token: authToken }
+      );
+      setNotifs(rows || []);
+      setNotifCount((rows || []).filter(n => !n.lu).length);
+    } catch(e) { console.error(e); }
+  };
+
+  const markNotifRead = async (id) => {
+    try {
+      await sb(`notifications?id=eq.${id}`, {
+        method: "PATCH", token: authToken, prefer: "return=minimal",
+        body: JSON.stringify({ lu: true })
+      });
+      setNotifs(p => p.map(n => n.id === id ? {...n, lu: true} : n));
+      setNotifCount(p => Math.max(0, p - 1));
+    } catch(e) {}
+  };
+
+  const markAllNotifsRead = async () => {
+    try {
+      await sb(`notifications?user_id=eq.${user.id}&lu=eq.false`, {
+        method: "PATCH", token: authToken, prefer: "return=minimal",
+        body: JSON.stringify({ lu: true })
+      });
+      setNotifs(p => p.map(n => ({...n, lu: true})));
+      setNotifCount(0);
+    } catch(e) {}
+  };
+
+  const createNotif = async (userId, type, titre, contenu, annonceId = null, expediteurId = null) => {
+    if (!userId || userId === user?.id) return; // pas de notif à soi-même
+    try {
+      await sb("notifications", {
+        method: "POST", token: authToken, prefer: "return=minimal",
+        body: JSON.stringify({ user_id: userId, type, titre, contenu, annonce_id: annonceId, expediteur_id: expediteurId, lu: false })
+      });
+    } catch(e) { console.error(e); }
+  };
+
+  // Demander permission notifications navigateur
+  const requestBrowserNotifPermission = async () => {
+    if ("Notification" in window && Notification.permission === "default") {
+      await Notification.requestPermission();
+    }
+  };
+
+  const showBrowserNotif = (titre, corps, icon = "/favicon.ico") => {
+    if ("Notification" in window && Notification.permission === "granted") {
+      new Notification(titre, { body: corps, icon });
+    }
+  };
+
   const fetchConvs = async () => {
     if(!user)return;
     try{
@@ -509,6 +578,10 @@ export default function App() {
     try{
       const [s]=await sb("messages",{method:"POST",token:authToken,body:JSON.stringify({expediteur_id:user.id,destinataire_id:destId,annonce_id:annonceId,contenu:c})});
       setConvMsgs(p=>[...p,{...s,expediteur:user}]);setNewMsg("");fetchConvs();
+      // Créer notification pour le destinataire
+      const expediteurNom = `${user.prenom} ${user.nom}`;
+      await createNotif(destId, "message", `Nouveau message de ${expediteurNom}`, c.length > 60 ? c.substring(0,60)+"..." : c, annonceId, user.id);
+      showBrowserNotif(`Message de ${expediteurNom}`, c.length > 80 ? c.substring(0,80)+"..." : c);
     }catch(e){console.error(e);}
   };
 
@@ -727,7 +800,7 @@ export default function App() {
                 </div>
                 <span style={{fontSize:12,fontWeight:600,color:"white",maxWidth:70,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{user.prenom}</span>
                 <Ic n="chev" s={12} c="rgba(255,255,255,0.7)"/>
-                {unread>0&&<Badge n={unread} style={{border:"1px solid white",fontSize:10}}/>}
+                {(unread+notifCount)>0&&<Badge n={unread+notifCount} style={{border:"1px solid white",fontSize:10}}/>}
               </button>
               {showDD&&(
                 <div className="dd-menu">
@@ -739,6 +812,11 @@ export default function App() {
                   <button className="dd-item" onClick={()=>{setShowMsgs(true);fetchConvs();setShowDD(false);}}>
                     <Ic n="msg" s={15} c="#555"/>Messages
                     {unread>0&&<Badge n={unread} style={{marginLeft:"auto"}}/>}
+                  </button>
+                  <button className="dd-item" onClick={()=>{setShowNotifs(true);fetchNotifs();setShowDD(false);}}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                    Notifications
+                    {notifCount>0&&<Badge n={notifCount} style={{marginLeft:"auto"}}/>}
                   </button>
                   <div className="dd-sep"/>
                   <button className="dd-item red" onClick={handleLogout}><Ic n="out" s={15} c="#C8102E"/>Déconnexion</button>
@@ -831,7 +909,13 @@ export default function App() {
         ):(
           <div className="cards-grid">
             {filtered.map(item=>(
-              <div key={item.id} className="card" onClick={()=>{setModal(item);setMTab("article");setMPhotoIdx(0);}}>
+              <div key={item.id} className="card" onClick={async()=>{setModal(item);setMTab("article");setMPhotoIdx(0);
+              // Notifier le vendeur si ce n'est pas le sien
+              if (user && item.seller?.id && item.seller.id !== user.id) {
+                const visitorNom = `${user.prenom} ${user.nom}`;
+                await createNotif(item.seller.id, "visite", `${visitorNom} a consulté votre annonce`, `"${item.title}"`, item.id, user.id);
+              }
+            }}>
                 <div style={{background:"#f3f3f3",height:"clamp(130px,30vw,170px)",display:"flex",alignItems:"center",justifyContent:"center",borderBottom:"1px solid #eee",overflow:"hidden",position:"relative"}}>
                   {item.photos?.length>0?<img src={item.photos[0]} alt={item.title} style={{width:"100%",height:"100%",objectFit:"cover"}}/>:<Ic n="img" s={36} c="#ccc"/>}
                   {item.photos?.length>1&&<div style={{position:"absolute",bottom:5,right:5,background:"rgba(0,0,0,0.55)",color:"white",fontSize:10,padding:"2px 6px",borderRadius:2,fontWeight:600}}>+{item.photos.length-1}</div>}
@@ -1216,6 +1300,44 @@ export default function App() {
                 <button className="btn btn-white" style={{flex:1}} onClick={()=>setDelConfirm(null)} disabled={delLoading}>Annuler</button>
                 <button className="btn btn-red" style={{flex:1}} onClick={()=>delListing(delConfirm)} disabled={delLoading}>{delLoading?<><span className="spinner"/>Suppression...</>:"Oui, supprimer"}</button>
               </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* ── NOTIFICATIONS PANEL ── */}
+      {showNotifs && (
+        <div className="overlay" onClick={()=>setShowNotifs(false)}>
+          <div className="modal" onClick={e=>e.stopPropagation()} style={{maxWidth:380}}>
+            <div className="modal-handle"/>
+            <div style={{padding:"12px 16px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <div style={{fontSize:15,fontWeight:700}}>Notifications {notifCount>0&&<Badge n={notifCount}/>}</div>
+              <div style={{display:"flex",gap:8,alignItems:"center"}}>
+                {notifCount>0&&<button onClick={markAllNotifsRead} style={{background:"none",border:"none",fontSize:12,color:"#C8102E",cursor:"pointer",fontWeight:600}}>Tout marquer lu</button>}
+                <button onClick={()=>setShowNotifs(false)} style={{background:"none",border:"none",cursor:"pointer",padding:4}}><Ic n="x" s={18} c="#888"/></button>
+              </div>
+            </div>
+            <div style={{overflowY:"auto",flex:1}}>
+              {notifs.length===0?(
+                <div style={{textAlign:"center",padding:"40px 20px",color:"#aaa"}}>
+                  <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#ddd" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{margin:"0 auto 12px"}}><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+                  <div style={{fontSize:14}}>Aucune notification</div>
+                </div>
+              ):notifs.map(n=>(
+                <div key={n.id} className={`notif-item ${!n.lu?"unread":""}`} onClick={()=>{ markNotifRead(n.id); if(n.type==="message"){setShowNotifs(false);setShowMsgs(true);fetchConvs();} }}>
+                  <div className={`notif-dot ${n.lu?"read":""}`}/>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:3}}>
+                      <span style={{fontSize:10,background:n.type==="message"?"#e8f4fd":"#fff0e6",color:n.type==="message"?"#0066cc":"#c05000",padding:"2px 7px",borderRadius:10,fontWeight:600,textTransform:"uppercase"}}>
+                        {n.type==="message"?"Message":"Visite"}
+                      </span>
+                      <span style={{fontSize:10,color:"#aaa",marginLeft:"auto",flexShrink:0}}>{new Date(n.created_at).toLocaleDateString("fr-FR",{day:"2-digit",month:"short",hour:"2-digit",minute:"2-digit"})}</span>
+                    </div>
+                    <div style={{fontSize:13,fontWeight:n.lu?400:600,color:"#111",marginBottom:2}}>{n.titre}</div>
+                    <div style={{fontSize:12,color:"#888",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{n.contenu}</div>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
         </div>
