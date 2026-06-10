@@ -53,7 +53,7 @@ const CSS = `
   *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
   html { -webkit-text-size-adjust:100%; }
   html, body { width:100%; max-width:100%; overflow-x:hidden; margin:0; padding:0; }
-  body { font-family:'Inter',sans-serif; background:#f3f3f3; margin:0; padding:0; }
+  body { font-family:'Inter',sans-serif; background:white; margin:0; padding:0; }
   img { max-width:100%; display:block; }
   input,select,textarea,button { font-family:'Inter',sans-serif; }
 
@@ -136,6 +136,14 @@ const CSS = `
   .pwd-wrap .inp { padding-right:42px; }
   .pwd-eye { position:absolute; right:10px; background:none; border:none; cursor:pointer; color:#888; padding:4px; display:flex; align-items:center; }
   .pwd-eye:hover { color:#333; }
+  /* Réseau Innovation */
+  .reseau-sidebar { width:260px; border-right:1px solid #eee; overflow-y:auto; flex-shrink:0; }
+  .groupe-item { padding:12px 16px; cursor:pointer; border-bottom:1px solid #f5f5f5; transition:background 0.12s; display:flex; align-items:center; gap:10px; }
+  .groupe-item:hover { background:#fafafa; }
+  .groupe-item.on { background:#fff5f5; border-left:3px solid #C8102E; }
+  .domaine-badge { font-size:10px; padding:2px 8px; border-radius:10px; font-weight:700; text-transform:uppercase; }
+  .match-card { background:white; border:1px solid #eee; border-radius:8px; padding:16px; margin-bottom:12px; }
+  .score-ring { width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:800; flex-shrink:0; border:3px solid; }
   .notif-panel { position:absolute; top:calc(100% + 8px); right:0; background:white; border:1px solid #eee; border-radius:8px; box-shadow:0 4px 24px rgba(0,0,0,0.15); width:320px; z-index:2000; overflow:hidden; max-height:420px; display:flex; flex-direction:column; }
   .notif-item { padding:12px 16px; border-bottom:1px solid #f5f5f5; cursor:pointer; transition:background 0.12s; display:flex; gap:10px; align-items:flex-start; }
   .notif-item:hover { background:#fafafa; }
@@ -150,6 +158,8 @@ const CSS = `
   .hero-inner { display:flex; flex-direction:column; }
   .hero-features { display:none !important; }
   .hero-text { flex:1; min-width:0; width:100%; max-width:100%; }
+  .hero-btns { display:flex; flex-wrap:wrap; gap:8px; }
+  .hero-btns { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
   ::-webkit-scrollbar { width:4px; }
   ::-webkit-scrollbar-thumb { background:#C8102E; border-radius:2px; }
 
@@ -170,6 +180,7 @@ const CSS = `
     .mob-search { display:none !important; }
     .hero-features { display:flex !important; }
     .hero-inner { flex-direction:row; }
+    .hero-text { text-align:left; }
   }
 `;
 
@@ -216,7 +227,8 @@ const Ic = ({n,s=18,c="currentColor"}) => {
 const Badge = ({n,style={}}) => n>0 ? <span style={{background:"#C8102E",color:"white",borderRadius:10,padding:"1px 6px",fontSize:11,fontWeight:700,...style}}>{n}</span> : null;
 
 export default function App() {
-  // page: "guest" | "login" | "register" | "forgot" | "reset" | "marketplace"
+  // page: "guest" | "login" | "register" | "forgot" | "reset" | "marketplace" | "reseau"
+
   // Navigation avec historique navigateur
   const getInitialPage = () => {
     const p = window.location.pathname.replace("/","") || "guest";
@@ -241,6 +253,18 @@ export default function App() {
   const [authToken, setAuthToken] = useState(null);
   const [user, setUser] = useState(null);
   const [showDD, setShowDD] = useState(false);
+  // Réseau Innovation
+  const [showReseau, setShowReseau] = useState(false);
+  const [groupes, setGroupes] = useState([]);
+  const [activeGroupe, setActiveGroupe] = useState(null);
+  const [groupeMsgs, setGroupeMsgs] = useState([]);
+  const [groupeMembers, setGroupeMembers] = useState([]);
+  const [newGroupeMsg, setNewGroupeMsg] = useState("");
+  const [myGroupes, setMyGroupes] = useState([]);
+  const [showMatching, setShowMatching] = useState(false);
+  const [matchings, setMatchings] = useState([]);
+  const [matchingLoading, setMatchingLoading] = useState(false);
+  const groupeMsgsEndRef = useRef();
   const [notifs, setNotifs] = useState([]);
   const [showNotifs, setShowNotifs] = useState(false);
   const [notifCount, setNotifCount] = useState(0);
@@ -331,9 +355,11 @@ export default function App() {
   useEffect(() => { if (page==="guest"||page==="marketplace") fetchListings(); }, [page]);
 
   useEffect(() => {
+    if ((page==="marketplace" || page==="guest") && groupes.length===0) fetchGroupes();
     if (page==="marketplace" && user) {
       fetchConvs();
       fetchNotifs();
+      fetchMyGroupes();
       requestBrowserNotifPermission();
       const iv = setInterval(() => { fetchConvs(); fetchNotifs(); }, 30000);
       return () => clearInterval(iv);
@@ -488,7 +514,130 @@ export default function App() {
     finally{setProfilLoading(false);}
   };
 
+  // ── RÉSEAU INNOVATION ──
+  const fetchGroupes = async () => {
+    try {
+      const rows = await sb("groupes?select=*,membres_groupes(count)&order=nom");
+      setGroupes(rows || []);
+    } catch(e) { console.error(e); }
+  };
+
+  const fetchMyGroupes = async () => {
+    if (!user) return;
+    try {
+      const rows = await sb(`membres_groupes?user_id=eq.${user.id}&select=groupe_id`, { token: authToken });
+      setMyGroupes((rows||[]).map(r=>r.groupe_id));
+    } catch(e) { console.error(e); }
+  };
+
+  const joinGroupe = async (groupeId) => {
+    try {
+      await sb("membres_groupes", { method:"POST", token:authToken, prefer:"return=minimal",
+        body: JSON.stringify({ groupe_id:groupeId, user_id:user.id, role:"membre" }) });
+      setMyGroupes(p=>[...p, groupeId]);
+      fetchGroupes();
+    } catch(e) { console.error(e); }
+  };
+
+  const leaveGroupe = async (groupeId) => {
+    try {
+      await sb(`membres_groupes?groupe_id=eq.${groupeId}&user_id=eq.${user.id}`,
+        { method:"DELETE", token:authToken, prefer:"return=minimal" });
+      setMyGroupes(p=>p.filter(id=>id!==groupeId));
+      fetchGroupes();
+    } catch(e) { console.error(e); }
+  };
+
+  const openGroupe = async (groupe) => {
+    setActiveGroupe(groupe);
+    try {
+      const [msgs, members] = await Promise.all([
+        sb(`messages_groupes?groupe_id=eq.${groupe.id}&select=*,utilisateurs(*)&order=created_at.asc&limit=50`, { token:authToken }),
+        sb(`membres_groupes?groupe_id=eq.${groupe.id}&select=*,utilisateurs(*)`, { token:authToken })
+      ]);
+      setGroupeMsgs(msgs||[]);
+      setGroupeMembers(members||[]);
+    } catch(e) { console.error(e); }
+  };
+
+  const sendGroupeMsg = async () => {
+    if (!newGroupeMsg.trim() || !activeGroupe) return;
+    try {
+      const [msg] = await sb("messages_groupes", { method:"POST", token:authToken,
+        body: JSON.stringify({ groupe_id:activeGroupe.id, user_id:user.id, contenu:newGroupeMsg.trim() }) });
+      setGroupeMsgs(p=>[...p, { ...msg, utilisateurs:user }]);
+      setNewGroupeMsg("");
+    } catch(e) { console.error(e); }
+  };
+
+  useEffect(() => { groupeMsgsEndRef.current?.scrollIntoView({behavior:"smooth"}); }, [groupeMsgs]);
+
+  // ── MATCHING IA ──
+  const generateMatching = async () => {
+    if (!user) return;
+    setMatchingLoading(true);
+    try {
+      // Récupérer tous les étudiants
+      const allUsers = await sb("utilisateurs?select=*&limit=50", { token: authToken });
+      const others = (allUsers||[]).filter(u => u.id !== user.id);
+      if (others.length === 0) { setMatchings([]); setMatchingLoading(false); return; }
+
+      // Appel Claude API pour analyser les compatibilités
+      const prompt = `Tu es un assistant IA pour une plateforme universitaire au Burkina Faso.
+Voici le profil de l'étudiant principal :
+- Nom: ${user.prenom} ${user.nom}
+- Filière: ${user.filiere || "Non précisé"}
+- Année: ${user.annee || "Non précisé"}
+
+Voici les autres étudiants disponibles (max 10):
+${others.slice(0,10).map((u,i) => `${i+1}. ${u.prenom} ${u.nom} — Filière: ${u.filiere||"?"}, Année: ${u.annee||"?"}`).join("
+")}
+
+Pour chaque étudiant, calcule un score de compatibilité (0-100) pour créer une innovation ensemble.
+Tiens compte de : complémentarité des filières, niveau d'études, potentiel de collaboration.
+
+Réponds UNIQUEMENT en JSON valide, sans markdown, ce format exact:
+{"matchings": [{"index": 1, "score": 85, "raison": "explication courte max 100 chars", "domaine": "tech/sante/agriculture/business/education"}]}`;
+
+      const response = await fetch("https://api.anthropic.com/v1/messages", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          model: "claude-sonnet-4-20250514",
+          max_tokens: 1000,
+          messages: [{ role: "user", content: prompt }]
+        })
+      });
+      const data = await response.json();
+      const text = data.content?.[0]?.text || "{}";
+      const parsed = JSON.parse(text.replace(/```json|```/g, "").trim());
+      const results = (parsed.matchings || [])
+        .filter(m => m.score >= 50)
+        .sort((a,b) => b.score - a.score)
+        .slice(0, 5)
+        .map(m => ({
+          ...others[m.index - 1],
+          score: m.score,
+          raison: m.raison,
+          domaine: m.domaine
+        }))
+        .filter(m => m.id);
+
+      setMatchings(results);
+
+      // Sauvegarder les matchings en base
+      for (const m of results) {
+        try {
+          await sb("matchings", { method:"POST", token:authToken, prefer:"return=minimal",
+            body: JSON.stringify({ user_id:user.id, partner_id:m.id, score:m.score, raison:m.raison, domaine:m.domaine }) });
+        } catch(e) {}
+      }
+    } catch(e) { console.error(e); setMatchings([]); }
+    finally { setMatchingLoading(false); }
+  };
+
   // ── NOTIFICATIONS ──
+
   const fetchNotifs = async () => {
     if (!user) return;
     try {
@@ -755,7 +904,7 @@ export default function App() {
 
   /* ═══════════ MARKETPLACE (guest + connecté) ═══════════ */
   return (
-    <div style={{fontFamily:"'Inter',sans-serif",background:"#f3f3f3",minHeight:"100vh",width:"100%",maxWidth:"100vw"}}>
+    <div style={{fontFamily:"'Inter',sans-serif",background:"white",minHeight:"100vh",width:"100%"}}>
       <style>{CSS}</style>
 
       {/* ── HEADER ── */}
@@ -813,6 +962,10 @@ export default function App() {
                     <Ic n="msg" s={15} c="#555"/>Messages
                     {unread>0&&<Badge n={unread} style={{marginLeft:"auto"}}/>}
                   </button>
+                  <button className="dd-item" onClick={()=>{setShowReseau(true);fetchGroupes();fetchMyGroupes();setShowDD(false);}}>
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    Réseau Innovation
+                  </button>
                   <button className="dd-item" onClick={()=>{setShowNotifs(true);fetchNotifs();setShowDD(false);}}>
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
                     Notifications
@@ -859,19 +1012,19 @@ export default function App() {
           </div>
         </div>
         {/* Hero */}
-        <div className="hero-inner" style={{maxWidth:1280,margin:"0 auto",padding:"20px 14px 28px",alignItems:"center",justifyContent:"space-between",gap:16}}>
+        <div className="hero-inner" style={{maxWidth:1280,margin:"0 auto",padding:"14px 14px 18px",alignItems:"center",justifyContent:"space-between",gap:16}}>
           <div className="hero-text" style={{color:"white",minWidth:0}}>
-            <div style={{fontSize:"clamp(20px,5vw,26px)",fontWeight:700,lineHeight:1.3,marginBottom:8}}>La plateforme des étudiants entrepreneurs</div>
-            <div style={{fontSize:13,opacity:0.85,lineHeight:1.6,marginBottom:14,maxWidth:480}}>Vendez vos articles, proposez vos services et connectez-vous avec les étudiants de votre campus.</div>
-            <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
+            <div style={{fontSize:"clamp(18px,4.5vw,26px)",fontWeight:700,lineHeight:1.25,marginBottom:6}}>La plateforme des étudiants entrepreneurs</div>
+            <div style={{fontSize:12,opacity:0.85,lineHeight:1.5,marginBottom:10,maxWidth:480}}>Vendez vos articles, proposez vos services et connectez-vous avec les étudiants de votre campus.</div>
+            <div className="hero-btns">
               {["Livres & Cours","Electronique","Services","Vetements"].map(label=>(
-                <button key={label} onClick={()=>setTag(label)} style={{background:"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:20,padding:"6px 14px",color:"white",fontSize:12,cursor:"pointer",fontWeight:500}}>
+                <button key={label} onClick={()=>setTag(label)} style={{background:"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:20,padding:"5px 12px",color:"white",fontSize:11,cursor:"pointer",fontWeight:500,whiteSpace:"nowrap"}}>
                   {label}
                 </button>
               ))}
             </div>
           </div>
-          <div className="hero-features" style={{flexDirection:"column",gap:8,minWidth:200,flexShrink:0}}>
+          <div className="hero-features" style={{gap:8,minWidth:180,flexShrink:0}}>
             {[["Annonces publiées","Voir les offres de vos camarades"],["Services disponibles","Cours, design, traduction et plus"],["Messagerie intégrée","Échangez avec les vendeurs"]].map(([t,d])=>(
               <div key={t} style={{background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.18)",borderRadius:6,padding:"9px 12px",display:"flex",alignItems:"center",gap:10}}>
                 <div style={{width:7,height:7,borderRadius:"50%",background:"white",flexShrink:0}}/>
@@ -883,7 +1036,8 @@ export default function App() {
       </div>
 
       {/* ── ANNONCES ── */}
-      <div style={{maxWidth:1280,margin:"0 auto",padding:"16px 16px 40px"}}>
+      <div style={{background:"white",width:"100%"}}>
+        <div style={{maxWidth:1280,margin:"0 auto",padding:"16px 16px 40px",background:"white"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
           <div style={{fontSize:13,color:"#555"}}>{filtered.length} résultat{filtered.length>1?"s":""}{tag!=="Tout"&&` dans "${tag}"`}</div>
           <button onClick={fetchListings} style={{background:"none",border:"1px solid #ddd",borderRadius:3,padding:"5px 12px",fontSize:12,cursor:"pointer",color:"#555"}}>Actualiser</button>
@@ -1305,6 +1459,168 @@ export default function App() {
         </div>
       )}
 
+      {/* ── RÉSEAU INNOVATION ── */}
+      {showReseau && (
+        <div className="overlay" onClick={()=>{setShowReseau(false);setActiveGroupe(null);}}>
+          <div className="modal" onClick={e=>e.stopPropagation()} style={{maxWidth:760,height:"88vh"}}>
+            <div className="modal-handle"/>
+            <div style={{padding:"12px 16px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+              <div>
+                <div style={{fontSize:15,fontWeight:700}}>Réseau Innovation</div>
+                <div style={{fontSize:12,color:"#888",marginTop:1}}>Connectez-vous avec des étudiants de votre domaine</div>
+              </div>
+              <div style={{display:"flex",gap:8}}>
+                <button onClick={()=>{setShowMatching(true);if(matchings.length===0)generateMatching();}} style={{background:"#C8102E",color:"white",border:"none",borderRadius:4,padding:"6px 12px",fontSize:12,cursor:"pointer",fontWeight:600,display:"flex",alignItems:"center",gap:5}}>
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                  Matching IA
+                </button>
+                <button onClick={()=>{setShowReseau(false);setActiveGroupe(null);}} style={{background:"none",border:"none",cursor:"pointer",padding:4}}><Ic n="x" s={20} c="#888"/></button>
+              </div>
+            </div>
+
+            {/* MATCHING IA PANEL */}
+            {showMatching ? (
+              <div style={{flex:1,overflowY:"auto",padding:"16px"}}>
+                <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
+                  <button onClick={()=>setShowMatching(false)} style={{background:"none",border:"none",cursor:"pointer",color:"#C8102E",fontSize:13,fontWeight:600,display:"flex",alignItems:"center",gap:4}}>
+                    <Ic n="chev" s={14} c="#C8102E"/> Retour aux groupes
+                  </button>
+                  <button onClick={generateMatching} disabled={matchingLoading} style={{marginLeft:"auto",background:"#C8102E",color:"white",border:"none",borderRadius:4,padding:"7px 14px",fontSize:12,cursor:"pointer",fontWeight:600,display:"flex",alignItems:"center",gap:6}}>
+                    {matchingLoading ? <><span className="spinner"/>Analyse en cours...</> : <><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Relancer l'analyse</>}
+                  </button>
+                </div>
+
+                {matchingLoading ? (
+                  <div style={{textAlign:"center",padding:"48px 0",color:"#888"}}>
+                    <div style={{width:32,height:32,border:"3px solid #eee",borderTopColor:"#C8102E",borderRadius:"50%",animation:"spin 0.7s linear infinite",margin:"0 auto 16px"}}/>
+                    <div style={{fontSize:14,fontWeight:500}}>L'IA analyse les profils...</div>
+                    <div style={{fontSize:12,color:"#aaa",marginTop:6}}>Recherche des meilleurs partenaires pour vous</div>
+                  </div>
+                ) : matchings.length === 0 ? (
+                  <div style={{textAlign:"center",padding:"40px 20px",color:"#aaa"}}>
+                    <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ddd" strokeWidth="1.5" style={{margin:"0 auto 14px"}}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <div style={{fontSize:14,marginBottom:8}}>Pas encore de suggestions</div>
+                    <div style={{fontSize:12,marginBottom:16}}>Cliquez sur "Relancer l'analyse" pour trouver vos partenaires</div>
+                  </div>
+                ) : (
+                  <>
+                    <div style={{fontSize:13,color:"#555",marginBottom:14}}>
+                      <strong>{matchings.length} partenaire{matchings.length>1?"s":""}</strong> suggéré{matchings.length>1?"s":""} par l'IA selon votre profil
+                    </div>
+                    {matchings.map((m,i) => {
+                      const scoreColor = m.score>=80?"#2d7a2d":m.score>=60?"#c07000":"#C8102E";
+                      const domaineColors = {tech:"#0066cc",sante:"#2d8a2d",agriculture:"#7a5c00",business:"#8b008b",education:"#c05000",droit:"#444",arts:"#b06000"};
+                      return (
+                        <div key={m.id} className="match-card">
+                          <div style={{display:"flex",gap:14,alignItems:"center",marginBottom:12}}>
+                            <div style={{width:44,height:44,borderRadius:"50%",overflow:"hidden",flexShrink:0,background:"#C8102E",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                              {m.photo_url?<img src={m.photo_url} style={{width:"100%",height:"100%",objectFit:"cover"}} alt=""/>:<span style={{color:"white",fontSize:14,fontWeight:700}}>{m.prenom?.[0]}{m.nom?.[0]}</span>}
+                            </div>
+                            <div style={{flex:1}}>
+                              <div style={{fontSize:14,fontWeight:700}}>{m.prenom} {m.nom}</div>
+                              <div style={{fontSize:12,color:"#888"}}>{m.filiere} · {m.annee}</div>
+                              {m.domaine && <span className="domaine-badge" style={{background:domaineColors[m.domaine]+"22",color:domaineColors[m.domaine],marginTop:4,display:"inline-block"}}>{m.domaine}</span>}
+                            </div>
+                            <div className="score-ring" style={{color:scoreColor,borderColor:scoreColor}}>
+                              {m.score}
+                            </div>
+                          </div>
+                          {m.raison && <div style={{fontSize:12,color:"#555",background:"#f8f8f8",borderRadius:4,padding:"8px 12px",marginBottom:10,lineHeight:1.6}}>{m.raison}</div>}
+                          <button onClick={()=>{sendMsg(m.id,null,`Bonjour ${m.prenom}, l'IA nous a suggérés comme partenaires potentiels ! Je suis ${user.prenom}, étudiant(e) en ${user.filiere}. Je serais ravi(e) d'échanger avec vous.`);setShowReseau(false);setShowMsgs(true);}} style={{width:"100%",background:"#C8102E",color:"white",border:"none",borderRadius:4,padding:"9px",fontSize:13,cursor:"pointer",fontWeight:600,display:"flex",alignItems:"center",justifyContent:"center",gap:7}}>
+                            <Ic n="msg" s={14} c="white"/>Contacter {m.prenom}
+                          </button>
+                        </div>
+                      );
+                    })}
+                  </>
+                )}
+              </div>
+            ) : (
+              /* GROUPES DE DOMAINES */
+              <div style={{display:"flex",flex:1,overflow:"hidden"}}>
+                {/* Liste des groupes */}
+                <div className="reseau-sidebar">
+                  <div style={{padding:"10px 14px",fontSize:11,fontWeight:700,color:"#aaa",textTransform:"uppercase",letterSpacing:1,borderBottom:"1px solid #f0f0f0"}}>Domaines</div>
+                  {groupes.map(g => {
+                    const isMember = myGroupes.includes(g.id);
+                    const colors = {tech:"#0066cc",sante:"#2d8a2d",agriculture:"#7a5c00",business:"#8b008b",education:"#c05000",droit:"#444",arts:"#b06000"};
+                    const col = colors[g.domaine]||"#555";
+                    return (
+                      <div key={g.id} className={`groupe-item ${activeGroupe?.id===g.id?"on":""}`} onClick={()=>openGroupe(g)}>
+                        <div style={{width:8,height:8,borderRadius:"50%",background:col,flexShrink:0}}/>
+                        <div style={{flex:1,minWidth:0}}>
+                          <div style={{fontSize:13,fontWeight:600,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{g.nom}</div>
+                          {isMember && <span style={{fontSize:10,color:col,fontWeight:600}}>Membre</span>}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Contenu groupe */}
+                <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
+                  {!activeGroupe ? (
+                    <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",color:"#aaa",padding:24,textAlign:"center"}}>
+                      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ddd" strokeWidth="1.5" style={{marginBottom:14}}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                      <div style={{fontSize:14,fontWeight:500,marginBottom:6}}>Sélectionnez un domaine</div>
+                      <div style={{fontSize:12}}>Rejoignez un groupe pour échanger avec des étudiants de votre domaine</div>
+                    </div>
+                  ) : (
+                    <>
+                      {/* Header groupe */}
+                      <div style={{padding:"10px 14px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0}}>
+                        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                          <div>
+                            <div style={{fontSize:14,fontWeight:700}}>{activeGroupe.nom}</div>
+                            <div style={{fontSize:11,color:"#888"}}>{groupeMembers.length} membre{groupeMembers.length>1?"s":""}</div>
+                          </div>
+                          {myGroupes.includes(activeGroupe.id) ? (
+                            <button onClick={()=>leaveGroupe(activeGroupe.id)} style={{background:"#fff3f3",border:"1px solid #fcc",borderRadius:4,padding:"5px 12px",fontSize:12,cursor:"pointer",color:"#C8102E",fontWeight:500}}>Quitter</button>
+                          ) : (
+                            <button onClick={()=>joinGroupe(activeGroupe.id)} style={{background:"#C8102E",color:"white",border:"none",borderRadius:4,padding:"5px 12px",fontSize:12,cursor:"pointer",fontWeight:600}}>Rejoindre</button>
+                          )}
+                        </div>
+                        <div style={{fontSize:11,color:"#888",marginTop:4}}>{activeGroupe.description}</div>
+                      </div>
+
+                      {/* Messages */}
+                      <div style={{flex:1,overflowY:"auto",padding:"12px 14px",display:"flex",flexDirection:"column",gap:8}}>
+                        {groupeMsgs.length===0 ? (
+                          <div style={{textAlign:"center",color:"#aaa",paddingTop:32,fontSize:13}}>Aucun message — soyez le premier à écrire !</div>
+                        ) : groupeMsgs.map((m,i) => {
+                          const isMe = m.user_id === user?.id;
+                          return (
+                            <div key={i} style={{display:"flex",flexDirection:"column",alignItems:isMe?"flex-end":"flex-start"}}>
+                              {!isMe && <div style={{fontSize:10,color:"#aaa",marginBottom:2}}>{m.utilisateurs?.prenom} {m.utilisateurs?.nom} · {m.utilisateurs?.filiere}</div>}
+                              <div className={isMe?"msg-me":"msg-other"}>{m.contenu}</div>
+                              <div style={{fontSize:10,color:"#aaa",marginTop:2}}>{new Date(m.created_at).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}</div>
+                            </div>
+                          );
+                        })}
+                        <div ref={groupeMsgsEndRef}/>
+                      </div>
+
+                      {/* Input message */}
+                      {myGroupes.includes(activeGroupe.id) ? (
+                        <div style={{padding:"10px 14px",borderTop:"1px solid #eee",display:"flex",gap:8,alignItems:"flex-end",flexShrink:0}}>
+                          <textarea className="msg-inp" placeholder="Écrire dans le groupe..." value={newGroupeMsg} onChange={e=>setNewGroupeMsg(e.target.value)} rows={1}
+                            onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendGroupeMsg();}}}/>
+                          <button className="btn btn-red" style={{padding:"10px 14px",borderRadius:22,flexShrink:0}} onClick={sendGroupeMsg}>Envoyer</button>
+                        </div>
+                      ) : (
+                        <div style={{padding:"12px 14px",borderTop:"1px solid #eee",textAlign:"center",fontSize:13,color:"#888",background:"#fafafa"}}>
+                          Rejoignez ce groupe pour participer à la discussion
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* ── NOTIFICATIONS PANEL ── */}
       {showNotifs && (
         <div className="overlay" onClick={()=>setShowNotifs(false)}>
@@ -1342,6 +1658,9 @@ export default function App() {
           </div>
         </div>
       )}
+
+      </div>
+      </div>
 
       <footer style={{background:"#232f3e",padding:"18px 16px",textAlign:"center",marginTop:36}}>
         <div style={{color:"white",fontSize:14,fontWeight:600,marginBottom:4}}>Faso_Karanbissi</div>
