@@ -1659,7 +1659,8 @@ Réponds UNIQUEMENT en JSON valide, sans markdown, ce format exact:
         </div>
       )}
 
-      
+      </div>
+      </div>
 
       <footer style={{background:"#232f3e",padding:"18px 16px",textAlign:"center",marginTop:36}}>
         <div style={{color:"white",fontSize:14,fontWeight:600,marginBottom:4}}>Faso_Karanbissi</div>
