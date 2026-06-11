@@ -572,71 +572,65 @@ export default function App() {
 
   useEffect(() => { groupeMsgsEndRef.current?.scrollIntoView({behavior:"smooth"}); }, [groupeMsgs]);
 
-  // ── MATCHING IA ──
+  // ── MATCHING IA (algorithme local) ──
   const generateMatching = async () => {
     if (!user) return;
     setMatchingLoading(true);
     try {
-      // Récupérer tous les étudiants
-      const allUsers = await sb("utilisateurs?select=*&limit=50", { token: authToken });
+      const allUsers = await sb("utilisateurs?select=*&limit=100", { token: authToken });
       const others = (allUsers||[]).filter(u => u.id !== user.id);
-      if (others.length === 0) { setMatchings([]); setMatchingLoading(false); return; }
+      if (others.length === 0) { setMatchings([]); return; }
 
-      // Appel Claude API pour analyser les compatibilités
-      const prompt = `Tu es un assistant IA pour une plateforme universitaire au Burkina Faso.
-Voici le profil de l'étudiant principal :
-- Nom: ${user.prenom} ${user.nom}
-- Filière: ${user.filiere || "Non précisé"}
-- Année: ${user.annee || "Non précisé"}
+      const getDomaine = (filiere="") => {
+        const f = filiere.toLowerCase();
+        if (f.includes("info")||f.includes("tech")||f.includes("ing")||f.includes("num")) return "tech";
+        if (f.includes("sant")||f.includes("med")||f.includes("pharma")||f.includes("bio")) return "sante";
+        if (f.includes("agro")||f.includes("agri")||f.includes("elevage")||f.includes("env")) return "agriculture";
+        if (f.includes("gest")||f.includes("com")||f.includes("eco")||f.includes("fin")||f.includes("bus")) return "business";
+        if (f.includes("edu")||f.includes("form")||f.includes("ped")||f.includes("lett")) return "education";
+        if (f.includes("droit")||f.includes("jurid")) return "droit";
+        return "autre";
+      };
 
-Voici les autres étudiants disponibles (max 10):
-${others.slice(0,10).map((u,i) => `${i+1}. ${u.prenom} ${u.nom} — Filière: ${u.filiere||"?"}, Année: ${u.annee||"?"}`).join("
-")}
+      const complementarite = {
+        tech:{tech:60,sante:90,agriculture:85,business:95,education:80,droit:70,autre:65},
+        sante:{tech:90,sante:55,agriculture:75,business:70,education:80,droit:65,autre:60},
+        agriculture:{tech:85,sante:75,agriculture:55,business:80,education:70,droit:60,autre:65},
+        business:{tech:95,sante:70,agriculture:80,business:58,education:75,droit:85,autre:70},
+        education:{tech:80,sante:80,agriculture:70,business:75,education:55,droit:70,autre:65},
+        droit:{tech:70,sante:65,agriculture:60,business:85,education:70,droit:55,autre:60},
+        autre:{tech:65,sante:60,agriculture:65,business:70,education:65,droit:60,autre:50},
+      };
 
-Pour chaque étudiant, calcule un score de compatibilité (0-100) pour créer une innovation ensemble.
-Tiens compte de : complémentarité des filières, niveau d'études, potentiel de collaboration.
+      const getRaison = (domLui, domMoi, score) => {
+        if (score >= 90) return "Profil tres complementaire, combinaison ideale pour innover ensemble";
+        if (score >= 80) return "Bonne complementarite, fort potentiel de collaboration sur un projet";
+        if (score >= 70) return "Competences qui se completent bien pour un projet commun";
+        return "Collaboration possible avec diversite de competences interessante";
+      };
 
-Réponds UNIQUEMENT en JSON valide, sans markdown, ce format exact:
-{"matchings": [{"index": 1, "score": 85, "raison": "explication courte max 100 chars", "domaine": "tech/sante/agriculture/business/education"}]}`;
-
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-20250514",
-          max_tokens: 1000,
-          messages: [{ role: "user", content: prompt }]
-        })
+      const monDomaine = getDomaine(user.filiere);
+      const scored = others.map(u => {
+        const domLui = getDomaine(u.filiere);
+        let score = (complementarite[monDomaine]||{})[domLui] || 60;
+        score = Math.min(100, Math.max(40, score + Math.floor(Math.random()*10)-5));
+        return { ...u, score, domaine:domLui, raison:getRaison(domLui, monDomaine, score) };
       });
-      const data = await response.json();
-      const text = data.content?.[0]?.text || "{}";
-      const parsed = JSON.parse(text.replace(/```json|```/g, "").trim());
-      const results = (parsed.matchings || [])
-        .filter(m => m.score >= 50)
-        .sort((a,b) => b.score - a.score)
-        .slice(0, 5)
-        .map(m => ({
-          ...others[m.index - 1],
-          score: m.score,
-          raison: m.raison,
-          domaine: m.domaine
-        }))
-        .filter(m => m.id);
 
+      const results = scored.filter(u=>u.score>=60).sort((a,b)=>b.score-a.score).slice(0,6);
       setMatchings(results);
 
-      // Sauvegarder les matchings en base
       for (const m of results) {
         try {
           await sb("matchings", { method:"POST", token:authToken, prefer:"return=minimal",
-            body: JSON.stringify({ user_id:user.id, partner_id:m.id, score:m.score, raison:m.raison, domaine:m.domaine }) });
+            body: JSON.stringify({user_id:user.id, partner_id:m.id, score:m.score, raison:m.raison, domaine:m.domaine}) });
         } catch(e) {}
       }
     } catch(e) { console.error(e); setMatchings([]); }
     finally { setMatchingLoading(false); }
   };
 
-  // ── NOTIFICATIONS ──
+    // ── NOTIFICATIONS ──
 
   const fetchNotifs = async () => {
     if (!user) return;
@@ -1659,9 +1653,7 @@ Réponds UNIQUEMENT en JSON valide, sans markdown, ce format exact:
         </div>
       )}
 
-      </div>
-      </div>
-
+    </div>
       <footer style={{background:"#232f3e",padding:"18px 16px",textAlign:"center",marginTop:36}}>
         <div style={{color:"white",fontSize:14,fontWeight:600,marginBottom:4}}>Faso_Karanbissi</div>
         <div style={{fontSize:12,color:"#888"}}>Plateforme universitaire · Tous droits réservés</div>
