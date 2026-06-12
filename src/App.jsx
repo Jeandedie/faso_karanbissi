@@ -119,6 +119,14 @@ const CSS = `
   .msg-me { background:#C8102E; color:white; border-radius:16px 16px 4px 16px; padding:10px 14px; font-size:14px; max-width:78%; line-height:1.5; word-break:break-word; }
   .msg-other { background:#f0f0f0; color:#111; border-radius:16px 16px 16px 4px; padding:10px 14px; font-size:14px; max-width:78%; line-height:1.5; word-break:break-word; }
   .conv-row { display:flex; align-items:center; gap:12px; padding:13px 14px; cursor:pointer; border-bottom:1px solid #f5f5f5; transition:background 0.15s; }
+  .msg-sidebar { width:230px; border-right:1px solid #eee; overflow-y:auto; flex-shrink:0; display:flex; flex-direction:column; }
+  .msg-content { flex:1; display:flex; flex-direction:column; overflow:hidden; }
+  /* Mobile: plein écran pour chaque vue */
+  @media (max-width:600px) {
+    .msg-sidebar { width:100%; border-right:none; }
+    .msg-content-hidden { display:none !important; }
+    .msg-sidebar-hidden { display:none !important; }
+  }
   .conv-row:hover { background:#fafafa; }
   .conv-row.on { background:#fff5f5; border-left:3px solid #C8102E; }
   .msg-inp { flex:1; padding:11px 14px; border:1px solid #ddd; border-radius:22px; font-size:14px; outline:none; resize:none; }
@@ -181,6 +189,9 @@ const CSS = `
     .hero-features { display:flex !important; }
     .hero-inner { flex-direction:row; }
     .hero-text { text-align:left; }
+    .msg-back-btn { display:none !important; }
+    .msg-sidebar-hidden { display:flex !important; }
+    .msg-content-hidden { display:flex !important; }
   }
 `;
 
@@ -1343,14 +1354,19 @@ export default function App() {
                   </div>
                 ))}
               </div>
-              <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
+              <div className={"msg-content" + (!activeConv?" msg-content-hidden":"")} style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
                 {!activeConv?(
                   <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",color:"#aaa",fontSize:13}}>Sélectionnez une conversation</div>
                 ):(
                   <>
-                    <div style={{padding:"10px 14px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0}}>
-                      <div style={{fontSize:13,fontWeight:600}}>{activeConv.user?.prenom} {activeConv.user?.nom}</div>
-                      {activeConv.annonce&&<div style={{fontSize:11,color:"#888"}}>Re: {activeConv.annonce?.titre}</div>}
+                    <div style={{padding:"10px 14px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0,display:"flex",alignItems:"center",gap:10}}>
+                      <button onClick={()=>setActiveConv(null)} style={{background:"none",border:"none",cursor:"pointer",padding:"2px 6px 2px 0",display:"flex",alignItems:"center"}} className="msg-back-btn">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+                      </button>
+                      <div style={{flex:1}}>
+                        <div style={{fontSize:13,fontWeight:600}}>{activeConv.user?.prenom} {activeConv.user?.nom}</div>
+                        {activeConv.annonce&&<div style={{fontSize:11,color:"#888"}}>Re: {activeConv.annonce?.titre}</div>}
+                      </div>
                     </div>
                     <div style={{flex:1,overflowY:"auto",padding:"12px",display:"flex",flexDirection:"column",gap:8}}>
                       {msgLoading?<div style={{textAlign:"center",color:"#aaa",paddingTop:24}}>Chargement...</div>:
@@ -1533,7 +1549,7 @@ export default function App() {
               /* GROUPES DE DOMAINES */
               <div style={{display:"flex",flex:1,overflow:"hidden"}}>
                 {/* Liste des groupes */}
-                <div className="reseau-sidebar">
+                <div className={"reseau-sidebar" + (activeGroupe?" msg-sidebar-hidden":"")}>
                   <div style={{padding:"10px 14px",fontSize:11,fontWeight:700,color:"#aaa",textTransform:"uppercase",letterSpacing:1,borderBottom:"1px solid #f0f0f0"}}>Domaines</div>
                   {groupes.map(g => {
                     const isMember = myGroupes.includes(g.id);
@@ -1552,7 +1568,7 @@ export default function App() {
                 </div>
 
                 {/* Contenu groupe */}
-                <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
+                <div className={"msg-content" + (!activeGroupe?" msg-content-hidden":"")} style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
                   {!activeGroupe ? (
                     <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",color:"#aaa",padding:24,textAlign:"center"}}>
                       <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ddd" strokeWidth="1.5" style={{marginBottom:14}}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -1564,6 +1580,9 @@ export default function App() {
                       {/* Header groupe */}
                       <div style={{padding:"10px 14px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0}}>
                         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+                          <button onClick={()=>setActiveGroupe(null)} className="msg-back-btn" style={{background:"none",border:"none",cursor:"pointer",padding:"2px 6px 2px 0",display:"flex",alignItems:"center"}}>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+                          </button>
                           <div>
                             <div style={{fontSize:14,fontWeight:700}}>{activeGroupe.nom}</div>
                             <div style={{fontSize:11,color:"#888"}}>{groupeMembers.length} membre{groupeMembers.length>1?"s":""}</div>
