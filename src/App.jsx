@@ -52,8 +52,8 @@ const CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
   *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
   html { -webkit-text-size-adjust:100%; }
-  html, body { width:100%; max-width:100%; overflow-x:hidden; margin:0; padding:0; }
-  body { font-family:'Inter',sans-serif; background:white; margin:0; padding:0; }
+  html, body, #root { width:100%; max-width:100%; margin:0; padding:0; overflow-x:hidden; }
+  body { font-family:'Inter',sans-serif; background:white; }
   img { max-width:100%; display:block; }
   input,select,textarea,button { font-family:'Inter',sans-serif; }
 
@@ -898,11 +898,11 @@ export default function App() {
 
   /* ═══════════ MARKETPLACE (guest + connecté) ═══════════ */
   return (
-    <div style={{fontFamily:"'Inter',sans-serif",background:"white",minHeight:"100vh",width:"100%"}}>
+    <div style={{fontFamily:"'Inter',sans-serif",background:"white",minHeight:"100vh",width:"100%",maxWidth:"100%",margin:0,padding:0}}>
       <style>{CSS}</style>
 
       {/* ── HEADER ── */}
-      <div style={{background:"#1B0007",position:"sticky",top:0,zIndex:1000}}>
+      <div style={{background:"#1B0007",position:"sticky",top:0,zIndex:1000,width:"100%",left:0,right:0}}>
         <div style={{maxWidth:1280,margin:"0 auto",display:"flex",alignItems:"center",gap:8,height:54,padding:"0 12px"}}>
           {/* Logo */}
           <div style={{flexShrink:0,cursor:"pointer"}} onClick={()=>setPage("guest")}>
@@ -983,7 +983,7 @@ export default function App() {
       </div>
 
       {/* ── NAV ── */}
-      <div style={{background:"#C8102E",overflowX:"auto",WebkitOverflowScrolling:"touch",msOverflowStyle:"none",scrollbarWidth:"none"}}>
+      <div style={{background:"#C8102E",overflowX:"auto",WebkitOverflowScrolling:"touch",msOverflowStyle:"none",scrollbarWidth:"none",width:"100%"}}>
         <div style={{display:"flex",alignItems:"center",height:44,padding:"0 10px",minWidth:"max-content",gap:2}}>
           {[["all","Tout"],["product","Produits"],["service","Services"]].map(([v,l])=>(
             <button key={v} className={`nav-btn ${tab===v?"on":""}`} onClick={()=>setTab(v)}>{l}</button>
@@ -996,7 +996,7 @@ export default function App() {
       </div>
 
       {/* ── BANNIÈRE BIENVENUE ── */}
-      <div style={{background:"linear-gradient(135deg,#1B0007 0%,#C8102E 100%)",overflow:"hidden"}}>
+      <div style={{background:"linear-gradient(135deg,#1B0007 0%,#C8102E 100%)",overflow:"hidden",width:"100%"}}>
         {/* Texte défilant */}
         <div style={{background:"rgba(0,0,0,0.2)",padding:"7px 0",borderBottom:"1px solid rgba(255,255,255,0.1)",overflow:"hidden"}}>
           <div className="marquee" style={{color:"rgba(255,255,255,0.9)",fontSize:13}}>
