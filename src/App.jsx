@@ -50,154 +50,167 @@ const emptyReg = {nom:"",prenom:"",dateNaissance:"",sexe:"",filiere:"",annee:"",
 
 const CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
-  *, *::before, *::after { box-sizing: border-box; margin:0; padding:0; }
-  html { -webkit-text-size-adjust:100%; }
-  html, body, #root { width:100%; max-width:100%; margin:0; padding:0; overflow-x:hidden; }
-  body { font-family:'Inter',sans-serif; background:white; }
-  img { max-width:100%; display:block; }
-  input,select,textarea,button { font-family:'Inter',sans-serif; }
 
-  /* Buttons */
-  .btn { display:inline-block; border:none; border-radius:4px; cursor:pointer; font-weight:600; font-size:14px; padding:11px 20px; transition:background 0.15s; text-align:center; }
-  .btn-red { background:#C8102E; color:white; }
-  .btn-red:hover { background:#a00d24; }
-  .btn-red:disabled { opacity:0.7; cursor:not-allowed; }
-  .btn-white { background:white; color:#111; border:1px solid #d5d9d9; }
-  .btn-white:hover { background:#f7f8f8; }
-  .btn-block { display:block; width:100%; }
+  /* ── RESET TOTAL ── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { -webkit-text-size-adjust: 100%; }
+  html, body, #root { width: 100%; margin: 0; padding: 0; overflow-x: hidden; }
+  body { font-family: 'Inter', sans-serif; background: white; }
+  img { max-width: 100%; display: block; }
+  input, select, textarea, button { font-family: 'Inter', sans-serif; }
 
-  /* Inputs */
-  .inp { width:100%; padding:11px 12px; border:1px solid #adb1b8; border-radius:4px; font-size:14px; outline:none; background:white; color:#111; transition:border 0.15s,box-shadow 0.15s; }
-  .inp:focus { border-color:#C8102E; box-shadow:0 0 0 3px rgba(200,16,46,0.08); }
-  .inp.err { border-color:#C8102E; background:#fff8f8; }
-  .lbl { font-size:12px; font-weight:600; color:#444; display:block; margin-bottom:6px; text-transform:uppercase; letter-spacing:0.4px; }
-  .lbl-opt::after { content:" (optionnel)"; font-weight:400; color:#999; text-transform:none; }
-  .err-box { background:#fff3f3; border:1px solid #f5c6cb; border-radius:4px; padding:10px 14px; font-size:13px; color:#C8102E; }
-  .ok-box { background:#f0faf0; border:1px solid #b3dfb3; border-radius:4px; padding:10px 14px; font-size:13px; color:#2d7a2d; }
+  /* ── BOUTONS ── */
+  .btn { display: inline-block; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 14px; padding: 11px 20px; transition: background 0.15s; text-align: center; }
+  .btn-red { background: #C8102E; color: white; }
+  .btn-red:hover { background: #a00d24; }
+  .btn-red:disabled { opacity: 0.7; cursor: not-allowed; }
+  .btn-white { background: white; color: #111; border: 1px solid #d5d9d9; }
+  .btn-white:hover { background: #f7f8f8; }
+  .btn-block { display: block; width: 100%; }
 
-  /* Auth pages — mobile first */
-  .auth-page { min-height:100vh; width:100%; background:#f3f3f3; display:flex; align-items:flex-start; justify-content:center; overflow-y:auto; }
-  .auth-card { width:100%; min-height:100vh; max-width:100%; background:white; display:flex; flex-direction:column; }
-  .auth-left { display:none; }
-  .auth-body { flex:1; padding:28px 20px; display:flex; flex-direction:column; justify-content:center; overflow-y:auto; max-width:460px; width:100%; margin:0 auto; }
-  .form-2col { display:grid; grid-template-columns:1fr; gap:14px; }
-  .sexe-btn { flex:1; padding:11px; border-radius:4px; cursor:pointer; font-weight:500; font-size:14px; border:1px solid #adb1b8; background:white; color:#333; transition:all 0.15s; }
-  .sexe-btn.on { background:#C8102E; color:white; border-color:#C8102E; }
-  .a-link { color:#C8102E; cursor:pointer; font-weight:600; font-size:14px; background:none; border:none; text-decoration:underline; }
+  /* ── INPUTS ── */
+  .inp { width: 100%; padding: 11px 12px; border: 1px solid #adb1b8; border-radius: 4px; font-size: 14px; outline: none; background: white; color: #111; transition: border 0.15s, box-shadow 0.15s; }
+  .inp:focus { border-color: #C8102E; box-shadow: 0 0 0 3px rgba(200,16,46,0.08); }
+  .inp.err { border-color: #C8102E; background: #fff8f8; }
+  .lbl { font-size: 12px; font-weight: 600; color: #444; display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px; }
+  .lbl-opt::after { content: " (optionnel)"; font-weight: 400; color: #999; text-transform: none; }
+  .err-box { background: #fff3f3; border: 1px solid #f5c6cb; border-radius: 4px; padding: 10px 14px; font-size: 13px; color: #C8102E; }
+  .ok-box { background: #f0faf0; border: 1px solid #b3dfb3; border-radius: 4px; padding: 10px 14px; font-size: 13px; color: #2d7a2d; }
+  .pwd-wrap { position: relative; display: flex; align-items: center; }
+  .pwd-wrap .inp { padding-right: 42px; }
+  .pwd-eye { position: absolute; right: 10px; background: none; border: none; cursor: pointer; color: #888; padding: 4px; display: flex; align-items: center; }
 
-  /* Nav */
-  .nav-btn { padding:7px 14px; border-radius:3px; cursor:pointer; font-weight:500; font-size:13px; border:none; background:none; color:white; white-space:nowrap; transition:all 0.15s; }
-  .nav-btn:hover { background:rgba(255,255,255,0.15); }
-  .nav-btn.on { background:white; color:#C8102E; }
+  /* ── AUTH ── */
+  .auth-page { min-height: 100vh; width: 100%; background: #f3f3f3; display: flex; align-items: flex-start; justify-content: center; }
+  .auth-card { width: 100%; min-height: 100vh; background: white; display: flex; flex-direction: column; }
+  .auth-left { display: none; }
+  .auth-body { flex: 1; padding: 32px 20px; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; }
+  .form-2col { display: grid; grid-template-columns: 1fr; gap: 14px; }
+  .sexe-btn { flex: 1; padding: 11px; border-radius: 4px; cursor: pointer; font-weight: 500; font-size: 14px; border: 1px solid #adb1b8; background: white; color: #333; transition: all 0.15s; }
+  .sexe-btn.on { background: #C8102E; color: white; border-color: #C8102E; }
+  .a-link { color: #C8102E; cursor: pointer; font-weight: 600; font-size: 14px; background: none; border: none; text-decoration: underline; }
 
-  /* Cards grid — 2 cols mobile */
-  .cards-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:8px; }
-  @media (max-width:380px) { .cards-grid { grid-template-columns:1fr; } }
-  .card { background:white; border:1px solid #ddd; border-radius:6px; overflow:hidden; cursor:pointer; transition:box-shadow 0.15s; }
-  .card:hover { box-shadow:0 2px 14px rgba(0,0,0,0.12); }
+  /* ── NAVIGATION ── */
+  .nav-btn { padding: 7px 14px; border-radius: 3px; cursor: pointer; font-weight: 500; font-size: 13px; border: none; background: none; color: white; white-space: nowrap; transition: all 0.15s; }
+  .nav-btn:hover { background: rgba(255,255,255,0.15); }
+  .nav-btn.on { background: white; color: #C8102E; }
 
-  /* Modals — bottom sheet mobile */
-  .overlay { position:fixed; inset:0; background:rgba(0,0,0,0.52); z-index:200; display:flex; align-items:flex-end; justify-content:center; }
-  .modal { background:white; border-radius:16px 16px 0 0; width:100%; max-height:92vh; display:flex; flex-direction:column; overflow:hidden; }
-  .modal-handle { width:38px; height:4px; background:#ddd; border-radius:2px; margin:10px auto 6px; flex-shrink:0; }
-  .tab-btn { flex:1; padding:13px; border:none; background:none; cursor:pointer; font-weight:600; font-size:14px; border-bottom:2px solid transparent; color:#888; transition:all 0.15s; }
-  .tab-btn.on { color:#C8102E; border-bottom-color:#C8102E; }
+  /* ── CARTES ── */
+  .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+  .card { background: white; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; cursor: pointer; transition: box-shadow 0.15s; }
+  .card:hover { box-shadow: 0 2px 14px rgba(0,0,0,0.12); }
 
-  /* Sidebar — bottom sheet mobile */
-  .sidebar { position:fixed; bottom:0; left:0; right:0; max-height:88vh; background:white; border-radius:16px 16px 0 0; z-index:300; padding:0 20px 24px; overflow-y:auto; }
-  .sidebar-handle { width:38px; height:4px; background:#ddd; border-radius:2px; margin:12px auto 18px; }
+  /* ── MODALS (bottom sheet mobile) ── */
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.52); z-index: 200; display: flex; align-items: flex-end; justify-content: center; }
+  .modal { background: white; border-radius: 16px 16px 0 0; width: 100%; max-height: 92vh; display: flex; flex-direction: column; overflow: hidden; }
+  .modal-handle { width: 38px; height: 4px; background: #ddd; border-radius: 2px; margin: 10px auto 6px; flex-shrink: 0; }
+  .tab-btn { flex: 1; padding: 13px; border: none; background: none; cursor: pointer; font-weight: 600; font-size: 14px; border-bottom: 2px solid transparent; color: #888; transition: all 0.15s; }
+  .tab-btn.on { color: #C8102E; border-bottom-color: #C8102E; }
 
-  /* Dropdown */
-  .dropdown { position:relative; }
-  .dd-menu { position:absolute; top:calc(100% + 8px); right:0; background:white; border:1px solid #eee; border-radius:6px; box-shadow:0 4px 20px rgba(0,0,0,0.14); min-width:185px; z-index:2000; overflow:hidden; }
-  .dd-item { display:flex; align-items:center; gap:10px; padding:12px 16px; font-size:14px; color:#111; cursor:pointer; border:none; background:none; width:100%; text-align:left; transition:background 0.12s; }
-  .dd-item:hover { background:#f5f5f5; }
-  .dd-item.red { color:#C8102E; }
-  .dd-sep { height:1px; background:#f0f0f0; margin:4px 0; }
+  /* ── SIDEBAR ── */
+  .sidebar { position: fixed; bottom: 0; left: 0; right: 0; max-height: 88vh; background: white; border-radius: 16px 16px 0 0; z-index: 300; padding: 0 20px 24px; overflow-y: auto; }
+  .sidebar-handle { width: 38px; height: 4px; background: #ddd; border-radius: 2px; margin: 12px auto 18px; }
 
-  /* Messages */
-  .msg-me { background:#C8102E; color:white; border-radius:16px 16px 4px 16px; padding:10px 14px; font-size:14px; max-width:78%; line-height:1.5; word-break:break-word; }
-  .msg-other { background:#f0f0f0; color:#111; border-radius:16px 16px 16px 4px; padding:10px 14px; font-size:14px; max-width:78%; line-height:1.5; word-break:break-word; }
-  .conv-row { display:flex; align-items:center; gap:12px; padding:13px 14px; cursor:pointer; border-bottom:1px solid #f5f5f5; transition:background 0.15s; }
-  .msg-sidebar { width:230px; border-right:1px solid #eee; overflow-y:auto; flex-shrink:0; display:flex; flex-direction:column; }
-  .msg-content { flex:1; display:flex; flex-direction:column; overflow:hidden; }
-  /* Mobile: plein écran pour chaque vue */
-  @media (max-width:600px) {
-    .msg-sidebar { width:100%; border-right:none; }
-    .msg-content-hidden { display:none !important; }
-    .msg-sidebar-hidden { display:none !important; }
-  }
-  .conv-row:hover { background:#fafafa; }
-  .conv-row.on { background:#fff5f5; border-left:3px solid #C8102E; }
-  .msg-inp { flex:1; padding:11px 14px; border:1px solid #ddd; border-radius:22px; font-size:14px; outline:none; resize:none; }
-  .msg-inp:focus { border-color:#C8102E; }
+  /* ── DROPDOWN ── */
+  .dropdown { position: relative; }
+  .dd-menu { position: absolute; top: calc(100% + 8px); right: 0; background: white; border: 1px solid #eee; border-radius: 6px; box-shadow: 0 4px 20px rgba(0,0,0,0.14); min-width: 185px; z-index: 2000; overflow: hidden; }
+  .dd-item { display: flex; align-items: center; gap: 10px; padding: 12px 16px; font-size: 14px; color: #111; cursor: pointer; border: none; background: none; width: 100%; text-align: left; transition: background 0.12s; }
+  .dd-item:hover { background: #f5f5f5; }
+  .dd-item.red { color: #C8102E; }
+  .dd-sep { height: 1px; background: #f0f0f0; margin: 4px 0; }
 
-  /* Photos */
-  .photo-drop { border:2px dashed #d5d9d9; border-radius:6px; padding:22px 16px; text-align:center; cursor:pointer; transition:border-color 0.15s; }
-  .photo-drop:hover { border-color:#C8102E; background:#fff8f8; }
-  .photo-thumb { position:relative; width:76px; height:76px; border-radius:4px; overflow:hidden; border:1px solid #ddd; flex-shrink:0; }
-  .photo-thumb img { width:100%; height:100%; object-fit:cover; }
-  .photo-del { position:absolute; top:2px; right:2px; background:rgba(0,0,0,0.65); color:white; border:none; border-radius:50%; width:20px; height:20px; font-size:11px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  /* ── MESSAGERIE ── */
+  .msg-me { background: #C8102E; color: white; border-radius: 16px 16px 4px 16px; padding: 10px 14px; font-size: 14px; max-width: 78%; line-height: 1.5; word-break: break-word; }
+  .msg-other { background: #f0f0f0; color: #111; border-radius: 16px 16px 16px 4px; padding: 10px 14px; font-size: 14px; max-width: 78%; line-height: 1.5; word-break: break-word; }
+  .conv-row { display: flex; align-items: center; gap: 12px; padding: 13px 14px; cursor: pointer; border-bottom: 1px solid #f5f5f5; transition: background 0.15s; }
+  .conv-row:hover { background: #fafafa; }
+  .conv-row.on { background: #fff5f5; border-left: 3px solid #C8102E; }
+  .msg-inp { flex: 1; padding: 11px 14px; border: 1px solid #ddd; border-radius: 22px; font-size: 14px; outline: none; resize: none; }
+  .msg-inp:focus { border-color: #C8102E; }
 
-  /* Misc */
-  .pwd-wrap { position:relative; display:flex; align-items:center; }
-  .pwd-wrap .inp { padding-right:42px; }
-  .pwd-eye { position:absolute; right:10px; background:none; border:none; cursor:pointer; color:#888; padding:4px; display:flex; align-items:center; }
-  .pwd-eye:hover { color:#333; }
-  /* Réseau Innovation */
-  .reseau-sidebar { width:260px; border-right:1px solid #eee; overflow-y:auto; flex-shrink:0; }
-  .groupe-item { padding:12px 16px; cursor:pointer; border-bottom:1px solid #f5f5f5; transition:background 0.12s; display:flex; align-items:center; gap:10px; }
-  .groupe-item:hover { background:#fafafa; }
-  .groupe-item.on { background:#fff5f5; border-left:3px solid #C8102E; }
-  .domaine-badge { font-size:10px; padding:2px 8px; border-radius:10px; font-weight:700; text-transform:uppercase; }
-  .match-card { background:white; border:1px solid #eee; border-radius:8px; padding:16px; margin-bottom:12px; }
-  .score-ring { width:52px; height:52px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:16px; font-weight:800; flex-shrink:0; border:3px solid; }
-  .notif-panel { position:absolute; top:calc(100% + 8px); right:0; background:white; border:1px solid #eee; border-radius:8px; box-shadow:0 4px 24px rgba(0,0,0,0.15); width:320px; z-index:2000; overflow:hidden; max-height:420px; display:flex; flex-direction:column; }
-  .notif-item { padding:12px 16px; border-bottom:1px solid #f5f5f5; cursor:pointer; transition:background 0.12s; display:flex; gap:10px; align-items:flex-start; }
-  .notif-item:hover { background:#fafafa; }
-  .notif-item.unread { background:#fff8f8; border-left:3px solid #C8102E; }
-  .notif-dot { width:8px; height:8px; border-radius:50%; background:#C8102E; flex-shrink:0; margin-top:4px; }
-  .notif-dot.read { background:#ddd; }
-  .spinner { width:14px; height:14px; border:2px solid rgba(255,255,255,0.4); border-top-color:white; border-radius:50%; animation:spin 0.7s linear infinite; display:inline-block; margin-right:6px; vertical-align:middle; }
-  @keyframes spin { to { transform:rotate(360deg); } }
-  @keyframes marquee { 0% { transform:translateX(0); } 100% { transform:translateX(-50%); } }
-  .marquee { display:flex; white-space:nowrap; animation:marquee 28s linear infinite; }
-  .marquee:hover { animation-play-state:paused; }
-  .hero-inner { display:flex; flex-direction:column; }
-  .hero-features { display:none !important; }
-  .hero-text { flex:1; min-width:0; width:100%; max-width:100%; }
-  .hero-btns { display:flex; flex-wrap:wrap; gap:8px; }
-  .hero-btns { display:flex; flex-wrap:wrap; gap:8px; margin-top:8px; }
-  ::-webkit-scrollbar { width:4px; }
-  ::-webkit-scrollbar-thumb { background:#C8102E; border-radius:2px; }
+  /* ── RÉSEAU ── */
+  .reseau-sidebar { width: 100%; border-right: none; overflow-y: auto; flex-shrink: 0; display: flex; flex-direction: column; }
+  .groupe-item { padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #f5f5f5; transition: background 0.12s; display: flex; align-items: center; gap: 10px; }
+  .groupe-item:hover { background: #fafafa; }
+  .groupe-item.on { background: #fff5f5; border-left: 3px solid #C8102E; }
+  .domaine-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 700; text-transform: uppercase; }
+  .match-card { background: white; border: 1px solid #eee; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+  .score-ring { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; flex-shrink: 0; border: 3px solid; }
 
-  /* ── DESKTOP >= 768px ── */
-  @media (min-width:768px) {
-    .auth-page { align-items:center; padding:24px; min-height:100vh; }
-    .auth-card { min-height:auto; max-width:860px; flex-direction:row; border-radius:8px; box-shadow:0 2px 24px rgba(0,0,0,0.10); overflow:hidden; width:100%; }
-    .auth-left { display:flex; width:36%; background:#C8102E; padding:48px 36px; flex-direction:column; justify-content:center; flex-shrink:0; }
-    .auth-body { padding:48px 44px; max-width:none; margin:0; }
-    .form-2col { grid-template-columns:1fr 1fr; }
-    .overlay { align-items:center; padding:20px; }
-    .modal { border-radius:6px; max-width:580px; max-height:90vh; }
-    .modal-handle { display:none; }
-    .sidebar { position:fixed; bottom:auto; left:auto; right:0; top:0; height:100vh; width:360px; border-radius:0; padding:24px; }
-    .sidebar-handle { display:none; }
-    .cards-grid { grid-template-columns:repeat(auto-fill,minmax(220px,1fr)); gap:16px; }
-    .hdr-search { display:flex !important; }
-    .mob-search { display:none !important; }
-    .hero-features { display:flex !important; }
-    .hero-inner { flex-direction:row; }
-    .hero-text { text-align:left; }
-    .msg-back-btn { display:none !important; }
-    .msg-sidebar-hidden { display:flex !important; }
-    .msg-content-hidden { display:flex !important; }
+  /* ── NOTIFICATIONS ── */
+  .notif-item { padding: 12px 16px; border-bottom: 1px solid #f5f5f5; cursor: pointer; transition: background 0.12s; display: flex; gap: 10px; align-items: flex-start; }
+  .notif-item:hover { background: #fafafa; }
+  .notif-item.unread { background: #fff8f8; border-left: 3px solid #C8102E; }
+  .notif-dot { width: 8px; height: 8px; border-radius: 50%; background: #C8102E; flex-shrink: 0; margin-top: 4px; }
+  .notif-dot.read { background: #ddd; }
+
+  /* ── PHOTOS ── */
+  .photo-drop { border: 2px dashed #d5d9d9; border-radius: 6px; padding: 22px 16px; text-align: center; cursor: pointer; transition: border-color 0.15s; }
+  .photo-drop:hover { border-color: #C8102E; background: #fff8f8; }
+  .photo-thumb { position: relative; width: 76px; height: 76px; border-radius: 4px; overflow: hidden; border: 1px solid #ddd; flex-shrink: 0; }
+  .photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .photo-del { position: absolute; top: 2px; right: 2px; background: rgba(0,0,0,0.65); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+
+  /* ── HERO ── */
+  .hero-inner { display: flex; flex-direction: column; width: 100%; }
+  .hero-features { display: none; }
+  .hero-text { width: 100%; }
+  .hero-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+
+  /* ── ANIMATIONS ── */
+  .spinner { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; margin-right: 6px; vertical-align: middle; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+  @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+  .marquee { display: flex; white-space: nowrap; animation: marquee 28s linear infinite; }
+  .marquee:hover { animation-play-state: paused; }
+
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-thumb { background: #C8102E; border-radius: 2px; }
+
+  /* ══════════════════════════════════════
+     DESKTOP >= 768px
+  ══════════════════════════════════════ */
+  @media (min-width: 768px) {
+    /* Auth */
+    .auth-page { align-items: center; padding: 24px; }
+    .auth-card { min-height: auto; max-width: 860px; flex-direction: row; border-radius: 8px; box-shadow: 0 2px 24px rgba(0,0,0,0.10); overflow: hidden; width: 100%; }
+    .auth-left { display: flex; width: 36%; background: #C8102E; padding: 48px 36px; flex-direction: column; justify-content: center; flex-shrink: 0; }
+    .auth-body { padding: 48px 44px; }
+    .form-2col { grid-template-columns: 1fr 1fr; }
+
+    /* Modals */
+    .overlay { align-items: center; padding: 20px; }
+    .modal { border-radius: 6px; max-width: 580px; max-height: 90vh; }
+    .modal-handle { display: none; }
+
+    /* Sidebar */
+    .sidebar { position: fixed; bottom: auto; left: auto; right: 0; top: 0; height: 100vh; width: 360px; border-radius: 0; padding: 24px; }
+    .sidebar-handle { display: none; }
+
+    /* Cartes */
+    .cards-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
+
+    /* Header */
+    .hdr-search { display: flex !important; }
+    .mob-search { display: none !important; }
+
+    /* Hero */
+    .hero-inner { flex-direction: row; align-items: center; justify-content: space-between; }
+    .hero-features { display: flex !important; }
+    .hero-text { width: auto; flex: 1; }
+
+    /* Réseau */
+    .reseau-sidebar { width: 260px; border-right: 1px solid #eee; }
+
+    /* Messagerie desktop : toujours deux colonnes */
+    .msg-list-panel { display: flex !important; flex-direction: column; width: 210px !important; min-width: 210px !important; border-right: 1px solid #eee; overflow-y: auto; }
+    .msg-conv-panel { display: flex !important; }
   }
 `;
 
 /* ── LEFT PANEL ── */
 const LeftPanel = () => (
-  <div className="auth-left">
+  <div style={{display:isMobile?"none":"flex",width:"36%",background:"#C8102E",padding:"48px 36px",flexDirection:"column",justifyContent:"center",flexShrink:0}}>
     <div style={{color:"white"}}>
       <div style={{fontSize:11,fontWeight:600,letterSpacing:2.5,textTransform:"uppercase",opacity:0.75,marginBottom:12}}>Bienvenue sur</div>
       <div style={{fontSize:26,fontWeight:700,lineHeight:1.25,marginBottom:8}}>Faso_Karanbissi</div>
@@ -264,6 +277,12 @@ export default function App() {
   const [authToken, setAuthToken] = useState(null);
   const [user, setUser] = useState(null);
   const [showDD, setShowDD] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth < 768);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
   // Réseau Innovation
   const [showReseau, setShowReseau] = useState(false);
   const [groupes, setGroupes] = useState([]);
@@ -750,11 +769,11 @@ export default function App() {
 
   /* ─── AUTH WRAPPER ─── */
   const A = (title,sub,body) => (
-    <div className="auth-page">
+    <div style={{minHeight:"100vh",width:"100%",background:"#f3f3f3",display:"flex",alignItems:isMobile?"flex-start":"center",justifyContent:"center",padding:isMobile?"0":"24px"}}>
       <style>{CSS}</style>
-      <div className="auth-card">
+      <div style={{width:"100%",maxWidth:isMobile?"100%":"860px",minHeight:isMobile?"100vh":"auto",background:"white",display:"flex",flexDirection:isMobile?"column":"row",borderRadius:isMobile?0:"8px",overflow:"hidden",boxShadow:isMobile?"none":"0 2px 24px rgba(0,0,0,0.10)"}}>
         <LeftPanel/>
-        <div className="auth-body">
+        <div style={{flex:1,padding:isMobile?"32px 20px":"48px 44px",display:"flex",flexDirection:"column",justifyContent:"center",overflowY:"auto"}}>
           <div style={{fontSize:"clamp(20px,5vw,24px)",fontWeight:700,color:"#111",marginBottom:4}}>{title}</div>
           <div style={{fontSize:14,color:"#888",marginBottom:24}}>{sub}</div>
           {body}
@@ -852,7 +871,7 @@ export default function App() {
               <input ref={profileRef} type="file" accept="image/*" style={{display:"none"}} onChange={onProfilePhoto}/>
             </div>
           </div>
-          <div className="form-2col">
+          <div style={{display:"grid",gridTemplateColumns:isMobile?"1fr":"1fr 1fr",gap:14}}>
             <div><label className="lbl">Nom *</label><input className={`inp ${regErr.nom?"err":""}`} placeholder="Koné" value={reg.nom} onChange={e=>setReg(r=>({...r,nom:e.target.value}))}/></div>
             <div><label className="lbl">Prénom *</label><input className={`inp ${regErr.prenom?"err":""}`} placeholder="Aminata" value={reg.prenom} onChange={e=>setReg(r=>({...r,prenom:e.target.value}))}/></div>
           </div>
@@ -914,7 +933,7 @@ export default function App() {
 
       {/* ── HEADER ── */}
       <div style={{background:"#1B0007",position:"sticky",top:0,zIndex:1000,width:"100%",left:0,right:0}}>
-        <div style={{maxWidth:1280,margin:"0 auto",display:"flex",alignItems:"center",gap:8,height:54,padding:"0 12px"}}>
+        <div style={{maxWidth:1280,margin:"0 auto",display:"flex",alignItems:"center",gap:8,height:54,padding:"0 12px",width:"100%",boxSizing:"border-box"}}>
           {/* Logo */}
           <div style={{flexShrink:0,cursor:"pointer"}} onClick={()=>setPage("guest")}>
             <div style={{color:"white",fontWeight:700,fontSize:14}}>Faso_Karanbissi</div>
@@ -922,7 +941,7 @@ export default function App() {
           </div>
 
           {/* Search — desktop only */}
-          <div className="hdr-search" style={{display:"none",flex:1,maxWidth:560,height:36}}>
+          <div style={{display:isMobile?"none":"flex",flex:1,maxWidth:560,height:36}}>
             <select style={{padding:"0 8px",background:"#e3e3e3",border:"none",borderRadius:"4px 0 0 4px",fontSize:12,color:"#333",cursor:"pointer",outline:"none",height:"100%"}} value={tag} onChange={e=>setTag(e.target.value)}>
               {tags.map(t=><option key={t}>{t}</option>)}
             </select>
@@ -986,7 +1005,7 @@ export default function App() {
       </div>
 
       {/* Search mobile */}
-      <div className="mob-search" style={{background:"#111",padding:"8px 12px",display:"flex",gap:8}}>
+      <div style={{background:"#111",padding:"8px 12px",display:isMobile?"flex":"none",gap:8}}>
         <input style={{flex:1,padding:"9px 12px",border:"none",borderRadius:4,fontSize:14,outline:"none",color:"#111"}} placeholder="Rechercher..." value={search} onChange={e=>setSearch(e.target.value)}/>
         <select style={{padding:"0 8px",background:"#e3e3e3",border:"none",borderRadius:4,fontSize:12,color:"#333",outline:"none"}} value={tag} onChange={e=>setTag(e.target.value)}>
           {tags.map(t=><option key={t}>{t}</option>)}
@@ -995,7 +1014,7 @@ export default function App() {
 
       {/* ── NAV ── */}
       <div style={{background:"#C8102E",overflowX:"auto",WebkitOverflowScrolling:"touch",msOverflowStyle:"none",scrollbarWidth:"none",width:"100%"}}>
-        <div style={{display:"flex",alignItems:"center",height:44,padding:"0 10px",minWidth:"max-content",gap:2}}>
+        <div style={{display:"flex",alignItems:"center",height:44,padding:"0 10px",minWidth:"max-content",gap:2,boxSizing:"border-box"}}>
           {[["all","Tout"],["product","Produits"],["service","Services"]].map(([v,l])=>(
             <button key={v} className={`nav-btn ${tab===v?"on":""}`} onClick={()=>setTab(v)}>{l}</button>
           ))}
@@ -1009,7 +1028,7 @@ export default function App() {
       {/* ── BANNIÈRE BIENVENUE ── */}
       <div style={{background:"linear-gradient(135deg,#1B0007 0%,#C8102E 100%)",overflow:"hidden",width:"100%"}}>
         {/* Texte défilant */}
-        <div style={{background:"rgba(0,0,0,0.2)",padding:"7px 0",borderBottom:"1px solid rgba(255,255,255,0.1)",overflow:"hidden"}}>
+        <div style={{background:"rgba(0,0,0,0.2)",padding:"7px 0",borderBottom:"1px solid rgba(255,255,255,0.1)",overflow:"hidden",width:"100%"}}>
           <div className="marquee" style={{color:"rgba(255,255,255,0.9)",fontSize:13}}>
             {["Bienvenue sur Faso_Karanbissi","·","Achetez et vendez entre étudiants","·","Proposez vos services sur le campus","·","Connectez-vous avec vos camarades","·","Livres, électronique, vêtements et plus","·","Bienvenue sur Faso_Karanbissi","·","Achetez et vendez entre étudiants","·","Proposez vos services sur le campus","·","Connectez-vous avec vos camarades","·"].map((t,i)=>(
               <span key={i} style={{padding:"0 28px",opacity:t==="·"?0.4:1}}>{t}</span>
@@ -1017,8 +1036,8 @@ export default function App() {
           </div>
         </div>
         {/* Hero */}
-        <div className="hero-inner" style={{maxWidth:1280,margin:"0 auto",padding:"14px 14px 18px",alignItems:"center",justifyContent:"space-between",gap:16}}>
-          <div className="hero-text" style={{color:"white",minWidth:0}}>
+        <div style={{maxWidth:1280,margin:"0 auto",padding:"16px 14px 20px",gap:16,width:"100%",display:"flex",flexDirection:isMobile?"column":"row",alignItems:"center",justifyContent:"space-between"}}>
+          <div style={{color:"white",minWidth:0,width:isMobile?"100%":"auto",flex:isMobile?"none":1}}>
             <div style={{fontSize:"clamp(18px,4.5vw,26px)",fontWeight:700,lineHeight:1.25,marginBottom:6}}>La plateforme des étudiants entrepreneurs</div>
             <div style={{fontSize:12,opacity:0.85,lineHeight:1.5,marginBottom:10,maxWidth:480}}>Vendez vos articles, proposez vos services et connectez-vous avec les étudiants de votre campus.</div>
             <div className="hero-btns">
@@ -1029,7 +1048,7 @@ export default function App() {
               ))}
             </div>
           </div>
-          <div className="hero-features" style={{gap:8,minWidth:180,flexShrink:0}}>
+          <div style={{gap:8,minWidth:180,flexShrink:0,display:isMobile?"none":"flex",flexDirection:"column"}}>
             {[["Annonces publiées","Voir les offres de vos camarades"],["Services disponibles","Cours, design, traduction et plus"],["Messagerie intégrée","Échangez avec les vendeurs"]].map(([t,d])=>(
               <div key={t} style={{background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.18)",borderRadius:6,padding:"9px 12px",display:"flex",alignItems:"center",gap:10}}>
                 <div style={{width:7,height:7,borderRadius:"50%",background:"white",flexShrink:0}}/>
@@ -1042,7 +1061,7 @@ export default function App() {
 
       {/* ── ANNONCES ── */}
       <div style={{background:"white",width:"100%"}}>
-        <div style={{maxWidth:1280,margin:"0 auto",padding:"16px 16px 40px",background:"white"}}>
+        <div style={{maxWidth:1280,margin:"0 auto",padding:"16px 14px 40px",width:"100%",boxSizing:"border-box"}}>
         <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
           <div style={{fontSize:13,color:"#555"}}>{filtered.length} résultat{filtered.length>1?"s":""}{tag!=="Tout"&&` dans "${tag}"`}</div>
           <button onClick={fetchListings} style={{background:"none",border:"1px solid #ddd",borderRadius:3,padding:"5px 12px",fontSize:12,cursor:"pointer",color:"#555"}}>Actualiser</button>
@@ -1066,7 +1085,7 @@ export default function App() {
             <div style={{fontSize:13,color:"#888"}}>Essayez un autre filtre.</div>
           </div>
         ):(
-          <div className="cards-grid">
+          <div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(auto-fill,minmax(220px,1fr))",gap:isMobile?10:16}}>
             {filtered.map(item=>(
               <div key={item.id} className="card" onClick={async()=>{setModal(item);setMTab("article");setMPhotoIdx(0);
               // Notifier le vendeur si ce n'est pas le sien
@@ -1100,9 +1119,9 @@ export default function App() {
 
       {/* ── MODAL ANNONCE ── */}
       {modal&&(
-        <div className="overlay" onClick={()=>setModal(null)}>
-          <div className="modal" onClick={e=>e.stopPropagation()}>
-            <div className="modal-handle"/>
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>setModal(null)}>
+          <div style={{background:"white",borderRadius:isMobile?"16px 16px 0 0":"6px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
+            <div style={{width:38,height:4,background:"#ddd",borderRadius:2,margin:"10px auto 6px",flexShrink:0,display:isMobile?"block":"none"}}/>
             <div style={{display:"flex",borderBottom:"1px solid #eee",flexShrink:0,background:"#fafafa"}}>
               <button className={`tab-btn ${mTab==="article"?"on":""}`} onClick={()=>setMTab("article")}>Détail</button>
               <button className={`tab-btn ${mTab==="vendeur"?"on":""}`} onClick={()=>setMTab("vendeur")}>Vendeur</button>
@@ -1179,9 +1198,9 @@ export default function App() {
 
       {/* ── PUBLIER ANNONCE ── */}
       {showForm&&(
-        <div className="overlay" onClick={()=>setShowForm(false)}>
-          <div className="modal" onClick={e=>e.stopPropagation()}>
-            <div className="modal-handle"/>
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>setShowForm(false)}>
+          <div style={{background:"white",borderRadius:isMobile?"16px 16px 0 0":"6px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
+            <div style={{width:38,height:4,background:"#ddd",borderRadius:2,margin:"10px auto 6px",flexShrink:0,display:isMobile?"block":"none"}}/>
             <div style={{padding:"12px 16px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0}}>
               <div style={{fontSize:15,fontWeight:700}}>Publier une annonce</div>
               <div style={{fontSize:12,color:"#888"}}>Les champs * sont obligatoires</div>
@@ -1226,9 +1245,9 @@ export default function App() {
 
       {/* ── MES ANNONCES ── */}
       {showMyAds&&(
-        <div className="overlay" onClick={()=>setShowMyAds(false)}>
-          <div className="modal" onClick={e=>e.stopPropagation()}>
-            <div className="modal-handle"/>
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>setShowMyAds(false)}>
+          <div style={{background:"white",borderRadius:isMobile?"16px 16px 0 0":"6px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
+            <div style={{width:38,height:4,background:"#ddd",borderRadius:2,margin:"10px auto 6px",flexShrink:0,display:isMobile?"block":"none"}}/>
             <div style={{padding:"12px 16px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
               <div><div style={{fontSize:15,fontWeight:700}}>Mes annonces</div><div style={{fontSize:12,color:"#888"}}>{myAds.length} publication{myAds.length>1?"s":""}</div></div>
               <button onClick={()=>setShowMyAds(false)} style={{background:"none",border:"none",cursor:"pointer",padding:4}}><Ic n="x" s={20} c="#888"/></button>
@@ -1266,9 +1285,9 @@ export default function App() {
 
       {/* ── MODIFIER ANNONCE ── */}
       {editForm&&(
-        <div className="overlay" onClick={()=>setEditForm(null)}>
-          <div className="modal" onClick={e=>e.stopPropagation()}>
-            <div className="modal-handle"/>
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>setEditForm(null)}>
+          <div style={{background:"white",borderRadius:isMobile?"16px 16px 0 0":"6px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
+            <div style={{width:38,height:4,background:"#ddd",borderRadius:2,margin:"10px auto 6px",flexShrink:0,display:isMobile?"block":"none"}}/>
             <div style={{padding:"12px 16px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0}}><div style={{fontSize:15,fontWeight:700}}>Modifier l'annonce</div></div>
             <div style={{padding:"14px 16px",overflowY:"auto",display:"flex",flexDirection:"column",gap:13}}>
               <div><label className="lbl">Type</label><select className="inp" value={editForm.type} onChange={e=>setEditForm(f=>({...f,type:e.target.value}))}><option value="product">Produit</option><option value="service">Service</option></select></div>
@@ -1295,9 +1314,9 @@ export default function App() {
 
       {/* ── MON PROFIL ── */}
       {showProfil&&profilForm&&(
-        <div className="overlay" onClick={()=>setShowProfil(false)}>
-          <div className="modal" onClick={e=>e.stopPropagation()}>
-            <div className="modal-handle"/>
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>setShowProfil(false)}>
+          <div style={{background:"white",borderRadius:isMobile?"16px 16px 0 0":"6px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
+            <div style={{width:38,height:4,background:"#ddd",borderRadius:2,margin:"10px auto 6px",flexShrink:0,display:isMobile?"block":"none"}}/>
             <div style={{padding:"12px 16px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0}}><div style={{fontSize:15,fontWeight:700}}>Mon profil</div></div>
             <div style={{padding:"14px 16px",overflowY:"auto",display:"flex",flexDirection:"column",gap:13}}>
               <div>
@@ -1331,61 +1350,79 @@ export default function App() {
       )}
 
       {/* ── MESSAGERIE ── */}
-      {showMsgs&&(
-        <div className="overlay" onClick={()=>{setShowMsgs(false);setActiveConv(null);}}>
-          <div className="modal" onClick={e=>e.stopPropagation()} style={{maxWidth:700,height:"88vh"}}>
-            <div className="modal-handle"/>
+            {showMsgs&&(
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>{setShowMsgs(false);setActiveConv(null);}}>
+          <div style={{background:"white",borderRadius:isMobile?"16px 16px 0 0":"6px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()} style={{maxWidth:700,height:"88vh"}}>
+            <div style={{width:38,height:4,background:"#ddd",borderRadius:2,margin:"10px auto 6px",flexShrink:0,display:isMobile?"block":"none"}}/>
             <div style={{padding:"11px 16px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-              <div style={{fontSize:15,fontWeight:700}}>Messagerie</div>
+              {activeConv ? (
+                <button onClick={()=>setActiveConv(null)} style={{background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:6,fontSize:14,fontWeight:600,color:"#111"}}>
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+                  {activeConv.user?.prenom} {activeConv.user?.nom}
+                </button>
+              ) : (
+                <div style={{fontSize:15,fontWeight:700}}>Messagerie</div>
+              )}
               <button onClick={()=>{setShowMsgs(false);setActiveConv(null);}} style={{background:"none",border:"none",cursor:"pointer",padding:4}}><Ic n="x" s={20} c="#888"/></button>
             </div>
+
             <div style={{display:"flex",flex:1,overflow:"hidden"}}>
-              <div style={{width:210,borderRight:"1px solid #eee",overflowY:"auto",flexShrink:0}}>
+              {/* Liste conversations */}
+              <div style={{
+                display: isMobile && activeConv ? "none" : "flex",
+                flexDirection: "column",
+                width: isMobile ? "100%" : "210px",
+                minWidth: isMobile ? "auto" : "210px",
+                flexShrink: 0,
+                borderRight: isMobile ? "none" : "1px solid #eee",
+                overflowY: "auto",
+              }}>
                 {convs.length===0?(
                   <div style={{textAlign:"center",padding:"28px 12px",color:"#aaa",fontSize:13}}>Aucune conversation</div>
-                ):convs.map(c=>(
-                  <div key={c.userId} className={`conv-row ${activeConv?.userId===c.userId?"on":""}`} onClick={()=>openConv(c)}>
-                    <div style={{width:34,height:34,borderRadius:"50%",background:"#C8102E",display:"flex",alignItems:"center",justifyContent:"center",color:"white",fontSize:12,fontWeight:700,flexShrink:0}}>{c.user?.prenom?.[0]}{c.user?.nom?.[0]}</div>
+                ):convs.map(cv=>(
+                  <div key={cv.userId} className={"conv-row"+(activeConv?.userId===cv.userId?" on":"")} onClick={()=>openConv(cv)}>
+                    <div style={{width:34,height:34,borderRadius:"50%",background:"#C8102E",display:"flex",alignItems:"center",justifyContent:"center",color:"white",fontSize:12,fontWeight:700,flexShrink:0}}>{cv.user?.prenom?.[0]}{cv.user?.nom?.[0]}</div>
                     <div style={{flex:1,minWidth:0}}>
-                      <div style={{fontSize:13,fontWeight:600,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.user?.prenom} {c.user?.nom}</div>
-                      <div style={{fontSize:11,color:"#888",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{c.lastMsg?.contenu}</div>
+                      <div style={{fontSize:13,fontWeight:600,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{cv.user?.prenom} {cv.user?.nom}</div>
+                      <div style={{fontSize:11,color:"#888",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{cv.lastMsg?.contenu}</div>
                     </div>
-                    {c.unread>0&&<span style={{background:"#C8102E",color:"white",borderRadius:"50%",width:18,height:18,fontSize:10,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700,flexShrink:0}}>{c.unread}</span>}
+                    {cv.unread>0&&<span style={{background:"#C8102E",color:"white",borderRadius:"50%",width:18,height:18,fontSize:10,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700,flexShrink:0}}>{cv.unread}</span>}
                   </div>
                 ))}
               </div>
-              <div className={"msg-content" + (!activeConv?" msg-content-hidden":"")} style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
-                {!activeConv?(
-                  <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",color:"#aaa",fontSize:13}}>Sélectionnez une conversation</div>
-                ):(
-                  <>
-                    <div style={{padding:"10px 14px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0,display:"flex",alignItems:"center",gap:10}}>
-                      <button onClick={()=>setActiveConv(null)} style={{background:"none",border:"none",cursor:"pointer",padding:"2px 6px 2px 0",display:"flex",alignItems:"center"}} className="msg-back-btn">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-                      </button>
-                      <div style={{flex:1}}>
-                        <div style={{fontSize:13,fontWeight:600}}>{activeConv.user?.prenom} {activeConv.user?.nom}</div>
-                        {activeConv.annonce&&<div style={{fontSize:11,color:"#888"}}>Re: {activeConv.annonce?.titre}</div>}
-                      </div>
+
+              {/* Conversation active — cachée si pas de conv sélectionnée sur mobile */}
+              {(activeConv || !isMobile)&&activeConv&&(
+                <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden",minWidth:0}}>
+                  {activeConv.annonce&&(
+                    <div style={{padding:"6px 14px",background:"#fff8e6",borderBottom:"1px solid #f5d78e",fontSize:11,color:"#7a5c00"}}>
+                      Re: {activeConv.annonce?.titre}
                     </div>
-                    <div style={{flex:1,overflowY:"auto",padding:"12px",display:"flex",flexDirection:"column",gap:8}}>
-                      {msgLoading?<div style={{textAlign:"center",color:"#aaa",paddingTop:24}}>Chargement...</div>:
-                        convMsgs.map((m,i)=>(
-                          <div key={i} style={{display:"flex",flexDirection:"column",alignItems:m.expediteur_id===user.id?"flex-end":"flex-start"}}>
-                            <div className={m.expediteur_id===user.id?"msg-me":"msg-other"}>{m.contenu}</div>
-                            <div style={{fontSize:10,color:"#aaa",marginTop:3}}>{new Date(m.created_at).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}</div>
-                          </div>
-                        ))
-                      }
-                      <div ref={msgsEndRef}/>
-                    </div>
-                    <div style={{padding:"10px 14px",borderTop:"1px solid #eee",display:"flex",gap:8,alignItems:"flex-end",flexShrink:0}}>
-                      <textarea className="msg-inp" placeholder="Écrire un message..." value={newMsg} onChange={e=>setNewMsg(e.target.value)} rows={1} onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMsg(activeConv.userId,activeConv.annonce?.id||null);}}}/>
-                      <button className="btn btn-red" style={{padding:"10px 14px",borderRadius:22,flexShrink:0,display:"flex",alignItems:"center",gap:6}} onClick={()=>sendMsg(activeConv.userId,activeConv.annonce?.id||null)}><Ic n="send" s={15} c="white"/>Envoyer</button>
-                    </div>
-                  </>
-                )}
-              </div>
+                  )}
+                  <div style={{flex:1,overflowY:"auto",padding:"12px",display:"flex",flexDirection:"column",gap:8}}>
+                    {msgLoading?<div style={{textAlign:"center",color:"#aaa",paddingTop:24}}>Chargement...</div>:
+                      convMsgs.map((m,i)=>(
+                        <div key={i} style={{display:"flex",flexDirection:"column",alignItems:m.expediteur_id===user.id?"flex-end":"flex-start"}}>
+                          <div className={m.expediteur_id===user.id?"msg-me":"msg-other"}>{m.contenu}</div>
+                          <div style={{fontSize:10,color:"#aaa",marginTop:3}}>{new Date(m.created_at).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}</div>
+                        </div>
+                      ))
+                    }
+                    <div ref={msgsEndRef}/>
+                  </div>
+                  <div style={{padding:"10px 14px",borderTop:"1px solid #eee",display:"flex",gap:8,alignItems:"flex-end",flexShrink:0}}>
+                    <textarea className="msg-inp" placeholder="Écrire un message..." value={newMsg} onChange={e=>setNewMsg(e.target.value)} rows={1} onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMsg(activeConv.userId,activeConv.annonce?.id||null);}}}/>
+                    <button className="btn btn-red" style={{padding:"10px 14px",borderRadius:22,flexShrink:0,display:"flex",alignItems:"center",gap:6}} onClick={()=>sendMsg(activeConv.userId,activeConv.annonce?.id||null)}><Ic n="send" s={15} c="white"/>Envoyer</button>
+                  </div>
+                </div>
+              )}
+
+              {/* Message si aucune conv sélectionnée — desktop uniquement */}
+              {!activeConv&&(
+                <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",color:"#aaa",fontSize:13,display:"none"}} className="desktop-hint">
+                  Sélectionnez une conversation
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -1393,9 +1430,9 @@ export default function App() {
 
       {/* ── CONTACTER VENDEUR ── */}
       {contactModal&&(
-        <div className="overlay" onClick={()=>setContactModal(null)}>
-          <div className="modal" onClick={e=>e.stopPropagation()} style={{maxWidth:460}}>
-            <div className="modal-handle"/>
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>setContactModal(null)}>
+          <div style={{background:"white",borderRadius:isMobile?"16px 16px 0 0":"6px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()} style={{maxWidth:460}}>
+            <div style={{width:38,height:4,background:"#ddd",borderRadius:2,margin:"10px auto 6px",flexShrink:0,display:isMobile?"block":"none"}}/>
             <div style={{padding:"12px 16px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0}}>
               <div style={{fontSize:15,fontWeight:700}}>Contacter {contactModal.seller?.prenom} {contactModal.seller?.nom}</div>
               {contactModal.annonce&&<div style={{fontSize:12,color:"#888",marginTop:2}}>Re: {contactModal.annonce.title}</div>}
@@ -1415,8 +1452,8 @@ export default function App() {
       {showCart&&(
         <>
           <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.45)",zIndex:250}} onClick={()=>setShowCart(false)}/>
-          <div className="sidebar" style={{zIndex:300}}>
-            <div className="sidebar-handle"/>
+          <div style={{position:"fixed",bottom:isMobile?0:"auto",left:isMobile?0:"auto",right:0,top:isMobile?"auto":0,height:isMobile?"auto":"100vh",maxHeight:isMobile?"88vh":"100vh",width:isMobile?"100%":"360px",background:"white",borderRadius:isMobile?"16px 16px 0 0":"0",zIndex:300,padding:isMobile?"0 20px 24px":"24px",overflowY:"auto"}}>
+            <div style={{width:38,height:4,background:"#ddd",borderRadius:2,margin:"12px auto 18px",display:isMobile?"block":"none"}}/>
             <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:18}}>
               <div style={{fontSize:16,fontWeight:700}}>Panier ({cart.length})</div>
               <button onClick={()=>setShowCart(false)} style={{background:"none",border:"none",cursor:"pointer",padding:4}}><Ic n="x" s={20} c="#888"/></button>
@@ -1454,9 +1491,9 @@ export default function App() {
 
       {/* ── SUPPRESSION ── */}
       {delConfirm&&(
-        <div className="overlay" onClick={()=>setDelConfirm(null)}>
-          <div className="modal" onClick={e=>e.stopPropagation()} style={{maxWidth:400}}>
-            <div className="modal-handle"/>
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>setDelConfirm(null)}>
+          <div style={{background:"white",borderRadius:isMobile?"16px 16px 0 0":"6px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()} style={{maxWidth:400}}>
+            <div style={{width:38,height:4,background:"#ddd",borderRadius:2,margin:"10px auto 6px",flexShrink:0,display:isMobile?"block":"none"}}/>
             <div style={{padding:"12px 16px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0}}><div style={{fontSize:15,fontWeight:700,color:"#C8102E"}}>Supprimer l'annonce</div></div>
             <div style={{padding:"18px 16px",display:"flex",flexDirection:"column",gap:16}}>
               <div style={{fontSize:14,color:"#444",lineHeight:1.7}}>Etes-vous sûr ? Cette action est <strong>irréversible</strong>.</div>
@@ -1471,9 +1508,9 @@ export default function App() {
 
       {/* ── RÉSEAU INNOVATION ── */}
       {showReseau && (
-        <div className="overlay" onClick={()=>{setShowReseau(false);setActiveGroupe(null);}}>
-          <div className="modal" onClick={e=>e.stopPropagation()} style={{maxWidth:760,height:"88vh"}}>
-            <div className="modal-handle"/>
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>{setShowReseau(false);setActiveGroupe(null);}}>
+          <div style={{background:"white",borderRadius:isMobile?"16px 16px 0 0":"6px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()} style={{maxWidth:760,height:"88vh"}}>
+            <div style={{width:38,height:4,background:"#ddd",borderRadius:2,margin:"10px auto 6px",flexShrink:0,display:isMobile?"block":"none"}}/>
             <div style={{padding:"12px 16px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
               <div>
                 <div style={{fontSize:15,fontWeight:700}}>Réseau Innovation</div>
@@ -1549,7 +1586,7 @@ export default function App() {
               /* GROUPES DE DOMAINES */
               <div style={{display:"flex",flex:1,overflow:"hidden"}}>
                 {/* Liste des groupes */}
-                <div className={"reseau-sidebar" + (activeGroupe?" msg-sidebar-hidden":"")}>
+                <div style={{display:isMobile&&activeGroupe?"none":"flex",flexDirection:"column",width:isMobile?"100%":"260px",minWidth:isMobile?"auto":"260px",flexShrink:0,borderRight:isMobile?"none":"1px solid #eee",overflowY:"auto"}}>
                   <div style={{padding:"10px 14px",fontSize:11,fontWeight:700,color:"#aaa",textTransform:"uppercase",letterSpacing:1,borderBottom:"1px solid #f0f0f0"}}>Domaines</div>
                   {groupes.map(g => {
                     const isMember = myGroupes.includes(g.id);
@@ -1568,7 +1605,7 @@ export default function App() {
                 </div>
 
                 {/* Contenu groupe */}
-                <div className={"msg-content" + (!activeGroupe?" msg-content-hidden":"")} style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden"}}>
+                <div style={{flex:1,display:isMobile&&!activeGroupe?"none":"flex",flexDirection:"column",overflow:"hidden"}}>
                   {!activeGroupe ? (
                     <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",color:"#aaa",padding:24,textAlign:"center"}}>
                       <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ddd" strokeWidth="1.5" style={{marginBottom:14}}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
@@ -1636,9 +1673,9 @@ export default function App() {
 
       {/* ── NOTIFICATIONS PANEL ── */}
       {showNotifs && (
-        <div className="overlay" onClick={()=>setShowNotifs(false)}>
-          <div className="modal" onClick={e=>e.stopPropagation()} style={{maxWidth:380}}>
-            <div className="modal-handle"/>
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>setShowNotifs(false)}>
+          <div style={{background:"white",borderRadius:isMobile?"16px 16px 0 0":"6px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()} style={{maxWidth:380}}>
+            <div style={{width:38,height:4,background:"#ddd",borderRadius:2,margin:"10px auto 6px",flexShrink:0,display:isMobile?"block":"none"}}/>
             <div style={{padding:"12px 16px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
               <div style={{fontSize:15,fontWeight:700}}>Notifications {notifCount>0&&<Badge n={notifCount}/>}</div>
               <div style={{display:"flex",gap:8,alignItems:"center"}}>
