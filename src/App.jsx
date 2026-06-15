@@ -253,33 +253,28 @@ const Badge = ({n,style={}}) => n>0 ? <span style={{background:"#C8102E",color:"
 export default function App() {
   // page: "guest" | "login" | "register" | "forgot" | "reset" | "marketplace" | "reseau"
 
-  // Navigation avec historique navigateur
-  const getInitialPage = () => {
-    const p = window.location.pathname.replace("/","") || "guest";
-    const valid = ["guest","login","register","forgot","reset","marketplace"];
-    return valid.includes(p) ? p : "guest";
-  };
-  const [page, setPageState] = useState(getInitialPage);
-
+  // Navigation - SPA, toujours démarrer sur guest
+  const [page, setPageState] = useState('guest');
   const setPage = (p) => {
-    window.history.pushState({page:p}, "", p === "guest" ? "/" : "/"+p);
+    try { window.history.pushState({page:p}, '', p==='guest'?'/':'/'+p); } catch(e){}
     setPageState(p);
-  };
+  }
 
   useEffect(() => {
-    const onPop = (e) => {
-      const p = e.state?.page || window.location.pathname.replace("/","") || "guest";
-      setPageState(p);
-    };
+    const onPop = (e) => { setPageState(e.state?.page || 'guest'); };
     window.addEventListener("popstate", onPop);
     return () => window.removeEventListener("popstate", onPop);
   }, []);
   const [authToken, setAuthToken] = useState(null);
   const [user, setUser] = useState(null);
   const [showDD, setShowDD] = useState(false);
-  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isMobile, setIsMobile] = useState(() => {
+    try { return window.innerWidth < 768; } catch(e) { return false; }
+  });
   useEffect(() => {
-    const handler = () => setIsMobile(window.innerWidth < 768);
+    const handler = () => {
+      try { setIsMobile(window.innerWidth < 768); } catch(e) {}
+    };
     window.addEventListener("resize", handler);
     return () => window.removeEventListener("resize", handler);
   }, []);
@@ -768,22 +763,35 @@ export default function App() {
   const onProfilPhoto = e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>setProfilForm(x=>({...x,photo:ev.target.result,photoFile:f}));r.readAsDataURL(f);};
 
   /* ─── AUTH WRAPPER ─── */
-  const A = (title,sub,body) => (
+  const AuthWrap = ({title, sub, children}) => (
     <div style={{minHeight:"100vh",width:"100%",background:"#f3f3f3",display:"flex",alignItems:isMobile?"flex-start":"center",justifyContent:"center",padding:isMobile?"0":"24px"}}>
       <style>{CSS}</style>
       <div style={{width:"100%",maxWidth:isMobile?"100%":"860px",minHeight:isMobile?"100vh":"auto",background:"white",display:"flex",flexDirection:isMobile?"column":"row",borderRadius:isMobile?0:"8px",overflow:"hidden",boxShadow:isMobile?"none":"0 2px 24px rgba(0,0,0,0.10)"}}>
-        <LeftPanel/>
+        <div style={{display:isMobile?"none":"flex",width:"36%",background:"#C8102E",padding:"48px 36px",flexDirection:"column",justifyContent:"center",flexShrink:0}}>
+          <div style={{color:"white"}}>
+            <div style={{fontSize:11,fontWeight:600,letterSpacing:2.5,textTransform:"uppercase",opacity:0.75,marginBottom:12}}>Bienvenue sur</div>
+            <div style={{fontSize:26,fontWeight:700,lineHeight:1.25,marginBottom:8}}>Faso_Karanbissi</div>
+            <div style={{width:36,height:2,background:"rgba(255,255,255,0.4)",marginBottom:20}}/>
+            <p style={{fontSize:13,lineHeight:1.8,opacity:0.85,fontWeight:300,marginBottom:28}}>La plateforme qui connecte les etudiants de votre campus pour vendre, acheter et proposer des services.</p>
+            {["Vendez vos articles","Proposez vos services","Entraide entre etudiants"].map(item=>(
+              <div key={item} style={{display:"flex",alignItems:"center",gap:10,fontSize:13,opacity:0.9,marginBottom:10}}>
+                <div style={{width:5,height:5,borderRadius:"50%",background:"white",flexShrink:0}}/>{item}
+              </div>
+            ))}
+          </div>
+        </div>
         <div style={{flex:1,padding:isMobile?"32px 20px":"48px 44px",display:"flex",flexDirection:"column",justifyContent:"center",overflowY:"auto"}}>
-          <div style={{fontSize:"clamp(20px,5vw,24px)",fontWeight:700,color:"#111",marginBottom:4}}>{title}</div>
+          <div style={{fontSize:isMobile?20:24,fontWeight:700,color:"#111",marginBottom:4}}>{title}</div>
           <div style={{fontSize:14,color:"#888",marginBottom:24}}>{sub}</div>
-          {body}
+          {children}
         </div>
       </div>
     </div>
   );
 
+
   /* ─── LOGIN ─── */
-  if(page==="login") return A("Connexion","Connectez-vous à votre compte",
+  if(page==="login") return (<AuthWrap title="Connexion" sub="Connectez-vous à votre compte">
     <div style={{display:"flex",flexDirection:"column",gap:16}}>
       <div><label className="lbl">Email</label><input className="inp" type="email" placeholder="exemple@email.com" value={loginEmail} onChange={e=>setLoginEmail(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleLogin()}/></div>
       <div><label className="lbl">Mot de passe</label>
@@ -798,10 +806,10 @@ export default function App() {
       <div style={{textAlign:"center",fontSize:14,color:"#666"}}>Pas encore de compte ?{" "}<button className="a-link" onClick={()=>{setPage("register");setRegStep(1);setRegErr({});setRegError("");}}>Créer un compte</button></div>
       <div style={{textAlign:"center"}}><button className="a-link" style={{fontSize:13,color:"#999"}} onClick={()=>setPage("guest")}>Continuer sans compte</button></div>
     </div>
-  );
+  </AuthWrap>);
 
-  /* ─── FORGOT ─── */
-  if(page==="forgot") return A("Mot de passe oublié","Un lien sera envoyé à votre email",
+    /* ─── FORGOT ─── */
+  if(page==="forgot") return (<AuthWrap title="Mot de passe oublié" sub="Un lien sera envoyé à votre email">
     !forgotOk?(
       <div style={{display:"flex",flexDirection:"column",gap:16}}>
         <div><label className="lbl">Email</label><input className="inp" type="email" placeholder="exemple@email.com" value={forgotEmail} onChange={e=>setForgotEmail(e.target.value)}/></div>
@@ -815,10 +823,9 @@ export default function App() {
         <button className="btn btn-red btn-block" onClick={()=>setPage("login")}>Retour à la connexion</button>
       </div>
     )
-  );
+  </AuthWrap>);
 
-  /* ─── RESET ─── */
-  if(page==="reset") return A("Nouveau mot de passe","Choisissez un nouveau mot de passe",
+  if(page==="reset") return (<AuthWrap title="Nouveau mot de passe" sub="Choisissez un nouveau mot de passe">
     !resetOk?(
       <div style={{display:"flex",flexDirection:"column",gap:16}}>
         <div><label className="lbl">Nouveau mot de passe</label>
@@ -837,12 +844,9 @@ export default function App() {
         <button className="btn btn-red btn-block" onClick={handleReset} disabled={resetLoading}>{resetLoading?<><span className="spinner"/>Mise à jour...</>:"Mettre à jour"}</button>
       </div>
     ):<div className="ok-box">Mot de passe mis à jour ! Redirection...</div>
-  );
+  </AuthWrap>);
 
-  /* ─── REGISTER ─── */
-  if(page==="register") return A(
-    regStep===1?"Informations personnelles":regStep===2?"Informations académiques":"Identifiants de connexion",
-    `Étape ${regStep} sur 3`,
+  if(page==="register") return (<AuthWrap title={regStep===1?"Informations personnelles":regStep===2?"Informations académiques":"Identifiants de connexion"} sub={`Étape ${regStep} sur 3`}>
     <>
       <div style={{display:"flex",alignItems:"center",marginBottom:22}}>
         {[1,2,3].map((s,i)=>(
@@ -924,7 +928,7 @@ export default function App() {
         </div>
       )}
     </>
-  );
+  </AuthWrap>);
 
   /* ═══════════ MARKETPLACE (guest + connecté) ═══════════ */
   return (
