@@ -55,6 +55,8 @@ const CSS = `
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
   html, body, #root { width: 100%; margin: 0; padding: 0; overflow-x: hidden; }
+  html { scroll-padding-bottom: 300px; }
+  input:focus, textarea:focus { scroll-margin-bottom: 100px; }
   body { font-family: 'Inter', sans-serif; background: white; }
   img { max-width: 100%; display: block; }
   input, select, textarea, button { font-family: 'Inter', sans-serif; }
@@ -69,7 +71,7 @@ const CSS = `
   .btn-block { display: block; width: 100%; }
 
   /* ── INPUTS ── */
-  .inp { width: 100%; padding: 11px 12px; border: 1px solid #adb1b8; border-radius: 4px; font-size: 14px; outline: none; background: white; color: #111; transition: border 0.15s, box-shadow 0.15s; }
+  .inp { width: 100%; padding: 11px 12px; border: 1px solid #adb1b8; border-radius: 4px; font-size: 16px; outline: none; background: white; color: #111; transition: border 0.15s, box-shadow 0.15s; -webkit-appearance: none; }
   .inp:focus { border-color: #C8102E; box-shadow: 0 0 0 3px rgba(200,16,46,0.08); }
   .inp.err { border-color: #C8102E; background: #fff8f8; }
   .lbl { font-size: 12px; font-weight: 600; color: #444; display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px; }
@@ -125,8 +127,10 @@ const CSS = `
   .conv-row { display: flex; align-items: center; gap: 12px; padding: 13px 14px; cursor: pointer; border-bottom: 1px solid #f5f5f5; transition: background 0.15s; }
   .conv-row:hover { background: #fafafa; }
   .conv-row.on { background: #fff5f5; border-left: 3px solid #C8102E; }
-  .msg-inp { flex: 1; padding: 11px 14px; border: 1px solid #ddd; border-radius: 22px; font-size: 14px; outline: none; resize: none; }
+  .msg-inp { flex: 1; padding: 11px 14px; border: 1px solid #ddd; border-radius: 22px; font-size: 16px; outline: none; resize: none; -webkit-appearance: none; }
   .msg-inp:focus { border-color: #C8102E; }
+  select { font-size: 16px !important; -webkit-appearance: none; }
+  input, textarea { font-size: 16px !important; }
 
   /* ── RÉSEAU ── */
   .reseau-sidebar { width: 100%; border-right: none; overflow-y: auto; flex-shrink: 0; display: flex; flex-direction: column; }
@@ -164,6 +168,8 @@ const CSS = `
   .marquee { display: flex; white-space: nowrap; animation: marquee 28s linear infinite; }
   .marquee:hover { animation-play-state: paused; }
 
+  .msg-back-btn { display: flex; }
+  .desktop-hint { display: none; }
   ::-webkit-scrollbar { width: 4px; }
   ::-webkit-scrollbar-thumb { background: #C8102E; border-radius: 2px; }
 
@@ -764,9 +770,9 @@ export default function App() {
 
   /* ─── AUTH WRAPPER ─── */
   const AuthWrap = ({title, sub, children}) => (
-    <div style={{minHeight:"100vh",width:"100%",background:"#f3f3f3",display:"flex",alignItems:isMobile?"flex-start":"center",justifyContent:"center",padding:isMobile?"0":"24px"}}>
+    <div style={{minHeight:"100vh",width:"100%",background:"#f3f3f3",display:"flex",alignItems:isMobile?"flex-start":"center",justifyContent:"center",padding:isMobile?"0":"24px",overflowY:"auto",WebkitOverflowScrolling:"touch"}}>
       <style>{CSS}</style>
-      <div style={{width:"100%",maxWidth:isMobile?"100%":"860px",minHeight:isMobile?"100vh":"auto",background:"white",display:"flex",flexDirection:isMobile?"column":"row",borderRadius:isMobile?0:"8px",overflow:"hidden",boxShadow:isMobile?"none":"0 2px 24px rgba(0,0,0,0.10)"}}>
+      <div style={{width:"100%",maxWidth:isMobile?"100%":"860px",minHeight:isMobile?"100vh":"auto",background:"white",display:"flex",flexDirection:isMobile?"column":"row",flex:isMobile?1:"none",borderRadius:isMobile?0:"8px",overflow:isMobile?"visible":"hidden",boxShadow:isMobile?"none":"0 2px 24px rgba(0,0,0,0.10)"}}>
         <div style={{display:isMobile?"none":"flex",width:"36%",background:"#C8102E",padding:"48px 36px",flexDirection:"column",justifyContent:"center",flexShrink:0}}>
           <div style={{color:"white"}}>
             <div style={{fontSize:11,fontWeight:600,letterSpacing:2.5,textTransform:"uppercase",opacity:0.75,marginBottom:12}}>Bienvenue sur</div>
@@ -780,7 +786,7 @@ export default function App() {
             ))}
           </div>
         </div>
-        <div style={{flex:1,padding:isMobile?"32px 20px":"48px 44px",display:"flex",flexDirection:"column",justifyContent:"center",overflowY:"auto"}}>
+        <div style={{flex:1,padding:isMobile?"24px 18px":"48px 44px",display:"flex",flexDirection:"column",justifyContent:isMobile?"flex-start":"center",overflowY:"auto",paddingBottom:isMobile?120:44,WebkitOverflowScrolling:"touch"}}>
           <div style={{fontSize:isMobile?20:24,fontWeight:700,color:"#111",marginBottom:4}}>{title}</div>
           <div style={{fontSize:14,color:"#888",marginBottom:24}}>{sub}</div>
           {children}
@@ -946,10 +952,10 @@ export default function App() {
 
           {/* Search — desktop only */}
           <div style={{display:isMobile?"none":"flex",flex:1,maxWidth:560,height:36}}>
-            <select style={{padding:"0 8px",background:"#e3e3e3",border:"none",borderRadius:"4px 0 0 4px",fontSize:12,color:"#333",cursor:"pointer",outline:"none",height:"100%"}} value={tag} onChange={e=>setTag(e.target.value)}>
+            <select style={{padding:"0 8px",background:"#e3e3e3",border:"none",borderRadius:"4px 0 0 4px",fontSize:16,color:"#333",cursor:"pointer",outline:"none",height:"100%"}} value={tag} onChange={e=>setTag(e.target.value)}>
               {tags.map(t=><option key={t}>{t}</option>)}
             </select>
-            <input style={{flex:1,padding:"0 12px",border:"none",fontSize:13,outline:"none",color:"#111",height:"100%"}} placeholder="Rechercher..." value={search} onChange={e=>setSearch(e.target.value)}/>
+            <input style={{flex:1,padding:"0 12px",border:"none",fontSize:16,outline:"none",color:"#111",height:"100%"}} placeholder="Rechercher..." value={search} onChange={e=>setSearch(e.target.value)}/>
             <button style={{background:"#C8102E",border:"none",padding:"0 14px",borderRadius:"0 4px 4px 0",cursor:"pointer",color:"white",height:"100%",display:"flex",alignItems:"center"}}><Ic n="srch" s={16} c="white"/></button>
           </div>
 
@@ -1010,8 +1016,8 @@ export default function App() {
 
       {/* Search mobile */}
       <div style={{background:"#111",padding:"8px 12px",display:isMobile?"flex":"none",gap:8}}>
-        <input style={{flex:1,padding:"9px 12px",border:"none",borderRadius:4,fontSize:14,outline:"none",color:"#111"}} placeholder="Rechercher..." value={search} onChange={e=>setSearch(e.target.value)}/>
-        <select style={{padding:"0 8px",background:"#e3e3e3",border:"none",borderRadius:4,fontSize:12,color:"#333",outline:"none"}} value={tag} onChange={e=>setTag(e.target.value)}>
+        <input style={{flex:1,padding:"9px 12px",border:"none",borderRadius:4,fontSize:16,outline:"none",color:"#111"}} placeholder="Rechercher..." value={search} onChange={e=>setSearch(e.target.value)}/>
+        <select style={{padding:"0 8px",background:"#e3e3e3",border:"none",borderRadius:4,fontSize:16,color:"#333",outline:"none"}} value={tag} onChange={e=>setTag(e.target.value)}>
           {tags.map(t=><option key={t}>{t}</option>)}
         </select>
       </div>
