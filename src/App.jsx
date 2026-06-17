@@ -56,7 +56,7 @@ const AuthWrap = ({title, sub, children, isMobile}) => (
       <div style={{display:isMobile?"none":"flex",width:"36%",background:"#C8102E",padding:"48px 36px",flexDirection:"column",justifyContent:"center",flexShrink:0}}>
         <div style={{color:"white"}}>
           <div style={{fontSize:11,fontWeight:600,letterSpacing:2.5,textTransform:"uppercase",opacity:0.75,marginBottom:12}}>Bienvenue sur</div>
-          <div style={{fontSize:26,fontWeight:700,lineHeight:1.25,marginBottom:8}}>Faso_Karanbissi</div>
+          <div style={{fontSize:26,fontWeight:700,lineHeight:1.25,marginBottom:8}}>Faso_Karambisi</div>
           <div style={{width:36,height:2,background:"rgba(255,255,255,0.4)",marginBottom:20}}/>
           <p style={{fontSize:13,lineHeight:1.8,opacity:0.85,fontWeight:300,marginBottom:28}}>La plateforme qui connecte les étudiants de votre campus pour vendre, acheter et proposer des services.</p>
           {["Vendez vos articles","Proposez vos services","Entraide entre étudiants"].map(item=>(
@@ -246,7 +246,7 @@ const LeftPanel = () => (
   <div style={{display:isMobile?"none":"flex",width:"36%",background:"#C8102E",padding:"48px 36px",flexDirection:"column",justifyContent:"center",flexShrink:0}}>
     <div style={{color:"white"}}>
       <div style={{fontSize:11,fontWeight:600,letterSpacing:2.5,textTransform:"uppercase",opacity:0.75,marginBottom:12}}>Bienvenue sur</div>
-      <div style={{fontSize:26,fontWeight:700,lineHeight:1.25,marginBottom:8}}>Faso_Karanbissi</div>
+      <div style={{fontSize:26,fontWeight:700,lineHeight:1.25,marginBottom:8}}>Faso_Karambisi</div>
       <div style={{width:36,height:2,background:"rgba(255,255,255,0.4)",marginBottom:20}}/>
       <p style={{fontSize:13,lineHeight:1.8,opacity:0.85,fontWeight:300,marginBottom:28}}>La plateforme qui connecte les étudiants de votre campus pour vendre, acheter et proposer des services.</p>
       {["Vendez vos articles","Proposez vos services","Entraide entre étudiants"].map(item=>(
@@ -427,7 +427,7 @@ export default function App() {
   useEffect(() => { msgsEndRef.current?.scrollIntoView({behavior:"smooth"}); }, [convMsgs]);
 
   useEffect(() => {
-    const base = "Faso_Karanbissi";
+    const base = "Faso_Karambisi";
     if (unread > 0) {
       document.title = `(${unread}) ${base}`;
       const cv = document.createElement("canvas"); cv.width=32; cv.height=32;
@@ -966,7 +966,7 @@ export default function App() {
         <div style={{maxWidth:1280,margin:"0 auto",display:"flex",alignItems:"center",gap:8,height:54,padding:"0 12px",width:"100%",boxSizing:"border-box"}}>
           {/* Logo */}
           <div style={{flexShrink:0,cursor:"pointer"}} onClick={()=>setPage("guest")}>
-            <div style={{color:"white",fontWeight:700,fontSize:14}}>Faso_Karanbissi</div>
+            <div style={{color:"white",fontWeight:700,fontSize:14}}>Faso_Karambisi</div>
             <div className="hdr-search" style={{color:"#ff9999",fontSize:9,letterSpacing:2,textTransform:"uppercase",fontWeight:600,display:"none"}}>Plateforme universitaire</div>
           </div>
 
@@ -1060,7 +1060,7 @@ export default function App() {
         {/* Texte défilant */}
         <div style={{background:"rgba(0,0,0,0.2)",padding:"7px 0",borderBottom:"1px solid rgba(255,255,255,0.1)",overflow:"hidden",width:"100%"}}>
           <div className="marquee" style={{color:"rgba(255,255,255,0.9)",fontSize:13}}>
-            {["Bienvenue sur Faso_Karanbissi","·","Achetez et vendez entre étudiants","·","Proposez vos services sur le campus","·","Connectez-vous avec vos camarades","·","Livres, électronique, vêtements et plus","·","Bienvenue sur Faso_Karanbissi","·","Achetez et vendez entre étudiants","·","Proposez vos services sur le campus","·","Connectez-vous avec vos camarades","·"].map((t,i)=>(
+            {["Bienvenue sur Faso_Karambisi","·","Achetez et vendez entre étudiants","·","Proposez vos services sur le campus","·","Connectez-vous avec vos camarades","·","Livres, électronique, vêtements et plus","·","Bienvenue sur Faso_Karambisi","·","Achetez et vendez entre étudiants","·","Proposez vos services sur le campus","·","Connectez-vous avec vos camarades","·"].map((t,i)=>(
               <span key={i} style={{padding:"0 28px",opacity:t==="·"?0.4:1}}>{t}</span>
             ))}
           </div>
@@ -1788,7 +1788,7 @@ export default function App() {
 
     </div>
       <footer style={{background:"#232f3e",padding:"18px 16px",textAlign:"center",marginTop:36}}>
-        <div style={{color:"white",fontSize:14,fontWeight:600,marginBottom:4}}>Faso_Karanbissi</div>
+        <div style={{color:"white",fontSize:14,fontWeight:600,marginBottom:4}}>Faso_Karambisi</div>
         <div style={{fontSize:12,color:"#888"}}>Plateforme universitaire · Tous droits réservés</div>
       </footer>
     </div>
