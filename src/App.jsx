@@ -48,6 +48,33 @@ const tags = ["Tout","Livres & Cours","Electronique","Vetements","Services","Aut
 const emptyForm = {type:"product",title:"",price:"",tag:"Livres & Cours",condition:"",description:"",ville:"",quartier:"",photos:[]};
 const emptyReg = {nom:"",prenom:"",dateNaissance:"",sexe:"",filiere:"",annee:"",telephone:"",photo:null,photoFile:null,email:"",password:"",confirmPassword:""};
 
+/* ─── AUTH WRAPPER — défini HORS de App pour éviter le remontage des inputs à chaque render ─── */
+const AuthWrap = ({title, sub, children, isMobile}) => (
+  <div style={{minHeight:"100vh",width:"100%",background:"#f3f3f3",display:"flex",alignItems:isMobile?"flex-start":"center",justifyContent:"center",padding:isMobile?"0":"24px",overflowY:"auto",WebkitOverflowScrolling:"touch"}}>
+    <style>{CSS}</style>
+    <div style={{width:"100%",maxWidth:isMobile?"100%":"860px",minHeight:isMobile?"100vh":"auto",background:"white",display:"flex",flexDirection:isMobile?"column":"row",flex:isMobile?1:"none",borderRadius:isMobile?0:"8px",overflow:isMobile?"visible":"hidden",boxShadow:isMobile?"none":"0 2px 24px rgba(0,0,0,0.10)"}}>
+      <div style={{display:isMobile?"none":"flex",width:"36%",background:"#C8102E",padding:"48px 36px",flexDirection:"column",justifyContent:"center",flexShrink:0}}>
+        <div style={{color:"white"}}>
+          <div style={{fontSize:11,fontWeight:600,letterSpacing:2.5,textTransform:"uppercase",opacity:0.75,marginBottom:12}}>Bienvenue sur</div>
+          <div style={{fontSize:26,fontWeight:700,lineHeight:1.25,marginBottom:8}}>Faso_Karanbissi</div>
+          <div style={{width:36,height:2,background:"rgba(255,255,255,0.4)",marginBottom:20}}/>
+          <p style={{fontSize:13,lineHeight:1.8,opacity:0.85,fontWeight:300,marginBottom:28}}>La plateforme qui connecte les étudiants de votre campus pour vendre, acheter et proposer des services.</p>
+          {["Vendez vos articles","Proposez vos services","Entraide entre étudiants"].map(item=>(
+            <div key={item} style={{display:"flex",alignItems:"center",gap:10,fontSize:13,opacity:0.9,marginBottom:10}}>
+              <div style={{width:5,height:5,borderRadius:"50%",background:"white",flexShrink:0}}/>{item}
+            </div>
+          ))}
+        </div>
+      </div>
+      <div style={{flex:1,padding:isMobile?"24px 18px":"48px 44px",display:"flex",flexDirection:"column",justifyContent:isMobile?"flex-start":"center",overflowY:"auto",paddingBottom:isMobile?120:44,WebkitOverflowScrolling:"touch"}}>
+        <div style={{fontSize:isMobile?20:24,fontWeight:700,color:"#111",marginBottom:4}}>{title}</div>
+        <div style={{fontSize:14,color:"#888",marginBottom:24}}>{sub}</div>
+        {children}
+      </div>
+    </div>
+  </div>
+);
+
 const CSS = `
   @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
@@ -759,13 +786,22 @@ export default function App() {
     }catch(e){console.error(e);}
   };
 
+  const [deletingMsgId, setDeletingMsgId] = useState(null);
+
   const deleteMsg = async (msgId) => {
-    if(!window.confirm("Supprimer ce message ?")) return;
-    try{
-      await sb(`messages?id=eq.${msgId}`,{method:"DELETE",token:authToken,prefer:"return=minimal"});
-      setConvMsgs(p=>p.filter(m=>m.id!==msgId));
-      fetchConvs();
-    }catch(e){console.error(e);}
+    if(deletingMsgId===msgId) {
+      // 2e clic = confirmer la suppression
+      try{
+        await sb(`messages?id=eq.${msgId}`,{method:"DELETE",token:authToken,prefer:"return=minimal"});
+        setConvMsgs(p=>p.filter(m=>m.id!==msgId));
+        fetchConvs();
+      }catch(e){console.error(e);}
+      finally{setDeletingMsgId(null);}
+    } else {
+      // 1er clic = demander confirmation (auto-annulé après 3s)
+      setDeletingMsgId(msgId);
+      setTimeout(()=>setDeletingMsgId(null),3000);
+    }
   };
 
   const myAds = listings.filter(l=>l.seller?.id===user?.id);
@@ -777,36 +813,11 @@ export default function App() {
   const onArticlePhotos = e=>{Array.from(e.target.files).forEach(f=>{const r=new FileReader();r.onload=ev=>setForm(x=>({...x,photos:x.photos.length<5?[...x.photos,{base64:ev.target.result,file:f}]:x.photos}));r.readAsDataURL(f);});};
   const onProfilPhoto = e=>{const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>setProfilForm(x=>({...x,photo:ev.target.result,photoFile:f}));r.readAsDataURL(f);};
 
-  /* ─── AUTH WRAPPER ─── */
-  const AuthWrap = ({title, sub, children}) => (
-    <div style={{minHeight:"100vh",width:"100%",background:"#f3f3f3",display:"flex",alignItems:isMobile?"flex-start":"center",justifyContent:"center",padding:isMobile?"0":"24px",overflowY:"auto",WebkitOverflowScrolling:"touch"}}>
-      <style>{CSS}</style>
-      <div style={{width:"100%",maxWidth:isMobile?"100%":"860px",minHeight:isMobile?"100vh":"auto",background:"white",display:"flex",flexDirection:isMobile?"column":"row",flex:isMobile?1:"none",borderRadius:isMobile?0:"8px",overflow:isMobile?"visible":"hidden",boxShadow:isMobile?"none":"0 2px 24px rgba(0,0,0,0.10)"}}>
-        <div style={{display:isMobile?"none":"flex",width:"36%",background:"#C8102E",padding:"48px 36px",flexDirection:"column",justifyContent:"center",flexShrink:0}}>
-          <div style={{color:"white"}}>
-            <div style={{fontSize:11,fontWeight:600,letterSpacing:2.5,textTransform:"uppercase",opacity:0.75,marginBottom:12}}>Bienvenue sur</div>
-            <div style={{fontSize:26,fontWeight:700,lineHeight:1.25,marginBottom:8}}>Faso_Karanbissi</div>
-            <div style={{width:36,height:2,background:"rgba(255,255,255,0.4)",marginBottom:20}}/>
-            <p style={{fontSize:13,lineHeight:1.8,opacity:0.85,fontWeight:300,marginBottom:28}}>La plateforme qui connecte les etudiants de votre campus pour vendre, acheter et proposer des services.</p>
-            {["Vendez vos articles","Proposez vos services","Entraide entre etudiants"].map(item=>(
-              <div key={item} style={{display:"flex",alignItems:"center",gap:10,fontSize:13,opacity:0.9,marginBottom:10}}>
-                <div style={{width:5,height:5,borderRadius:"50%",background:"white",flexShrink:0}}/>{item}
-              </div>
-            ))}
-          </div>
-        </div>
-        <div style={{flex:1,padding:isMobile?"24px 18px":"48px 44px",display:"flex",flexDirection:"column",justifyContent:isMobile?"flex-start":"center",overflowY:"auto",paddingBottom:isMobile?120:44,WebkitOverflowScrolling:"touch"}}>
-          <div style={{fontSize:isMobile?20:24,fontWeight:700,color:"#111",marginBottom:4}}>{title}</div>
-          <div style={{fontSize:14,color:"#888",marginBottom:24}}>{sub}</div>
-          {children}
-        </div>
-      </div>
-    </div>
-  );
+  /* ─── AUTH WRAPPER — défini en dehors de App, voir plus haut ─── */
 
 
   /* ─── LOGIN ─── */
-  if(page==="login") return (<AuthWrap title="Connexion" sub="Connectez-vous à votre compte">
+  if(page==="login") return (<AuthWrap isMobile={isMobile} title="Connexion" sub="Connectez-vous à votre compte">
     <div style={{display:"flex",flexDirection:"column",gap:16}}>
       <div><label className="lbl">Email</label><input className="inp" type="email" placeholder="exemple@email.com" value={loginEmail} onChange={e=>setLoginEmail(e.target.value)} onKeyDown={e=>e.key==="Enter"&&handleLogin()}/></div>
       <div><label className="lbl">Mot de passe</label>
@@ -824,7 +835,7 @@ export default function App() {
   </AuthWrap>);
 
     /* ─── FORGOT ─── */
-  if(page==="forgot") return (<AuthWrap title="Mot de passe oublié" sub="Un lien sera envoyé à votre email">
+  if(page==="forgot") return (<AuthWrap isMobile={isMobile} title="Mot de passe oublié" sub="Un lien sera envoyé à votre email">
     !forgotOk?(
       <div style={{display:"flex",flexDirection:"column",gap:16}}>
         <div><label className="lbl">Email</label><input className="inp" type="email" placeholder="exemple@email.com" value={forgotEmail} onChange={e=>setForgotEmail(e.target.value)}/></div>
@@ -840,7 +851,7 @@ export default function App() {
     )
   </AuthWrap>);
 
-  if(page==="reset") return (<AuthWrap title="Nouveau mot de passe" sub="Choisissez un nouveau mot de passe">
+  if(page==="reset") return (<AuthWrap isMobile={isMobile} title="Nouveau mot de passe" sub="Choisissez un nouveau mot de passe">
     !resetOk?(
       <div style={{display:"flex",flexDirection:"column",gap:16}}>
         <div><label className="lbl">Nouveau mot de passe</label>
@@ -861,7 +872,7 @@ export default function App() {
     ):<div className="ok-box">Mot de passe mis à jour ! Redirection...</div>
   </AuthWrap>);
 
-  if(page==="register") return (<AuthWrap title={regStep===1?"Informations personnelles":regStep===2?"Informations académiques":"Identifiants de connexion"} sub={`Étape ${regStep} sur 3`}>
+  if(page==="register") return (<AuthWrap isMobile={isMobile} title={regStep===1?"Informations personnelles":regStep===2?"Informations académiques":"Identifiants de connexion"} sub={`Étape ${regStep} sur 3`}>
     <>
       <div style={{display:"flex",alignItems:"center",marginBottom:22}}>
         {[1,2,3].map((s,i)=>(
@@ -1370,84 +1381,126 @@ export default function App() {
 
       {/* ── MESSAGERIE ── */}
             {showMsgs&&(
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>{setShowMsgs(false);setActiveConv(null);}}>
-          <div style={{background:"white",borderRadius:isMobile?"16px 16px 0 0":"6px",width:"100%",maxWidth:700,height:"88vh",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
-            <div style={{width:38,height:4,background:"#ddd",borderRadius:2,margin:"10px auto 6px",flexShrink:0,display:isMobile?"block":"none"}}/>
-            <div style={{padding:"11px 16px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-              {activeConv ? (
-                <button onClick={()=>setActiveConv(null)} style={{background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:6,fontSize:14,fontWeight:600,color:"#111"}}>
-                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#111" strokeWidth="2" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-                  {activeConv.user?.prenom} {activeConv.user?.nom}
-                </button>
-              ) : (
-                <div style={{fontSize:15,fontWeight:700}}>Messagerie</div>
-              )}
-              <button onClick={()=>{setShowMsgs(false);setActiveConv(null);}} style={{background:"none",border:"none",cursor:"pointer",padding:4}}><Ic n="x" s={20} c="#888"/></button>
+        <div style={{position:"fixed",inset:0,zIndex:200,display:"flex",flexDirection:"column",background:"white"}}>
+          {/* Header */}
+          <div style={{padding:"0 16px",borderBottom:"1px solid #eee",background:"white",flexShrink:0,display:"flex",justifyContent:"space-between",alignItems:"center",height:56,boxShadow:"0 1px 4px rgba(0,0,0,0.06)"}}>
+            {activeConv ? (
+              <button onClick={()=>setActiveConv(null)} style={{background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:8,fontSize:15,fontWeight:700,color:"#111",padding:"8px 0"}}>
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8102E" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+                <div style={{width:32,height:32,borderRadius:"50%",background:"#C8102E",display:"flex",alignItems:"center",justifyContent:"center",color:"white",fontSize:12,fontWeight:700,flexShrink:0}}>{activeConv.user?.prenom?.[0]}{activeConv.user?.nom?.[0]}</div>
+                {activeConv.user?.prenom} {activeConv.user?.nom}
+              </button>
+            ) : (
+              <div style={{fontSize:17,fontWeight:700,color:"#111"}}>💬 Messagerie</div>
+            )}
+            <button onClick={()=>{setShowMsgs(false);setActiveConv(null);}} style={{background:"none",border:"none",cursor:"pointer",padding:8,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center"}}><Ic n="x" s={22} c="#555"/></button>
+          </div>
+
+          <div style={{display:"flex",flex:1,overflow:"hidden"}}>
+            {/* Liste conversations — masquée sur mobile si conv active */}
+            <div style={{
+              display: isMobile && activeConv ? "none" : "flex",
+              flexDirection: "column",
+              width: isMobile ? "100%" : "260px",
+              minWidth: isMobile ? "auto" : "260px",
+              flexShrink: 0,
+              borderRight: isMobile ? "none" : "1px solid #eee",
+              overflowY: "auto",
+              background: "#fafafa",
+            }}>
+              {convs.length===0?(
+                <div style={{textAlign:"center",padding:"48px 16px",color:"#bbb"}}>
+                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ddd" strokeWidth="1.5" strokeLinecap="round" style={{margin:"0 auto 12px"}}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  <div style={{fontSize:14}}>Aucune conversation</div>
+                </div>
+              ):convs.map(cv=>(
+                <div key={cv.userId} className={"conv-row"+(activeConv?.userId===cv.userId?" on":"")} onClick={()=>openConv(cv)} style={{background:activeConv?.userId===cv.userId?"#fff0f0":"transparent"}}>
+                  <div style={{width:42,height:42,borderRadius:"50%",background:"#C8102E",display:"flex",alignItems:"center",justifyContent:"center",color:"white",fontSize:14,fontWeight:700,flexShrink:0}}>{cv.user?.prenom?.[0]}{cv.user?.nom?.[0]}</div>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{fontSize:14,fontWeight:cv.unread>0?700:600,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",color:"#111"}}>{cv.user?.prenom} {cv.user?.nom}</div>
+                    <div style={{fontSize:12,color:"#999",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",marginTop:2}}>{cv.lastMsg?.contenu}</div>
+                  </div>
+                  {cv.unread>0&&<span style={{background:"#C8102E",color:"white",borderRadius:10,padding:"2px 7px",fontSize:11,fontWeight:700,flexShrink:0}}>{cv.unread}</span>}
+                </div>
+              ))}
             </div>
 
-            <div style={{display:"flex",flex:1,overflow:"hidden"}}>
-              {/* Liste conversations */}
-              <div style={{
-                display: isMobile && activeConv ? "none" : "flex",
-                flexDirection: "column",
-                width: isMobile ? "100%" : "210px",
-                minWidth: isMobile ? "auto" : "210px",
-                flexShrink: 0,
-                borderRight: isMobile ? "none" : "1px solid #eee",
-                overflowY: "auto",
-              }}>
-                {convs.length===0?(
-                  <div style={{textAlign:"center",padding:"28px 12px",color:"#aaa",fontSize:13}}>Aucune conversation</div>
-                ):convs.map(cv=>(
-                  <div key={cv.userId} className={"conv-row"+(activeConv?.userId===cv.userId?" on":"")} onClick={()=>openConv(cv)}>
-                    <div style={{width:34,height:34,borderRadius:"50%",background:"#C8102E",display:"flex",alignItems:"center",justifyContent:"center",color:"white",fontSize:12,fontWeight:700,flexShrink:0}}>{cv.user?.prenom?.[0]}{cv.user?.nom?.[0]}</div>
-                    <div style={{flex:1,minWidth:0}}>
-                      <div style={{fontSize:13,fontWeight:600,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{cv.user?.prenom} {cv.user?.nom}</div>
-                      <div style={{fontSize:11,color:"#888",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{cv.lastMsg?.contenu}</div>
-                    </div>
-                    {cv.unread>0&&<span style={{background:"#C8102E",color:"white",borderRadius:"50%",width:18,height:18,fontSize:10,display:"flex",alignItems:"center",justifyContent:"center",fontWeight:700,flexShrink:0}}>{cv.unread}</span>}
+            {/* Conversation active */}
+            {activeConv ? (
+              <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden",minWidth:0,background:"white"}}>
+                {activeConv.annonce&&(
+                  <div style={{padding:"7px 16px",background:"#fff8e6",borderBottom:"1px solid #f5d78e",fontSize:12,color:"#7a5c00",display:"flex",alignItems:"center",gap:6}}>
+                    <span style={{fontWeight:600}}>Re:</span> {activeConv.annonce?.titre}
                   </div>
-                ))}
-              </div>
-
-              {/* Conversation active — cachée si pas de conv sélectionnée sur mobile */}
-              {(activeConv || !isMobile)&&activeConv&&(
-                <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden",minWidth:0}}>
-                  {activeConv.annonce&&(
-                    <div style={{padding:"6px 14px",background:"#fff8e6",borderBottom:"1px solid #f5d78e",fontSize:11,color:"#7a5c00"}}>
-                      Re: {activeConv.annonce?.titre}
-                    </div>
-                  )}
-                  <div style={{flex:1,overflowY:"auto",padding:"12px",display:"flex",flexDirection:"column",gap:8}}>
-                    {msgLoading?<div style={{textAlign:"center",color:"#aaa",paddingTop:24}}>Chargement...</div>:
-                      convMsgs.map((m,i)=>(
-                        <div key={i} style={{display:"flex",flexDirection:"column",alignItems:m.expediteur_id===user.id?"flex-end":"flex-start"}}>
-                          <div style={{display:"flex",alignItems:"flex-end",gap:6,flexDirection:m.expediteur_id===user.id?"row-reverse":"row"}}>
-                            <div className={m.expediteur_id===user.id?"msg-me":"msg-other"}>{m.contenu}</div>
-                            {m.expediteur_id===user.id&&(
-                              <button onClick={()=>deleteMsg(m.id)} title="Supprimer" style={{background:"none",border:"none",cursor:"pointer",padding:"2px 4px",opacity:0.4,flexShrink:0,fontSize:12,color:"#888",lineHeight:1}} onMouseEnter={e=>e.currentTarget.style.opacity=1} onMouseLeave={e=>e.currentTarget.style.opacity=0.4}>✕</button>
-                            )}
-                          </div>
-                          <div style={{fontSize:10,color:"#aaa",marginTop:3}}>{new Date(m.created_at).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}</div>
+                )}
+                {/* Zone messages */}
+                <div style={{flex:1,overflowY:"auto",padding:"16px",display:"flex",flexDirection:"column",gap:10,background:"#f7f7f7"}}>
+                  {msgLoading ? (
+                    <div style={{textAlign:"center",color:"#aaa",paddingTop:32}}>Chargement...</div>
+                  ) : convMsgs.length===0 ? (
+                    <div style={{textAlign:"center",color:"#bbb",paddingTop:40,fontSize:13}}>Démarrez la conversation !</div>
+                  ) : convMsgs.map((m,i)=>(
+                    <div key={m.id||i} style={{display:"flex",flexDirection:"column",alignItems:m.expediteur_id===user.id?"flex-end":"flex-start"}}>
+                      <div style={{display:"flex",alignItems:"center",gap:6,flexDirection:m.expediteur_id===user.id?"row-reverse":"row",maxWidth:"80%"}}>
+                        <div className={m.expediteur_id===user.id?"msg-me":"msg-other"} style={{position:"relative"}}>
+                          {m.contenu}
                         </div>
-                      ))
-                    }
-                    <div ref={msgsEndRef}/>
-                  </div>
-                  <div style={{padding:"10px 14px",borderTop:"1px solid #eee",display:"flex",gap:8,alignItems:"flex-end",flexShrink:0}}>
-                    <textarea className="msg-inp" placeholder="Écrire un message..." value={newMsg} onChange={e=>setNewMsg(e.target.value)} rows={1} onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMsg(activeConv.userId,activeConv.annonce?.id||null);}}}/>
-                    <button className="btn btn-red" style={{padding:"10px 14px",borderRadius:22,flexShrink:0,display:"flex",alignItems:"center",gap:6}} onClick={()=>sendMsg(activeConv.userId,activeConv.annonce?.id||null)}><Ic n="send" s={15} c="white"/>Envoyer</button>
-                  </div>
+                        {m.expediteur_id===user.id&&(
+                          <button
+                            onClick={()=>deleteMsg(m.id)}
+                            title={deletingMsgId===m.id?"Confirmer ?":"Supprimer"}
+                            style={{
+                              background: deletingMsgId===m.id?"#C8102E":"#fee",
+                              border: deletingMsgId===m.id?"none":"1px solid #fcc",
+                              borderRadius:"50%",width:28,height:28,cursor:"pointer",
+                              display:"flex",alignItems:"center",justifyContent:"center",
+                              flexShrink:0,transition:"all 0.2s",color:"white",fontSize:11,fontWeight:700,
+                              opacity: deletingMsgId===m.id?1:0,
+                            }}
+                            onMouseEnter={e=>{if(deletingMsgId!==m.id)e.currentTarget.style.opacity=1;}}
+                            onMouseLeave={e=>{if(deletingMsgId!==m.id)e.currentTarget.style.opacity=0;}}
+                            onTouchStart={e=>{e.currentTarget.style.opacity=1;}}
+                            onTouchEnd={e=>{if(deletingMsgId!==m.id)setTimeout(()=>{if(e.currentTarget)e.currentTarget.style.opacity=0;},2000);}}
+                          >
+                            {deletingMsgId===m.id ? "✓" : <Ic n="del" s={13} c="#C8102E"/>}
+                          </button>
+                        )}
+                      </div>
+                      <div style={{fontSize:10,color:"#bbb",marginTop:4,paddingLeft:4}}>{new Date(m.created_at).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}</div>
+                    </div>
+                  ))}
+                  <div ref={msgsEndRef}/>
                 </div>
-              )}
-
-              {/* Message si aucune conv sélectionnée — desktop uniquement */}
-              {!activeConv&&(
-                <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center",color:"#aaa",fontSize:13,display:"none"}} className="desktop-hint">
-                  Sélectionnez une conversation
+                {/* Zone saisie */}
+                <div style={{padding:"10px 12px",borderTop:"1px solid #eee",display:"flex",gap:8,alignItems:"flex-end",flexShrink:0,background:"white"}}>
+                  <textarea
+                    className="msg-inp"
+                    placeholder="Écrire un message..."
+                    value={newMsg}
+                    onChange={e=>setNewMsg(e.target.value)}
+                    rows={1}
+                    style={{flex:1}}
+                    onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMsg(activeConv.userId,activeConv.annonce?.id||null);}}}
+                  />
+                  <button
+                    className="btn btn-red"
+                    style={{padding:"10px 16px",borderRadius:22,flexShrink:0,display:"flex",alignItems:"center",gap:6,height:44}}
+                    onClick={()=>sendMsg(activeConv.userId,activeConv.annonce?.id||null)}
+                  >
+                    <Ic n="send" s={15} c="white"/>
+                    {!isMobile&&"Envoyer"}
+                  </button>
                 </div>
-              )}
-            </div>
+              </div>
+            ) : (
+              /* État vide — desktop uniquement */
+              !isMobile&&(
+                <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",color:"#ccc",gap:12}}>
+                  <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" strokeWidth="1.5" strokeLinecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                  <div style={{fontSize:14}}>Sélectionnez une conversation</div>
+                </div>
+              )
+            )}
           </div>
         </div>
       )}
@@ -1698,7 +1751,7 @@ export default function App() {
       {/* ── NOTIFICATIONS PANEL ── */}
       {showNotifs && (
         <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>setShowNotifs(false)}>
-          <div style={{background:"white",borderRadius:isMobile?"16px 16px 0 0":"6px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()} style={{maxWidth:380}}>
+          <div style={{background:"white",borderRadius:isMobile?"16px 16px 0 0":"6px",width:"100%",maxWidth:380,maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
             <div style={{width:38,height:4,background:"#ddd",borderRadius:2,margin:"10px auto 6px",flexShrink:0,display:isMobile?"block":"none"}}/>
             <div style={{padding:"12px 16px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
               <div style={{fontSize:15,fontWeight:700}}>Notifications {notifCount>0&&<Badge n={notifCount}/>}</div>
