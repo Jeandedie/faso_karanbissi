@@ -76,38 +76,39 @@ const AuthWrap = ({title, sub, children, isMobile}) => (
 );
 
 const CSS = `
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-  /* ── RESET TOTAL ── */
+  /* ── RESET ── */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
   html { -webkit-text-size-adjust: 100%; }
   html, body, #root { width: 100%; margin: 0; padding: 0; overflow-x: hidden; }
   html { scroll-padding-bottom: 300px; }
   input:focus, textarea:focus { scroll-margin-bottom: 100px; }
-  body { font-family: 'Inter', sans-serif; background: white; }
+  body { font-family: 'Inter', sans-serif; background: #f8f8f8; color: #111; }
   img { max-width: 100%; display: block; }
   input, select, textarea, button { font-family: 'Inter', sans-serif; }
 
   /* ── BOUTONS ── */
-  .btn { display: inline-block; border: none; border-radius: 4px; cursor: pointer; font-weight: 600; font-size: 14px; padding: 11px 20px; transition: background 0.15s; text-align: center; }
-  .btn-red { background: #C8102E; color: white; }
-  .btn-red:hover { background: #a00d24; }
-  .btn-red:disabled { opacity: 0.7; cursor: not-allowed; }
-  .btn-white { background: white; color: #111; border: 1px solid #d5d9d9; }
-  .btn-white:hover { background: #f7f8f8; }
-  .btn-block { display: block; width: 100%; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; padding: 11px 20px; transition: all 0.18s; text-align: center; }
+  .btn-red { background: #C8102E; color: white; box-shadow: 0 1px 4px rgba(200,16,46,0.25); }
+  .btn-red:hover { background: #a00d24; box-shadow: 0 2px 8px rgba(200,16,46,0.35); transform: translateY(-1px); }
+  .btn-red:active { transform: translateY(0); }
+  .btn-red:disabled { opacity: 0.65; cursor: not-allowed; transform: none; box-shadow: none; }
+  .btn-white { background: white; color: #111; border: 1px solid #ddd; }
+  .btn-white:hover { background: #f7f7f7; border-color: #bbb; }
+  .btn-block { display: flex; width: 100%; }
 
   /* ── INPUTS ── */
-  .inp { width: 100%; padding: 11px 12px; border: 1px solid #adb1b8; border-radius: 4px; font-size: 16px; outline: none; background: white; color: #111; transition: border 0.15s, box-shadow 0.15s; -webkit-appearance: none; }
-  .inp:focus { border-color: #C8102E; box-shadow: 0 0 0 3px rgba(200,16,46,0.08); }
+  .inp { width: 100%; padding: 11px 13px; border: 1.5px solid #ddd; border-radius: 6px; font-size: 16px; outline: none; background: white; color: #111; transition: border 0.15s, box-shadow 0.15s; -webkit-appearance: none; }
+  .inp:focus { border-color: #C8102E; box-shadow: 0 0 0 3px rgba(200,16,46,0.1); }
   .inp.err { border-color: #C8102E; background: #fff8f8; }
-  .lbl { font-size: 12px; font-weight: 600; color: #444; display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.4px; }
-  .lbl-opt::after { content: " (optionnel)"; font-weight: 400; color: #999; text-transform: none; }
-  .err-box { background: #fff3f3; border: 1px solid #f5c6cb; border-radius: 4px; padding: 10px 14px; font-size: 13px; color: #C8102E; }
-  .ok-box { background: #f0faf0; border: 1px solid #b3dfb3; border-radius: 4px; padding: 10px 14px; font-size: 13px; color: #2d7a2d; }
+  .lbl { font-size: 11px; font-weight: 700; color: #555; display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.6px; }
+  .lbl-opt::after { content: " (optionnel)"; font-weight: 400; color: #aaa; text-transform: none; }
+  .err-box { background: #fff3f3; border: 1px solid #fcc; border-radius: 6px; padding: 11px 14px; font-size: 13px; color: #C8102E; display: flex; align-items: center; gap: 8px; }
+  .ok-box { background: #f0faf0; border: 1px solid #b3dfb3; border-radius: 6px; padding: 11px 14px; font-size: 13px; color: #2d7a2d; }
   .pwd-wrap { position: relative; display: flex; align-items: center; }
-  .pwd-wrap .inp { padding-right: 42px; }
-  .pwd-eye { position: absolute; right: 10px; background: none; border: none; cursor: pointer; color: #888; padding: 4px; display: flex; align-items: center; }
+  .pwd-wrap .inp { padding-right: 44px; }
+  .pwd-eye { position: absolute; right: 10px; background: none; border: none; cursor: pointer; color: #999; padding: 4px; display: flex; align-items: center; }
 
   /* ── AUTH ── */
   .auth-page { min-height: 100vh; width: 100%; background: #f3f3f3; display: flex; align-items: flex-start; justify-content: center; }
@@ -115,128 +116,127 @@ const CSS = `
   .auth-left { display: none; }
   .auth-body { flex: 1; padding: 32px 20px; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; }
   .form-2col { display: grid; grid-template-columns: 1fr; gap: 14px; }
-  .sexe-btn { flex: 1; padding: 11px; border-radius: 4px; cursor: pointer; font-weight: 500; font-size: 14px; border: 1px solid #adb1b8; background: white; color: #333; transition: all 0.15s; }
-  .sexe-btn.on { background: #C8102E; color: white; border-color: #C8102E; }
-  .a-link { color: #C8102E; cursor: pointer; font-weight: 600; font-size: 14px; background: none; border: none; text-decoration: underline; }
+  .sexe-btn { flex: 1; padding: 11px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; border: 1.5px solid #ddd; background: white; color: #555; transition: all 0.15s; }
+  .sexe-btn.on { background: #C8102E; color: white; border-color: #C8102E; box-shadow: 0 1px 4px rgba(200,16,46,0.25); }
+  .a-link { color: #C8102E; cursor: pointer; font-weight: 600; font-size: 14px; background: none; border: none; text-decoration: underline; text-underline-offset: 2px; }
 
   /* ── NAVIGATION ── */
-  .nav-btn { padding: 7px 14px; border-radius: 3px; cursor: pointer; font-weight: 500; font-size: 13px; border: none; background: none; color: white; white-space: nowrap; transition: all 0.15s; }
-  .nav-btn:hover { background: rgba(255,255,255,0.15); }
-  .nav-btn.on { background: white; color: #C8102E; }
+  .nav-btn { padding: 7px 15px; border-radius: 4px; cursor: pointer; font-weight: 500; font-size: 13px; border: none; background: none; color: rgba(255,255,255,0.85); white-space: nowrap; transition: all 0.15s; }
+  .nav-btn:hover { background: rgba(255,255,255,0.15); color: white; }
+  .nav-btn.on { background: white; color: #C8102E; font-weight: 700; }
 
   /* ── CARTES ── */
   .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  .card { background: white; border: 1px solid #ddd; border-radius: 6px; overflow: hidden; cursor: pointer; transition: box-shadow 0.15s; }
-  .card:hover { box-shadow: 0 2px 14px rgba(0,0,0,0.12); }
+  .card { background: white; border: 1px solid #eee; border-radius: 10px; overflow: hidden; cursor: pointer; transition: box-shadow 0.18s, transform 0.18s; }
+  .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.10); transform: translateY(-2px); }
+  .card:active { transform: translateY(0); }
 
-  /* ── MODALS (bottom sheet mobile) ── */
-  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.52); z-index: 200; display: flex; align-items: flex-end; justify-content: center; }
-  .modal { background: white; border-radius: 16px 16px 0 0; width: 100%; max-height: 92vh; display: flex; flex-direction: column; overflow: hidden; }
-  .modal-handle { width: 38px; height: 4px; background: #ddd; border-radius: 2px; margin: 10px auto 6px; flex-shrink: 0; }
-  .tab-btn { flex: 1; padding: 13px; border: none; background: none; cursor: pointer; font-weight: 600; font-size: 14px; border-bottom: 2px solid transparent; color: #888; transition: all 0.15s; }
+  /* ── MODAL HEADER UNIFORME ── */
+  .modal-hdr { height: 52px; padding: 0 16px; border-bottom: 1px solid #eee; background: white; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 0 #f0f0f0; }
+  .modal-hdr-title { font-size: 15px; font-weight: 700; color: #111; display: flex; align-items: center; gap: 10px; }
+  .back-btn { display: flex; align-items: center; gap: 6px; background: none; border: none; cursor: pointer; font-size: 14px; font-weight: 600; color: #111; padding: 6px 0; border-radius: 4px; transition: color 0.15s; }
+  .back-btn:hover { color: #C8102E; }
+  .back-btn svg { transition: transform 0.15s; }
+  .back-btn:hover svg { transform: translateX(-2px); }
+  .close-btn { width: 32px; height: 32px; border-radius: 50%; background: #f3f3f3; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; flex-shrink: 0; }
+  .close-btn:hover { background: #ffe8ec; }
+  .modal-handle { width: 36px; height: 4px; background: #ddd; border-radius: 2px; margin: 10px auto 0; flex-shrink: 0; }
+
+  /* ── MODALS ── */
+  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: flex; align-items: flex-end; justify-content: center; }
+  .modal { background: white; border-radius: 18px 18px 0 0; width: 100%; max-height: 92vh; display: flex; flex-direction: column; overflow: hidden; }
+  .tab-btn { flex: 1; padding: 13px; border: none; background: none; cursor: pointer; font-weight: 600; font-size: 14px; border-bottom: 2px solid transparent; color: #999; transition: all 0.15s; }
   .tab-btn.on { color: #C8102E; border-bottom-color: #C8102E; }
 
   /* ── SIDEBAR ── */
-  .sidebar { position: fixed; bottom: 0; left: 0; right: 0; max-height: 88vh; background: white; border-radius: 16px 16px 0 0; z-index: 300; padding: 0 20px 24px; overflow-y: auto; }
-  .sidebar-handle { width: 38px; height: 4px; background: #ddd; border-radius: 2px; margin: 12px auto 18px; }
+  .sidebar { position: fixed; bottom: 0; left: 0; right: 0; max-height: 88vh; background: white; border-radius: 18px 18px 0 0; z-index: 300; padding: 0 20px 24px; overflow-y: auto; }
 
   /* ── DROPDOWN ── */
   .dropdown { position: relative; }
-  .dd-menu { position: absolute; top: calc(100% + 8px); right: 0; background: white; border: 1px solid #eee; border-radius: 6px; box-shadow: 0 4px 20px rgba(0,0,0,0.14); min-width: 185px; z-index: 2000; overflow: hidden; }
+  .dd-menu { position: absolute; top: calc(100% + 8px); right: 0; background: white; border: 1px solid #eee; border-radius: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.14); min-width: 200px; z-index: 2000; overflow: hidden; }
   .dd-item { display: flex; align-items: center; gap: 10px; padding: 12px 16px; font-size: 14px; color: #111; cursor: pointer; border: none; background: none; width: 100%; text-align: left; transition: background 0.12s; }
-  .dd-item:hover { background: #f5f5f5; }
+  .dd-item:hover { background: #fafafa; }
   .dd-item.red { color: #C8102E; }
   .dd-sep { height: 1px; background: #f0f0f0; margin: 4px 0; }
 
   /* ── MESSAGERIE ── */
-  .msg-me { background: #C8102E; color: white; border-radius: 16px 16px 4px 16px; padding: 10px 14px; font-size: 14px; max-width: 78%; line-height: 1.5; word-break: break-word; }
-  .msg-other { background: #f0f0f0; color: #111; border-radius: 16px 16px 16px 4px; padding: 10px 14px; font-size: 14px; max-width: 78%; line-height: 1.5; word-break: break-word; }
-  .conv-row { display: flex; align-items: center; gap: 12px; padding: 13px 14px; cursor: pointer; border-bottom: 1px solid #f5f5f5; transition: background 0.15s; }
+  .msg-me { background: #C8102E; color: white; border-radius: 18px 18px 4px 18px; padding: 10px 14px; font-size: 14px; max-width: 78%; line-height: 1.55; word-break: break-word; box-shadow: 0 1px 4px rgba(200,16,46,0.2); }
+  .msg-other { background: white; color: #111; border-radius: 18px 18px 18px 4px; padding: 10px 14px; font-size: 14px; max-width: 78%; line-height: 1.55; word-break: break-word; border: 1px solid #eee; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  .conv-row { display: flex; align-items: center; gap: 12px; padding: 14px 16px; cursor: pointer; border-bottom: 1px solid #f5f5f5; transition: background 0.15s; }
   .conv-row:hover { background: #fafafa; }
-  .conv-row.on { background: #fff5f5; border-left: 3px solid #C8102E; }
-  .msg-inp { flex: 1; padding: 11px 14px; border: 1px solid #ddd; border-radius: 22px; font-size: 16px; outline: none; resize: none; -webkit-appearance: none; }
-  .msg-inp:focus { border-color: #C8102E; }
+  .conv-row.on { background: #fff0f0; border-left: 3px solid #C8102E; }
+  .msg-inp { flex: 1; padding: 11px 16px; border: 1.5px solid #ddd; border-radius: 24px; font-size: 16px; outline: none; resize: none; -webkit-appearance: none; transition: border-color 0.15s; background: #fafafa; }
+  .msg-inp:focus { border-color: #C8102E; background: white; }
   select { font-size: 16px !important; -webkit-appearance: none; }
   input, textarea { font-size: 16px !important; }
 
   /* ── RÉSEAU ── */
   .reseau-sidebar { width: 100%; border-right: none; overflow-y: auto; flex-shrink: 0; display: flex; flex-direction: column; }
-  .groupe-item { padding: 12px 16px; cursor: pointer; border-bottom: 1px solid #f5f5f5; transition: background 0.12s; display: flex; align-items: center; gap: 10px; }
+  .groupe-item { padding: 13px 16px; cursor: pointer; border-bottom: 1px solid #f5f5f5; transition: background 0.12s; display: flex; align-items: center; gap: 10px; }
   .groupe-item:hover { background: #fafafa; }
-  .groupe-item.on { background: #fff5f5; border-left: 3px solid #C8102E; }
+  .groupe-item.on { background: #fff0f0; border-left: 3px solid #C8102E; }
   .domaine-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 700; text-transform: uppercase; }
-  .match-card { background: white; border: 1px solid #eee; border-radius: 8px; padding: 16px; margin-bottom: 12px; }
-  .score-ring { width: 52px; height: 52px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; flex-shrink: 0; border: 3px solid; }
+  .match-card { background: white; border: 1px solid #eee; border-radius: 10px; padding: 16px; margin-bottom: 10px; transition: box-shadow 0.15s; }
+  .match-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
+  .score-ring { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; flex-shrink: 0; border: 3px solid; }
 
   /* ── NOTIFICATIONS ── */
-  .notif-item { padding: 12px 16px; border-bottom: 1px solid #f5f5f5; cursor: pointer; transition: background 0.12s; display: flex; gap: 10px; align-items: flex-start; }
+  .notif-item { padding: 13px 16px; border-bottom: 1px solid #f5f5f5; cursor: pointer; transition: background 0.12s; display: flex; gap: 12px; align-items: flex-start; }
   .notif-item:hover { background: #fafafa; }
   .notif-item.unread { background: #fff8f8; border-left: 3px solid #C8102E; }
-  .notif-dot { width: 8px; height: 8px; border-radius: 50%; background: #C8102E; flex-shrink: 0; margin-top: 4px; }
+  .notif-dot { width: 8px; height: 8px; border-radius: 50%; background: #C8102E; flex-shrink: 0; margin-top: 5px; }
   .notif-dot.read { background: #ddd; }
 
   /* ── PHOTOS ── */
-  .photo-drop { border: 2px dashed #d5d9d9; border-radius: 6px; padding: 22px 16px; text-align: center; cursor: pointer; transition: border-color 0.15s; }
+  .photo-drop { border: 2px dashed #ddd; border-radius: 8px; padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.15s; background: #fafafa; }
   .photo-drop:hover { border-color: #C8102E; background: #fff8f8; }
-  .photo-thumb { position: relative; width: 76px; height: 76px; border-radius: 4px; overflow: hidden; border: 1px solid #ddd; flex-shrink: 0; }
+  .photo-thumb { position: relative; width: 76px; height: 76px; border-radius: 6px; overflow: hidden; border: 1px solid #ddd; flex-shrink: 0; }
   .photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
-  .photo-del { position: absolute; top: 2px; right: 2px; background: rgba(0,0,0,0.65); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+  .photo-del { position: absolute; top: 3px; right: 3px; background: rgba(0,0,0,0.6); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
   /* ── HERO ── */
   .hero-inner { display: flex; flex-direction: column; width: 100%; }
   .hero-features { display: none; }
   .hero-text { width: 100%; }
-  .hero-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+  .hero-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
 
   /* ── ANIMATIONS ── */
-  .spinner { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.4); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; margin-right: 6px; vertical-align: middle; }
+  .spinner { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.35); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; margin-right: 6px; vertical-align: middle; }
   @keyframes spin { to { transform: rotate(360deg); } }
   @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-  .marquee { display: flex; white-space: nowrap; animation: marquee 28s linear infinite; }
+  @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+  .marquee { display: flex; white-space: nowrap; animation: marquee 32s linear infinite; }
   .marquee:hover { animation-play-state: paused; }
+  .modal-animate { animation: slideUp 0.22s ease-out; }
+  .overlay-animate { animation: fadeIn 0.18s ease-out; }
 
-  .msg-back-btn { display: flex; }
   .desktop-hint { display: none; }
   ::-webkit-scrollbar { width: 4px; }
-  ::-webkit-scrollbar-thumb { background: #C8102E; border-radius: 2px; }
+  ::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
+  ::-webkit-scrollbar-thumb:hover { background: #C8102E; }
 
   /* ══════════════════════════════════════
      DESKTOP >= 768px
   ══════════════════════════════════════ */
   @media (min-width: 768px) {
-    /* Auth */
     .auth-page { align-items: center; padding: 24px; }
-    .auth-card { min-height: auto; max-width: 860px; flex-direction: row; border-radius: 8px; box-shadow: 0 2px 24px rgba(0,0,0,0.10); overflow: hidden; width: 100%; }
+    .auth-card { min-height: auto; max-width: 860px; flex-direction: row; border-radius: 10px; box-shadow: 0 4px 32px rgba(0,0,0,0.12); overflow: hidden; width: 100%; }
     .auth-left { display: flex; width: 36%; background: #C8102E; padding: 48px 36px; flex-direction: column; justify-content: center; flex-shrink: 0; }
     .auth-body { padding: 48px 44px; }
     .form-2col { grid-template-columns: 1fr 1fr; }
-
-    /* Modals */
     .overlay { align-items: center; padding: 20px; }
-    .modal { border-radius: 6px; max-width: 580px; max-height: 90vh; }
+    .modal { border-radius: 10px; max-width: 580px; max-height: 90vh; }
     .modal-handle { display: none; }
-
-    /* Sidebar */
-    .sidebar { position: fixed; bottom: auto; left: auto; right: 0; top: 0; height: 100vh; width: 360px; border-radius: 0; padding: 24px; }
-    .sidebar-handle { display: none; }
-
-    /* Cartes */
+    .sidebar { position: fixed; bottom: auto; left: auto; right: 0; top: 0; height: 100vh; width: 380px; border-radius: 0; padding: 24px; box-shadow: -4px 0 24px rgba(0,0,0,0.1); }
     .cards-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
-
-    /* Header */
     .hdr-search { display: flex !important; }
     .mob-search { display: none !important; }
-
-    /* Hero */
     .hero-inner { flex-direction: row; align-items: center; justify-content: space-between; }
     .hero-features { display: flex !important; }
     .hero-text { width: auto; flex: 1; }
-
-    /* Réseau */
     .reseau-sidebar { width: 260px; border-right: 1px solid #eee; }
-
-    /* Messagerie desktop : toujours deux colonnes */
-    .msg-list-panel { display: flex !important; flex-direction: column; width: 210px !important; min-width: 210px !important; border-right: 1px solid #eee; overflow-y: auto; }
+    .msg-list-panel { display: flex !important; flex-direction: column; width: 220px !important; min-width: 220px !important; border-right: 1px solid #eee; overflow-y: auto; }
     .msg-conv-panel { display: flex !important; }
   }
 `;
@@ -282,6 +282,35 @@ const Ic = ({n,s=18,c="currentColor"}) => {
 
 /* ── BADGE ── */
 const Badge = ({n,style={}}) => n>0 ? <span style={{background:"#C8102E",color:"white",borderRadius:10,padding:"1px 6px",fontSize:11,fontWeight:700,...style}}>{n}</span> : null;
+
+/* ── BOUTON RETOUR UNIFORME ── */
+const BackBtn = ({onClick, label=""}) => (
+  <button className="back-btn" onClick={onClick}>
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C8102E" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+    {label}
+  </button>
+);
+
+/* ── BOUTON FERMER UNIFORME ── */
+const CloseBtn = ({onClick}) => (
+  <button className="close-btn" onClick={onClick}>
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+  </button>
+);
+
+/* ── HEADER MODAL UNIFORME ── */
+const ModalHeader = ({title, onBack, backLabel, onClose, extra}) => (
+  <div className="modal-hdr">
+    <div className="modal-hdr-title">
+      {onBack && <BackBtn onClick={onBack} label={backLabel||""}/>}
+      {!onBack && <span>{title}</span>}
+    </div>
+    <div style={{display:"flex",alignItems:"center",gap:8}}>
+      {extra}
+      {onClose && <CloseBtn onClick={onClose}/>}
+    </div>
+  </div>
+);
 
 export default function App() {
   // page: "guest" | "login" | "register" | "forgot" | "reset" | "marketplace" | "reseau"
@@ -962,27 +991,27 @@ export default function App() {
       <style>{CSS}</style>
 
       {/* ── HEADER ── */}
-      <div style={{background:"#1B0007",position:"sticky",top:0,zIndex:1000,width:"100%",left:0,right:0}}>
-        <div style={{maxWidth:1280,margin:"0 auto",display:"flex",alignItems:"center",gap:8,height:54,padding:"0 12px",width:"100%",boxSizing:"border-box"}}>
+      <div style={{background:"#1B0007",position:"sticky",top:0,zIndex:1000,width:"100%",boxShadow:"0 2px 12px rgba(0,0,0,0.3)"}}>
+        <div style={{maxWidth:1280,margin:"0 auto",display:"flex",alignItems:"center",gap:10,height:56,padding:"0 14px",width:"100%",boxSizing:"border-box"}}>
           {/* Logo */}
-          <div style={{flexShrink:0,cursor:"pointer"}} onClick={()=>setPage("guest")}>
-            <div style={{color:"white",fontWeight:700,fontSize:14}}>Faso_Karambisi</div>
-            <div className="hdr-search" style={{color:"#ff9999",fontSize:9,letterSpacing:2,textTransform:"uppercase",fontWeight:600,display:"none"}}>Plateforme universitaire</div>
+          <div style={{flexShrink:0,cursor:"pointer",marginRight:8}} onClick={()=>setPage("guest")}>
+            <div style={{color:"white",fontWeight:800,fontSize:15,letterSpacing:-0.3}}>Faso_Karambisi</div>
+            <div style={{color:"#ff9999",fontSize:8,letterSpacing:2.5,textTransform:"uppercase",fontWeight:600}}>Plateforme universitaire</div>
           </div>
 
           {/* Search — desktop only */}
-          <div style={{display:isMobile?"none":"flex",flex:1,maxWidth:560,height:36}}>
-            <select style={{padding:"0 8px",background:"#e3e3e3",border:"none",borderRadius:"4px 0 0 4px",fontSize:16,color:"#333",cursor:"pointer",outline:"none",height:"100%"}} value={tag} onChange={e=>setTag(e.target.value)}>
+          <div style={{display:isMobile?"none":"flex",flex:1,maxWidth:520,height:38,borderRadius:6,overflow:"hidden",boxShadow:"0 1px 4px rgba(0,0,0,0.3)"}}>
+            <select style={{padding:"0 10px",background:"#f3f3f3",border:"none",fontSize:13,color:"#333",cursor:"pointer",outline:"none",height:"100%",fontWeight:500}} value={tag} onChange={e=>setTag(e.target.value)}>
               {tags.map(t=><option key={t}>{t}</option>)}
             </select>
-            <input style={{flex:1,padding:"0 12px",border:"none",fontSize:16,outline:"none",color:"#111",height:"100%"}} placeholder="Rechercher..." value={search} onChange={e=>setSearch(e.target.value)}/>
-            <button style={{background:"#C8102E",border:"none",padding:"0 14px",borderRadius:"0 4px 4px 0",cursor:"pointer",color:"white",height:"100%",display:"flex",alignItems:"center"}}><Ic n="srch" s={16} c="white"/></button>
+            <input style={{flex:1,padding:"0 13px",border:"none",fontSize:15,outline:"none",color:"#111",height:"100%",background:"white"}} placeholder="Rechercher un article, service..." value={search} onChange={e=>setSearch(e.target.value)}/>
+            <button style={{background:"#C8102E",border:"none",padding:"0 16px",cursor:"pointer",color:"white",height:"100%",display:"flex",alignItems:"center",transition:"background 0.15s"}} onMouseEnter={e=>e.currentTarget.style.background="#a00d24"} onMouseLeave={e=>e.currentTarget.style.background="#C8102E"}><Ic n="srch" s={17} c="white"/></button>
           </div>
 
           <div style={{flex:1}}/>
 
           {/* Panier */}
-          <div style={{cursor:"pointer",display:"flex",alignItems:"center",gap:6,background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:6,padding:"6px 10px",flexShrink:0}} onClick={()=>setShowCart(true)}>
+          <div style={{cursor:"pointer",display:"flex",alignItems:"center",gap:6,background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:8,padding:"7px 12px",flexShrink:0,transition:"background 0.15s"}} onClick={()=>setShowCart(true)} onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,0.18)"} onMouseLeave={e=>e.currentTarget.style.background="rgba(255,255,255,0.1)"}>
             <Ic n="cart" s={18} c="white"/>
             <span style={{fontSize:12,fontWeight:600,color:"white",display:"none"}} className="hdr-search">Panier</span>
             {cart.length>0&&<Badge n={cart.length} style={{border:"1.5px solid white"}}/>}
@@ -991,22 +1020,26 @@ export default function App() {
           {/* Visiteur */}
           {!user?(
             <div style={{display:"flex",gap:6,flexShrink:0}}>
-              <button onClick={()=>setPage("login")} style={{background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.25)",borderRadius:4,padding:"7px 9px",color:"white",fontSize:11,cursor:"pointer",fontWeight:500,whiteSpace:"nowrap"}}>Connexion</button>
-              <button onClick={()=>{setPage("register");setRegStep(1);}} style={{background:"white",border:"none",borderRadius:4,padding:"7px 9px",color:"#C8102E",fontSize:11,cursor:"pointer",fontWeight:700,whiteSpace:"nowrap"}}>S'inscrire</button>
+              <button onClick={()=>setPage("login")} style={{background:"rgba(255,255,255,0.12)",border:"1px solid rgba(255,255,255,0.25)",borderRadius:6,padding:"7px 12px",color:"white",fontSize:12,cursor:"pointer",fontWeight:600,whiteSpace:"nowrap",transition:"background 0.15s"}} onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,0.2)"} onMouseLeave={e=>e.currentTarget.style.background="rgba(255,255,255,0.12)"}>Connexion</button>
+              <button onClick={()=>{setPage("register");setRegStep(1);}} style={{background:"white",border:"none",borderRadius:6,padding:"7px 12px",color:"#C8102E",fontSize:12,cursor:"pointer",fontWeight:700,whiteSpace:"nowrap",boxShadow:"0 1px 4px rgba(0,0,0,0.2)"}}>S'inscrire</button>
             </div>
           ):(
             /* Menu déroulant */
             <div className="dropdown" ref={ddRef} style={{flexShrink:0}}>
-              <button type="button" style={{display:"flex",alignItems:"center",gap:7,cursor:"pointer",background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:6,padding:"5px 10px"}} onClick={()=>setShowDD(v=>!v)}>
-                <div style={{width:28,height:28,borderRadius:"50%",overflow:"hidden",flexShrink:0,border:"2px solid rgba(255,255,255,0.5)"}}>
+              <button type="button" style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer",background:"rgba(255,255,255,0.12)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:8,padding:"5px 10px",transition:"background 0.15s"}} onClick={()=>setShowDD(v=>!v)} onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,0.2)"} onMouseLeave={e=>e.currentTarget.style.background="rgba(255,255,255,0.12)"}>
+                <div style={{width:30,height:30,borderRadius:"50%",overflow:"hidden",flexShrink:0,border:"2px solid rgba(255,255,255,0.4)"}}>
                   {user.photo?<img src={user.photo} style={{width:"100%",height:"100%",objectFit:"cover"}} alt=""/>:<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",background:"#C8102E",color:"white",fontSize:11,fontWeight:700}}>{user.prenom?.[0]}{user.nom?.[0]}</div>}
                 </div>
                 <span style={{fontSize:12,fontWeight:600,color:"white",maxWidth:70,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{user.prenom}</span>
-                <Ic n="chev" s={12} c="rgba(255,255,255,0.7)"/>
+                <Ic n="chev" s={13} c="rgba(255,255,255,0.7)"/>
                 {(unread+notifCount)>0&&<Badge n={unread+notifCount} style={{border:"1px solid white",fontSize:10}}/>}
               </button>
               {showDD&&(
                 <div className="dd-menu">
+                  <div style={{padding:"12px 16px",borderBottom:"1px solid #f5f5f5",background:"#fafafa"}}>
+                    <div style={{fontSize:13,fontWeight:700,color:"#111"}}>{user.prenom} {user.nom}</div>
+                    <div style={{fontSize:11,color:"#888",marginTop:2}}>{user.filiere} · {user.annee}</div>
+                  </div>
                   <button className="dd-item" onClick={openProfil}><Ic n="user" s={15} c="#555"/>Mon profil</button>
                   <button className="dd-item" onClick={()=>{setShowMyAds(true);setShowDD(false);}}>
                     <Ic n="list" s={15} c="#555"/>Mes annonces
@@ -1149,13 +1182,21 @@ export default function App() {
 
       {/* ── MODAL ANNONCE ── */}
       {modal&&(
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>setModal(null)}>
-          <div style={{background:"white",borderRadius:isMobile?"16px 16px 0 0":"6px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
-            <div style={{width:38,height:4,background:"#ddd",borderRadius:2,margin:"10px auto 6px",flexShrink:0,display:isMobile?"block":"none"}}/>
-            <div style={{display:"flex",borderBottom:"1px solid #eee",flexShrink:0,background:"#fafafa"}}>
-              <button className={`tab-btn ${mTab==="article"?"on":""}`} onClick={()=>setMTab("article")}>Détail</button>
-              <button className={`tab-btn ${mTab==="vendeur"?"on":""}`} onClick={()=>setMTab("vendeur")}>Vendeur</button>
-            </div>
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>setModal(null)}>
+          <div className="modal-animate" style={{background:"white",borderRadius:isMobile?"18px 18px 0 0":"10px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
+            {isMobile&&<div className="modal-handle"/>}
+            <ModalHeader
+              title={mTab==="vendeur"?"Profil du vendeur":"Détail de l'annonce"}
+              onBack={mTab==="vendeur"?()=>setMTab("article"):null}
+              backLabel={mTab==="vendeur"?"Retour à l'annonce":""}
+              onClose={()=>setModal(null)}
+            />
+            {mTab==="article"&&(
+              <div style={{display:"flex",borderBottom:"1px solid #eee",flexShrink:0}}>
+                <button className={`tab-btn ${mTab==="article"?"on":""}`} onClick={()=>setMTab("article")}>Détail</button>
+                <button className={`tab-btn ${mTab==="vendeur"?"on":""}`} onClick={()=>setMTab("vendeur")}>Vendeur</button>
+              </div>
+            )}
             <div style={{overflowY:"auto",flex:1}}>
               {mTab==="article"?(
                 <div style={{padding:"14px 16px"}}>
@@ -1228,13 +1269,10 @@ export default function App() {
 
       {/* ── PUBLIER ANNONCE ── */}
       {showForm&&(
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onMouseDown={e=>{if(e.target===e.currentTarget)setShowForm(false);}}>
-          <div style={{background:"white",borderRadius:isMobile?"16px 16px 0 0":"6px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
-            <div style={{width:38,height:4,background:"#ddd",borderRadius:2,margin:"10px auto 6px",flexShrink:0,display:isMobile?"block":"none"}}/>
-            <div style={{padding:"12px 16px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0}}>
-              <div style={{fontSize:15,fontWeight:700}}>Publier une annonce</div>
-              <div style={{fontSize:12,color:"#888"}}>Les champs * sont obligatoires</div>
-            </div>
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onMouseDown={e=>{if(e.target===e.currentTarget)setShowForm(false);}}>
+          <div className="modal-animate" style={{background:"white",borderRadius:isMobile?"18px 18px 0 0":"10px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
+            {isMobile&&<div className="modal-handle"/>}
+            <ModalHeader title="Publier une annonce" onClose={()=>{setShowForm(false);setFormErr({});setFormError("");}}/>
             <div style={{padding:"14px 16px",overflowY:"auto",display:"flex",flexDirection:"column",gap:13}}>
               <div><label className="lbl">Type</label><select className="inp" value={form.type} onChange={e=>setForm(f=>({...f,type:e.target.value}))}><option value="product">Produit à vendre</option><option value="service">Service à offrir</option></select></div>
               <div><label className="lbl">Titre *</label><input className={`inp ${formErr.title?"err":""}`} placeholder="Titre de l'annonce" value={form.title} onChange={e=>setForm(f=>({...f,title:e.target.value}))}/></div>
@@ -1275,13 +1313,14 @@ export default function App() {
 
       {/* ── MES ANNONCES ── */}
       {showMyAds&&(
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onMouseDown={e=>{if(e.target===e.currentTarget)setShowMyAds(false);}}>
-          <div style={{background:"white",borderRadius:isMobile?"16px 16px 0 0":"6px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
-            <div style={{width:38,height:4,background:"#ddd",borderRadius:2,margin:"10px auto 6px",flexShrink:0,display:isMobile?"block":"none"}}/>
-            <div style={{padding:"12px 16px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-              <div><div style={{fontSize:15,fontWeight:700}}>Mes annonces</div><div style={{fontSize:12,color:"#888"}}>{myAds.length} publication{myAds.length>1?"s":""}</div></div>
-              <button onClick={()=>setShowMyAds(false)} style={{background:"none",border:"none",cursor:"pointer",padding:4}}><Ic n="x" s={20} c="#888"/></button>
-            </div>
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onMouseDown={e=>{if(e.target===e.currentTarget)setShowMyAds(false);}}>
+          <div className="modal-animate" style={{background:"white",borderRadius:isMobile?"18px 18px 0 0":"10px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
+            {isMobile&&<div className="modal-handle"/>}
+            <ModalHeader
+              title={`Mes annonces${myAds.length>0?" ("+myAds.length+")":""}`}
+              onClose={()=>setShowMyAds(false)}
+              extra={<button className="btn btn-red" style={{fontSize:12,padding:"6px 12px"}} onClick={()=>{setShowMyAds(false);setShowForm(true);}}>+ Publier</button>}
+            />
             <div style={{overflowY:"auto",flex:1,padding:"12px 16px"}}>
               {myAds.length===0?(
                 <div style={{textAlign:"center",padding:"36px 0",color:"#aaa"}}>
@@ -1315,10 +1354,10 @@ export default function App() {
 
       {/* ── MODIFIER ANNONCE ── */}
       {editForm&&(
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>setEditForm(null)}>
-          <div style={{background:"white",borderRadius:isMobile?"16px 16px 0 0":"6px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
-            <div style={{width:38,height:4,background:"#ddd",borderRadius:2,margin:"10px auto 6px",flexShrink:0,display:isMobile?"block":"none"}}/>
-            <div style={{padding:"12px 16px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0}}><div style={{fontSize:15,fontWeight:700}}>Modifier l'annonce</div></div>
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onMouseDown={e=>{if(e.target===e.currentTarget)setEditForm(null);}}>
+          <div className="modal-animate" style={{background:"white",borderRadius:isMobile?"18px 18px 0 0":"10px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
+            {isMobile&&<div className="modal-handle"/>}
+            <ModalHeader title="Modifier l'annonce" onBack={()=>setEditForm(null)} backLabel="Annuler" onClose={()=>setEditForm(null)}/>
             <div style={{padding:"14px 16px",overflowY:"auto",display:"flex",flexDirection:"column",gap:13}}>
               <div><label className="lbl">Type</label><select className="inp" value={editForm.type} onChange={e=>setEditForm(f=>({...f,type:e.target.value}))}><option value="product">Produit</option><option value="service">Service</option></select></div>
               <div><label className="lbl">Titre *</label><input className="inp" value={editForm.title} onChange={e=>setEditForm(f=>({...f,title:e.target.value}))}/></div>
@@ -1344,10 +1383,10 @@ export default function App() {
 
       {/* ── MON PROFIL ── */}
       {showProfil&&profilForm&&(
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onMouseDown={e=>{if(e.target===e.currentTarget)setShowProfil(false);}}>
-          <div style={{background:"white",borderRadius:isMobile?"16px 16px 0 0":"6px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
-            <div style={{width:38,height:4,background:"#ddd",borderRadius:2,margin:"10px auto 6px",flexShrink:0,display:isMobile?"block":"none"}}/>
-            <div style={{padding:"12px 16px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0}}><div style={{fontSize:15,fontWeight:700}}>Mon profil</div></div>
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onMouseDown={e=>{if(e.target===e.currentTarget)setShowProfil(false);}}>
+          <div className="modal-animate" style={{background:"white",borderRadius:isMobile?"18px 18px 0 0":"10px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
+            {isMobile&&<div className="modal-handle"/>}
+            <ModalHeader title="Mon profil" onClose={()=>setShowProfil(false)}/>
             <div style={{padding:"14px 16px",overflowY:"auto",display:"flex",flexDirection:"column",gap:13}}>
               <div>
                 <label className="lbl lbl-opt">Photo de profil</label>
@@ -1507,13 +1546,15 @@ export default function App() {
 
       {/* ── CONTACTER VENDEUR ── */}
       {contactModal&&(
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>setContactModal(null)}>
-          <div style={{background:"white",borderRadius:isMobile?"16px 16px 0 0":"6px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()} style={{maxWidth:460}}>
-            <div style={{width:38,height:4,background:"#ddd",borderRadius:2,margin:"10px auto 6px",flexShrink:0,display:isMobile?"block":"none"}}/>
-            <div style={{padding:"12px 16px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0}}>
-              <div style={{fontSize:15,fontWeight:700}}>Contacter {contactModal.seller?.prenom} {contactModal.seller?.nom}</div>
-              {contactModal.annonce&&<div style={{fontSize:12,color:"#888",marginTop:2}}>Re: {contactModal.annonce.title}</div>}
-            </div>
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onMouseDown={e=>{if(e.target===e.currentTarget)setContactModal(null);}}>
+          <div className="modal-animate" style={{background:"white",borderRadius:isMobile?"18px 18px 0 0":"10px",width:"100%",maxWidth:460,display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
+            {isMobile&&<div className="modal-handle"/>}
+            <ModalHeader
+              title={`Contacter ${contactModal.seller?.prenom} ${contactModal.seller?.nom}`}
+              onBack={()=>setContactModal(null)}
+              backLabel="Annuler"
+              onClose={()=>setContactModal(null)}
+            />
             <div style={{padding:"14px 16px",display:"flex",flexDirection:"column",gap:14}}>
               <textarea className="inp" placeholder="Votre message..." rows={4} style={{resize:"vertical"}} value={newMsg} onChange={e=>setNewMsg(e.target.value)}/>
               <div style={{display:"flex",gap:10}}>
@@ -1529,12 +1570,13 @@ export default function App() {
       {showCart&&(
         <>
           <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.45)",zIndex:250}} onClick={()=>setShowCart(false)}/>
-          <div style={{position:"fixed",bottom:isMobile?0:"auto",left:isMobile?0:"auto",right:0,top:isMobile?"auto":0,height:isMobile?"auto":"100vh",maxHeight:isMobile?"88vh":"100vh",width:isMobile?"100%":"360px",background:"white",borderRadius:isMobile?"16px 16px 0 0":"0",zIndex:300,padding:isMobile?"0 20px 24px":"24px",overflowY:"auto"}}>
-            <div style={{width:38,height:4,background:"#ddd",borderRadius:2,margin:"12px auto 18px",display:isMobile?"block":"none"}}/>
-            <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:18}}>
-              <div style={{fontSize:16,fontWeight:700}}>Panier ({cart.length})</div>
-              <button onClick={()=>setShowCart(false)} style={{background:"none",border:"none",cursor:"pointer",padding:4}}><Ic n="x" s={20} c="#888"/></button>
+          <div style={{position:"fixed",bottom:isMobile?0:"auto",left:isMobile?0:"auto",right:0,top:isMobile?"auto":0,height:isMobile?"auto":"100vh",maxHeight:isMobile?"88vh":"100vh",width:isMobile?"100%":"380px",background:"white",borderRadius:isMobile?"18px 18px 0 0":"0",zIndex:300,overflowY:"auto",boxShadow:"-4px 0 24px rgba(0,0,0,0.12)",display:"flex",flexDirection:"column"}}>
+            {isMobile&&<div style={{width:36,height:4,background:"#ddd",borderRadius:2,margin:"12px auto 0",flexShrink:0}}/>}
+            <div style={{height:52,padding:"0 16px",borderBottom:"1px solid #eee",display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
+              <div style={{fontSize:15,fontWeight:700,display:"flex",alignItems:"center",gap:8}}><Ic n="cart" s={18} c="#111"/>Panier {cart.length>0&&<Badge n={cart.length}/>}</div>
+              <CloseBtn onClick={()=>setShowCart(false)}/>
             </div>
+            <div style={{flex:1,overflowY:"auto",padding:"16px 20px 24px"}}>
             {cart.length===0?(
               <div style={{textAlign:"center",color:"#aaa",paddingTop:36}}>
                 <Ic n="cart" s={36} c="#ddd"/>
@@ -1562,21 +1604,25 @@ export default function App() {
                 </div>
               </>
             )}
+            </div>
           </div>
         </>
       )}
 
       {/* ── SUPPRESSION ── */}
       {delConfirm&&(
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>setDelConfirm(null)}>
-          <div style={{background:"white",borderRadius:isMobile?"16px 16px 0 0":"6px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()} style={{maxWidth:400}}>
-            <div style={{width:38,height:4,background:"#ddd",borderRadius:2,margin:"10px auto 6px",flexShrink:0,display:isMobile?"block":"none"}}/>
-            <div style={{padding:"12px 16px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0}}><div style={{fontSize:15,fontWeight:700,color:"#C8102E"}}>Supprimer l'annonce</div></div>
-            <div style={{padding:"18px 16px",display:"flex",flexDirection:"column",gap:16}}>
-              <div style={{fontSize:14,color:"#444",lineHeight:1.7}}>Etes-vous sûr ? Cette action est <strong>irréversible</strong>.</div>
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>setDelConfirm(null)}>
+          <div className="modal-animate" style={{background:"white",borderRadius:isMobile?"18px 18px 0 0":"10px",width:"100%",maxWidth:400,display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
+            {isMobile&&<div className="modal-handle"/>}
+            <ModalHeader title="Supprimer l'annonce" onClose={()=>setDelConfirm(null)}/>
+            <div style={{padding:"20px 20px 24px",display:"flex",flexDirection:"column",gap:16}}>
+              <div style={{display:"flex",alignItems:"flex-start",gap:12,background:"#fff8f8",borderRadius:8,padding:"14px",border:"1px solid #fcc"}}>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C8102E" strokeWidth="2" strokeLinecap="round" style={{flexShrink:0,marginTop:1}}><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                <div style={{fontSize:14,color:"#333",lineHeight:1.7}}>Cette action est <strong>irréversible</strong>. L'annonce sera définitivement supprimée.</div>
+              </div>
               <div style={{display:"flex",gap:10}}>
                 <button className="btn btn-white" style={{flex:1}} onClick={()=>setDelConfirm(null)} disabled={delLoading}>Annuler</button>
-                <button className="btn btn-red" style={{flex:1}} onClick={()=>delListing(delConfirm)} disabled={delLoading}>{delLoading?<><span className="spinner"/>Suppression...</>:"Oui, supprimer"}</button>
+                <button className="btn btn-red" style={{flex:1}} onClick={()=>delListing(delConfirm)} disabled={delLoading}>{delLoading?<><span className="spinner"/>Suppression...</>:"Supprimer"}</button>
               </div>
             </div>
           </div>
@@ -1585,31 +1631,22 @@ export default function App() {
 
       {/* ── RÉSEAU INNOVATION ── */}
       {showReseau && (
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>{setShowReseau(false);setActiveGroupe(null);}}>
-          <div style={{background:"white",borderRadius:isMobile?"16px 16px 0 0":"6px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()} style={{maxWidth:760,height:"88vh"}}>
-            <div style={{width:38,height:4,background:"#ddd",borderRadius:2,margin:"10px auto 6px",flexShrink:0,display:isMobile?"block":"none"}}/>
-            <div style={{padding:"12px 16px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-              <div>
-                <div style={{fontSize:15,fontWeight:700}}>Réseau Innovation</div>
-                <div style={{fontSize:12,color:"#888",marginTop:1}}>Connectez-vous avec des étudiants de votre domaine</div>
-              </div>
-              <div style={{display:"flex",gap:8}}>
-                <button onClick={()=>{setShowMatching(true);if(matchings.length===0)generateMatching();}} style={{background:"#C8102E",color:"white",border:"none",borderRadius:4,padding:"6px 12px",fontSize:12,cursor:"pointer",fontWeight:600,display:"flex",alignItems:"center",gap:5}}>
-                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
-                  Matching IA
-                </button>
-                <button onClick={()=>{setShowReseau(false);setActiveGroupe(null);}} style={{background:"none",border:"none",cursor:"pointer",padding:4}}><Ic n="x" s={20} c="#888"/></button>
-              </div>
-            </div>
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>{setShowReseau(false);setActiveGroupe(null);setShowMatching(false);}}>
+          <div className="modal-animate" style={{background:"white",borderRadius:isMobile?"18px 18px 0 0":"10px",width:"100%",maxWidth:760,height:isMobile?"92vh":"88vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
+            {isMobile&&<div className="modal-handle"/>}
+            <ModalHeader
+              title={showMatching?"Matching IA":"Réseau Innovation"}
+              onBack={showMatching?()=>setShowMatching(false):activeGroupe&&isMobile?()=>setActiveGroupe(null):null}
+              backLabel={showMatching?"Retour aux groupes":activeGroupe?"Retour":""}
+              onClose={()=>{setShowReseau(false);setActiveGroupe(null);setShowMatching(false);}}
+              extra={!showMatching&&<button onClick={()=>{setShowMatching(true);if(matchings.length===0)generateMatching();}} style={{background:"#C8102E",color:"white",border:"none",borderRadius:6,padding:"6px 12px",fontSize:12,cursor:"pointer",fontWeight:600,display:"flex",alignItems:"center",gap:5,flexShrink:0}}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Matching IA</button>}
+            />
 
             {/* MATCHING IA PANEL */}
             {showMatching ? (
               <div style={{flex:1,overflowY:"auto",padding:"16px"}}>
-                <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:16}}>
-                  <button onClick={()=>setShowMatching(false)} style={{background:"none",border:"none",cursor:"pointer",color:"#C8102E",fontSize:13,fontWeight:600,display:"flex",alignItems:"center",gap:4}}>
-                    <Ic n="chev" s={14} c="#C8102E"/> Retour aux groupes
-                  </button>
-                  <button onClick={generateMatching} disabled={matchingLoading} style={{marginLeft:"auto",background:"#C8102E",color:"white",border:"none",borderRadius:4,padding:"7px 14px",fontSize:12,cursor:"pointer",fontWeight:600,display:"flex",alignItems:"center",gap:6}}>
+                <div style={{display:"flex",justifyContent:"flex-end",marginBottom:16}}>
+                  <button onClick={generateMatching} disabled={matchingLoading} style={{background:"#C8102E",color:"white",border:"none",borderRadius:6,padding:"7px 14px",fontSize:12,cursor:"pointer",fontWeight:600,display:"flex",alignItems:"center",gap:6}}>
                     {matchingLoading ? <><span className="spinner"/>Analyse en cours...</> : <><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Relancer l'analyse</>}
                   </button>
                 </div>
@@ -1750,16 +1787,14 @@ export default function App() {
 
       {/* ── NOTIFICATIONS PANEL ── */}
       {showNotifs && (
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>setShowNotifs(false)}>
-          <div style={{background:"white",borderRadius:isMobile?"16px 16px 0 0":"6px",width:"100%",maxWidth:380,maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
-            <div style={{width:38,height:4,background:"#ddd",borderRadius:2,margin:"10px auto 6px",flexShrink:0,display:isMobile?"block":"none"}}/>
-            <div style={{padding:"12px 16px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-              <div style={{fontSize:15,fontWeight:700}}>Notifications {notifCount>0&&<Badge n={notifCount}/>}</div>
-              <div style={{display:"flex",gap:8,alignItems:"center"}}>
-                {notifCount>0&&<button onClick={markAllNotifsRead} style={{background:"none",border:"none",fontSize:12,color:"#C8102E",cursor:"pointer",fontWeight:600}}>Tout marquer lu</button>}
-                <button onClick={()=>setShowNotifs(false)} style={{background:"none",border:"none",cursor:"pointer",padding:4}}><Ic n="x" s={18} c="#888"/></button>
-              </div>
-            </div>
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>setShowNotifs(false)}>
+          <div className="modal-animate" style={{background:"white",borderRadius:isMobile?"18px 18px 0 0":"10px",width:"100%",maxWidth:400,maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
+            {isMobile&&<div className="modal-handle"/>}
+            <ModalHeader
+              title={<>Notifications {notifCount>0&&<Badge n={notifCount}/>}</>}
+              onClose={()=>setShowNotifs(false)}
+              extra={notifCount>0&&<button onClick={markAllNotifsRead} style={{background:"none",border:"none",fontSize:12,color:"#C8102E",cursor:"pointer",fontWeight:600,padding:"4px 8px"}}>Tout lu</button>}
+            />
             <div style={{overflowY:"auto",flex:1}}>
               {notifs.length===0?(
                 <div style={{textAlign:"center",padding:"40px 20px",color:"#aaa"}}>
@@ -1787,9 +1822,18 @@ export default function App() {
       )}
 
     </div>
-      <footer style={{background:"#232f3e",padding:"18px 16px",textAlign:"center",marginTop:36}}>
-        <div style={{color:"white",fontSize:14,fontWeight:600,marginBottom:4}}>Faso_Karambisi</div>
-        <div style={{fontSize:12,color:"#888"}}>Plateforme universitaire · Tous droits réservés</div>
+      <footer style={{background:"#1B0007",padding:"28px 20px",marginTop:48}}>
+        <div style={{maxWidth:1280,margin:"0 auto",display:"flex",flexDirection:isMobile?"column":"row",alignItems:"center",justifyContent:"space-between",gap:12}}>
+          <div>
+            <div style={{color:"white",fontSize:15,fontWeight:800,letterSpacing:-0.3,marginBottom:3}}>Faso_Karambisi</div>
+            <div style={{fontSize:12,color:"rgba(255,255,255,0.45)"}}>Plateforme universitaire · Tous droits réservés © 2025</div>
+          </div>
+          <div style={{display:"flex",gap:16}}>
+            {["Conditions","Confidentialité","Contact"].map(l=>(
+              <span key={l} style={{fontSize:12,color:"rgba(255,255,255,0.45)",cursor:"pointer",transition:"color 0.15s"}} onMouseEnter={e=>e.currentTarget.style.color="white"} onMouseLeave={e=>e.currentTarget.style.color="rgba(255,255,255,0.45)"}>{l}</span>
+            ))}
+          </div>
+        </div>
       </footer>
     </div>
   );
