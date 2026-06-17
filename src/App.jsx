@@ -759,6 +759,15 @@ export default function App() {
     }catch(e){console.error(e);}
   };
 
+  const deleteMsg = async (msgId) => {
+    if(!window.confirm("Supprimer ce message ?")) return;
+    try{
+      await sb(`messages?id=eq.${msgId}`,{method:"DELETE",token:authToken,prefer:"return=minimal"});
+      setConvMsgs(p=>p.filter(m=>m.id!==msgId));
+      fetchConvs();
+    }catch(e){console.error(e);}
+  };
+
   const myAds = listings.filter(l=>l.seller?.id===user?.id);
   const filtered = listings.filter(l=>(tab==="all"||l.type===tab)&&(tag==="Tout"||l.tag===tag)&&(l.title.toLowerCase().includes(search.toLowerCase())||(l.seller?.nom||"").toLowerCase().includes(search.toLowerCase())));
   const addCart = i=>setCart(p=>p.find(c=>c.id===i.id)?p:[...p,i]);
@@ -1208,7 +1217,7 @@ export default function App() {
 
       {/* ── PUBLIER ANNONCE ── */}
       {showForm&&(
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>setShowForm(false)}>
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onMouseDown={e=>{if(e.target===e.currentTarget)setShowForm(false);}}>
           <div style={{background:"white",borderRadius:isMobile?"16px 16px 0 0":"6px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
             <div style={{width:38,height:4,background:"#ddd",borderRadius:2,margin:"10px auto 6px",flexShrink:0,display:isMobile?"block":"none"}}/>
             <div style={{padding:"12px 16px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0}}>
@@ -1255,7 +1264,7 @@ export default function App() {
 
       {/* ── MES ANNONCES ── */}
       {showMyAds&&(
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>setShowMyAds(false)}>
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onMouseDown={e=>{if(e.target===e.currentTarget)setShowMyAds(false);}}>
           <div style={{background:"white",borderRadius:isMobile?"16px 16px 0 0":"6px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
             <div style={{width:38,height:4,background:"#ddd",borderRadius:2,margin:"10px auto 6px",flexShrink:0,display:isMobile?"block":"none"}}/>
             <div style={{padding:"12px 16px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
@@ -1324,7 +1333,7 @@ export default function App() {
 
       {/* ── MON PROFIL ── */}
       {showProfil&&profilForm&&(
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>setShowProfil(false)}>
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onMouseDown={e=>{if(e.target===e.currentTarget)setShowProfil(false);}}>
           <div style={{background:"white",borderRadius:isMobile?"16px 16px 0 0":"6px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
             <div style={{width:38,height:4,background:"#ddd",borderRadius:2,margin:"10px auto 6px",flexShrink:0,display:isMobile?"block":"none"}}/>
             <div style={{padding:"12px 16px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0}}><div style={{fontSize:15,fontWeight:700}}>Mon profil</div></div>
@@ -1362,7 +1371,7 @@ export default function App() {
       {/* ── MESSAGERIE ── */}
             {showMsgs&&(
         <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.52)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>{setShowMsgs(false);setActiveConv(null);}}>
-          <div style={{background:"white",borderRadius:isMobile?"16px 16px 0 0":"6px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()} style={{maxWidth:700,height:"88vh"}}>
+          <div style={{background:"white",borderRadius:isMobile?"16px 16px 0 0":"6px",width:"100%",maxWidth:700,height:"88vh",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
             <div style={{width:38,height:4,background:"#ddd",borderRadius:2,margin:"10px auto 6px",flexShrink:0,display:isMobile?"block":"none"}}/>
             <div style={{padding:"11px 16px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
               {activeConv ? (
@@ -1413,7 +1422,12 @@ export default function App() {
                     {msgLoading?<div style={{textAlign:"center",color:"#aaa",paddingTop:24}}>Chargement...</div>:
                       convMsgs.map((m,i)=>(
                         <div key={i} style={{display:"flex",flexDirection:"column",alignItems:m.expediteur_id===user.id?"flex-end":"flex-start"}}>
-                          <div className={m.expediteur_id===user.id?"msg-me":"msg-other"}>{m.contenu}</div>
+                          <div style={{display:"flex",alignItems:"flex-end",gap:6,flexDirection:m.expediteur_id===user.id?"row-reverse":"row"}}>
+                            <div className={m.expediteur_id===user.id?"msg-me":"msg-other"}>{m.contenu}</div>
+                            {m.expediteur_id===user.id&&(
+                              <button onClick={()=>deleteMsg(m.id)} title="Supprimer" style={{background:"none",border:"none",cursor:"pointer",padding:"2px 4px",opacity:0.4,flexShrink:0,fontSize:12,color:"#888",lineHeight:1}} onMouseEnter={e=>e.currentTarget.style.opacity=1} onMouseLeave={e=>e.currentTarget.style.opacity=0.4}>✕</button>
+                            )}
+                          </div>
                           <div style={{fontSize:10,color:"#aaa",marginTop:3}}>{new Date(m.created_at).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}</div>
                         </div>
                       ))
