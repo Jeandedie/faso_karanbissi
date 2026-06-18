@@ -1628,7 +1628,7 @@ export default function App() {
       {showReseau && (
         <div className="modal-overlay" style={{zIndex:200}} onClick={()=>{setShowReseau(false);setActiveGroupe(null);setShowMatching(false);}}>
           <div className="modal-sheet" style={{maxWidth:780,height:isMobile?"92vh":"88vh"}} onClick={e=>e.stopPropagation()}>
-            <div className="modal-handle"}
+            <div className="modal-handle"/>
             <ModalHeader
               title={showMatching?"Matching IA":activeGroupe&&isMobile?activeGroupe.nom:"Réseau Innovation"}
               onBack={showMatching?()=>setShowMatching(false):activeGroupe&&isMobile?()=>setActiveGroupe(null):null}
