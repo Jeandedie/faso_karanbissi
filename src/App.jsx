@@ -1000,12 +1000,12 @@ export default function App() {
           </div>
 
           {/* Search — desktop only */}
-          <div style={{display:isMobile?"none":"flex",flex:1,maxWidth:520,height:38,borderRadius:6,overflow:"hidden",boxShadow:"0 1px 4px rgba(0,0,0,0.3)"}}>
-            <select style={{padding:"0 10px",background:"#f3f3f3",border:"none",fontSize:13,color:"#333",cursor:"pointer",outline:"none",height:"100%",fontWeight:500}} value={tag} onChange={e=>setTag(e.target.value)}>
+          <div style={{display:isMobile?"none":"flex",flex:1,maxWidth:460,height:38,borderRadius:6,overflow:"hidden",boxShadow:"0 1px 4px rgba(0,0,0,0.3)"}}>
+            <select style={{padding:"0 8px",background:"#f3f3f3",border:"none",fontSize:12,color:"#333",cursor:"pointer",outline:"none",height:"100%",fontWeight:500,flexShrink:0}} value={tag} onChange={e=>setTag(e.target.value)}>
               {tags.map(t=><option key={t}>{t}</option>)}
             </select>
-            <input style={{flex:1,padding:"0 13px",border:"none",fontSize:15,outline:"none",color:"#111",height:"100%",background:"white"}} placeholder="Rechercher un article, service..." value={search} onChange={e=>setSearch(e.target.value)}/>
-            <button style={{background:"#C8102E",border:"none",padding:"0 16px",cursor:"pointer",color:"white",height:"100%",display:"flex",alignItems:"center",transition:"background 0.15s"}} onMouseEnter={e=>e.currentTarget.style.background="#a00d24"} onMouseLeave={e=>e.currentTarget.style.background="#C8102E"}><Ic n="srch" s={17} c="white"/></button>
+            <input style={{flex:1,minWidth:0,padding:"0 10px",border:"none",fontSize:14,outline:"none",color:"#111",height:"100%",background:"white"}} placeholder="Rechercher..." value={search} onChange={e=>setSearch(e.target.value)}/>
+            <button style={{background:"#C8102E",border:"none",padding:"0 14px",cursor:"pointer",color:"white",height:"100%",display:"flex",alignItems:"center",flexShrink:0,transition:"background 0.15s"}} onMouseEnter={e=>e.currentTarget.style.background="#a00d24"} onMouseLeave={e=>e.currentTarget.style.background="#C8102E"}><Ic n="srch" s={16} c="white"/></button>
           </div>
 
           <div style={{flex:1}}/>
@@ -1270,7 +1270,7 @@ export default function App() {
       {/* ── PUBLIER ANNONCE ── */}
       {showForm&&(
         <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onMouseDown={e=>{if(e.target===e.currentTarget)setShowForm(false);}}>
-          <div className="modal-animate" style={{background:"white",borderRadius:isMobile?"18px 18px 0 0":"10px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
+          <div className="modal-animate" style={{background:"white",borderRadius:isMobile?"18px 18px 0 0":"10px",width:"100%",maxWidth:isMobile?"100%":"600px",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
             {isMobile&&<div className="modal-handle"/>}
             <ModalHeader title="Publier une annonce" onClose={()=>{setShowForm(false);setFormErr({});setFormError("");}}/>
             <div style={{padding:"14px 16px",overflowY:"auto",display:"flex",flexDirection:"column",gap:13}}>
@@ -1635,11 +1635,11 @@ export default function App() {
           <div className="modal-animate" style={{background:"white",borderRadius:isMobile?"18px 18px 0 0":"10px",width:"100%",maxWidth:760,height:isMobile?"92vh":"88vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
             {isMobile&&<div className="modal-handle"/>}
             <ModalHeader
-              title={showMatching?"Matching IA":"Réseau Innovation"}
+              title={showMatching?"Matching IA":activeGroupe&&isMobile?activeGroupe.nom:"Réseau Innovation"}
               onBack={showMatching?()=>setShowMatching(false):activeGroupe&&isMobile?()=>setActiveGroupe(null):null}
-              backLabel={showMatching?"Retour aux groupes":activeGroupe?"Retour":""}
+              backLabel={showMatching?"Retour":activeGroupe&&isMobile?"Groupes":""}
               onClose={()=>{setShowReseau(false);setActiveGroupe(null);setShowMatching(false);}}
-              extra={!showMatching&&<button onClick={()=>{setShowMatching(true);if(matchings.length===0)generateMatching();}} style={{background:"#C8102E",color:"white",border:"none",borderRadius:6,padding:"6px 12px",fontSize:12,cursor:"pointer",fontWeight:600,display:"flex",alignItems:"center",gap:5,flexShrink:0}}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Matching IA</button>}
+              extra={!showMatching&&!activeGroupe&&<button onClick={()=>{setShowMatching(true);if(matchings.length===0)generateMatching();}} style={{background:"#C8102E",color:"white",border:"none",borderRadius:6,padding:"6px 12px",fontSize:12,cursor:"pointer",fontWeight:600,display:"flex",alignItems:"center",gap:5,flexShrink:0}}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Matching IA</button>}
             />
 
             {/* MATCHING IA PANEL */}
@@ -1823,15 +1823,21 @@ export default function App() {
 
     </div>
       <footer style={{background:"#1B0007",padding:"28px 20px",marginTop:48}}>
-        <div style={{maxWidth:1280,margin:"0 auto",display:"flex",flexDirection:isMobile?"column":"row",alignItems:"center",justifyContent:"space-between",gap:12}}>
+        <div style={{maxWidth:1280,margin:"0 auto",display:"flex",flexDirection:isMobile?"column":"row",alignItems:"center",justifyContent:"space-between",gap:16}}>
           <div>
             <div style={{color:"white",fontSize:15,fontWeight:800,letterSpacing:-0.3,marginBottom:3}}>Faso_Karambisi</div>
             <div style={{fontSize:12,color:"rgba(255,255,255,0.45)"}}>Plateforme universitaire · Tous droits réservés © 2025</div>
           </div>
-          <div style={{display:"flex",gap:16}}>
-            {["Conditions","Confidentialité","Contact"].map(l=>(
-              <span key={l} style={{fontSize:12,color:"rgba(255,255,255,0.45)",cursor:"pointer",transition:"color 0.15s"}} onMouseEnter={e=>e.currentTarget.style.color="white"} onMouseLeave={e=>e.currentTarget.style.color="rgba(255,255,255,0.45)"}>{l}</span>
-            ))}
+          <div style={{display:"flex",flexDirection:isMobile?"column":"row",alignItems:isMobile?"center":"flex-end",gap:isMobile?8:20}}>
+            <a href="mailto:fasokarambisi08@gmail.com" style={{fontSize:13,color:"rgba(255,255,255,0.7)",textDecoration:"none",display:"flex",alignItems:"center",gap:6,transition:"color 0.15s"}} onMouseEnter={e=>e.currentTarget.style.color="white"} onMouseLeave={e=>e.currentTarget.style.color="rgba(255,255,255,0.7)"}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>
+              fasokarambisi08@gmail.com
+            </a>
+            <div style={{display:"flex",gap:16}}>
+              {["Conditions","Confidentialité"].map(l=>(
+                <span key={l} style={{fontSize:12,color:"rgba(255,255,255,0.45)",cursor:"pointer",transition:"color 0.15s"}} onMouseEnter={e=>e.currentTarget.style.color="white"} onMouseLeave={e=>e.currentTarget.style.color="rgba(255,255,255,0.45)"}>{l}</span>
+              ))}
+            </div>
           </div>
         </div>
       </footer>
