@@ -80,164 +80,163 @@ const CSS = `
 
   /* ── RESET ── */
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  html { -webkit-text-size-adjust: 100%; }
+  html { -webkit-text-size-adjust: 100%; font-size: 16px; }
   html, body, #root { width: 100%; margin: 0; padding: 0; overflow-x: hidden; }
-  html { scroll-padding-bottom: 300px; }
-  input:focus, textarea:focus { scroll-margin-bottom: 100px; }
-  body { font-family: 'Inter', sans-serif; background: #f8f8f8; color: #111; }
+  body { font-family: 'Inter', sans-serif; background: #f5f5f5; color: #111; line-height: 1.5; }
   img { max-width: 100%; display: block; }
-  input, select, textarea, button { font-family: 'Inter', sans-serif; }
+  button, input, select, textarea { font-family: inherit; }
 
   /* ── BOUTONS ── */
-  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; border: none; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; padding: 11px 20px; transition: all 0.18s; text-align: center; }
-  .btn-red { background: #C8102E; color: white; box-shadow: 0 1px 4px rgba(200,16,46,0.25); }
-  .btn-red:hover { background: #a00d24; box-shadow: 0 2px 8px rgba(200,16,46,0.35); transform: translateY(-1px); }
-  .btn-red:active { transform: translateY(0); }
-  .btn-red:disabled { opacity: 0.65; cursor: not-allowed; transform: none; box-shadow: none; }
-  .btn-white { background: white; color: #111; border: 1px solid #ddd; }
-  .btn-white:hover { background: #f7f7f7; border-color: #bbb; }
-  .btn-block { display: flex; width: 100%; }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 7px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; padding: 11px 20px; transition: all 0.18s ease; white-space: nowrap; }
+  .btn-red { background: #C8102E; color: white; box-shadow: 0 2px 8px rgba(200,16,46,0.3); }
+  .btn-red:hover:not(:disabled) { background: #a80d26; box-shadow: 0 4px 14px rgba(200,16,46,0.4); transform: translateY(-1px); }
+  .btn-red:active:not(:disabled) { transform: translateY(0); box-shadow: 0 1px 4px rgba(200,16,46,0.3); }
+  .btn-red:disabled { opacity: 0.6; cursor: not-allowed; }
+  .btn-ghost { background: transparent; color: #111; border: 1.5px solid #ddd; }
+  .btn-ghost:hover { background: #f7f7f7; border-color: #bbb; }
+  .btn-block { width: 100%; }
 
   /* ── INPUTS ── */
-  .inp { width: 100%; padding: 11px 13px; border: 1.5px solid #ddd; border-radius: 6px; font-size: 16px; outline: none; background: white; color: #111; transition: border 0.15s, box-shadow 0.15s; -webkit-appearance: none; }
-  .inp:focus { border-color: #C8102E; box-shadow: 0 0 0 3px rgba(200,16,46,0.1); }
-  .inp.err { border-color: #C8102E; background: #fff8f8; }
-  .lbl { font-size: 11px; font-weight: 700; color: #555; display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.6px; }
-  .lbl-opt::after { content: " (optionnel)"; font-weight: 400; color: #aaa; text-transform: none; }
-  .err-box { background: #fff3f3; border: 1px solid #fcc; border-radius: 6px; padding: 11px 14px; font-size: 13px; color: #C8102E; display: flex; align-items: center; gap: 8px; }
-  .ok-box { background: #f0faf0; border: 1px solid #b3dfb3; border-radius: 6px; padding: 11px 14px; font-size: 13px; color: #2d7a2d; }
-  .pwd-wrap { position: relative; display: flex; align-items: center; }
-  .pwd-wrap .inp { padding-right: 44px; }
-  .pwd-eye { position: absolute; right: 10px; background: none; border: none; cursor: pointer; color: #999; padding: 4px; display: flex; align-items: center; }
+  .inp { width: 100%; padding: 11px 14px; border: 1.5px solid #e0e0e0; border-radius: 8px; font-size: 16px; outline: none; background: #fff; color: #111; transition: border-color 0.15s, box-shadow 0.15s; -webkit-appearance: none; appearance: none; }
+  .inp:focus { border-color: #C8102E; box-shadow: 0 0 0 3px rgba(200,16,46,0.08); }
+  .inp.err { border-color: #e53935; background: #fff8f8; }
+  .inp::placeholder { color: #bbb; }
+  select.inp { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%23888' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 36px; }
+  .lbl { font-size: 11px; font-weight: 700; color: #666; display: block; margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.7px; }
+  .lbl-opt::after { content: " (optionnel)"; font-weight: 400; color: #aaa; text-transform: none; letter-spacing: 0; }
+  .field { display: flex; flex-direction: column; gap: 0; }
+  .err-box { background: #fff3f3; border: 1px solid #f5c5c5; border-radius: 8px; padding: 11px 14px; font-size: 13px; color: #c0392b; display: flex; align-items: center; gap: 8px; }
+  .ok-box { background: #f0faf4; border: 1px solid #b2dfcb; border-radius: 8px; padding: 11px 14px; font-size: 13px; color: #27ae60; }
+  .pwd-wrap { position: relative; }
+  .pwd-wrap .inp { padding-right: 46px; }
+  .pwd-eye { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #aaa; padding: 4px; display: flex; line-height: 0; }
+  .pwd-eye:hover { color: #555; }
 
   /* ── AUTH ── */
-  .auth-page { min-height: 100vh; width: 100%; background: #f3f3f3; display: flex; align-items: flex-start; justify-content: center; }
-  .auth-card { width: 100%; min-height: 100vh; background: white; display: flex; flex-direction: column; }
-  .auth-left { display: none; }
-  .auth-body { flex: 1; padding: 32px 20px; display: flex; flex-direction: column; justify-content: center; overflow-y: auto; }
-  .form-2col { display: grid; grid-template-columns: 1fr; gap: 14px; }
-  .sexe-btn { flex: 1; padding: 11px; border-radius: 6px; cursor: pointer; font-weight: 600; font-size: 14px; border: 1.5px solid #ddd; background: white; color: #555; transition: all 0.15s; }
-  .sexe-btn.on { background: #C8102E; color: white; border-color: #C8102E; box-shadow: 0 1px 4px rgba(200,16,46,0.25); }
-  .a-link { color: #C8102E; cursor: pointer; font-weight: 600; font-size: 14px; background: none; border: none; text-decoration: underline; text-underline-offset: 2px; }
+  .a-link { color: #C8102E; cursor: pointer; font-weight: 600; font-size: 14px; background: none; border: none; text-decoration: underline; text-underline-offset: 3px; }
+  .sexe-btn { flex: 1; padding: 11px; border-radius: 8px; cursor: pointer; font-weight: 600; font-size: 14px; border: 1.5px solid #e0e0e0; background: white; color: #555; transition: all 0.15s; }
+  .sexe-btn.on { background: #C8102E; color: white; border-color: #C8102E; box-shadow: 0 2px 8px rgba(200,16,46,0.25); }
+  .form-2col { display: grid; grid-template-columns: 1fr; gap: 16px; }
+  .form-row { display: flex; flex-direction: column; gap: 16px; }
+  .step-bar { display: flex; gap: 6px; margin-bottom: 28px; }
+  .step-dot { flex: 1; height: 3px; border-radius: 2px; background: #eee; transition: background 0.3s; }
+  .step-dot.done { background: #C8102E; }
 
   /* ── NAVIGATION ── */
-  .nav-btn { padding: 7px 15px; border-radius: 4px; cursor: pointer; font-weight: 500; font-size: 13px; border: none; background: none; color: rgba(255,255,255,0.85); white-space: nowrap; transition: all 0.15s; }
+  .nav-bar { background: #C8102E; width: 100%; overflow-x: auto; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
+  .nav-bar::-webkit-scrollbar { display: none; }
+  .nav-inner { display: flex; align-items: center; max-width: 1280px; margin: 0 auto; padding: 0 10px; height: 42px; gap: 2px; }
+  .nav-btn { padding: 6px 14px; border-radius: 5px; cursor: pointer; font-weight: 500; font-size: 13px; border: none; background: none; color: rgba(255,255,255,0.82); white-space: nowrap; transition: all 0.15s; flex-shrink: 0; }
   .nav-btn:hover { background: rgba(255,255,255,0.15); color: white; }
   .nav-btn.on { background: white; color: #C8102E; font-weight: 700; }
+  .pub-btn { background: white; color: #C8102E; border: none; border-radius: 6px; padding: 6px 14px; font-size: 13px; font-weight: 700; cursor: pointer; white-space: nowrap; flex-shrink: 0; box-shadow: 0 1px 4px rgba(0,0,0,0.15); transition: all 0.15s; }
+  .pub-btn:hover { box-shadow: 0 2px 8px rgba(0,0,0,0.2); transform: translateY(-1px); }
 
   /* ── CARTES ── */
   .cards-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
-  .card { background: white; border: 1px solid #eee; border-radius: 10px; overflow: hidden; cursor: pointer; transition: box-shadow 0.18s, transform 0.18s; }
-  .card:hover { box-shadow: 0 4px 20px rgba(0,0,0,0.10); transform: translateY(-2px); }
-  .card:active { transform: translateY(0); }
+  .card { background: white; border: 1px solid #ececec; border-radius: 12px; overflow: hidden; cursor: pointer; transition: box-shadow 0.2s, transform 0.2s; }
+  .card:hover { box-shadow: 0 6px 24px rgba(0,0,0,0.1); transform: translateY(-2px); }
+  .card:active { transform: translateY(0); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+  .card-img { background: #f5f5f5; aspect-ratio: 4/3; display: flex; align-items: center; justify-content: center; overflow: hidden; position: relative; }
+  .card-img img { width: 100%; height: 100%; object-fit: cover; }
+  .card-body { padding: 10px 12px 12px; }
+  .card-tag { font-size: 9px; color: #C8102E; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; }
+  .card-title { font-size: 13px; font-weight: 600; color: #111; line-height: 1.35; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; margin-bottom: 4px; }
+  .card-seller { font-size: 11px; color: #999; }
+  .card-price { font-size: 15px; font-weight: 800; color: #111; }
+  .card-price span { font-size: 11px; font-weight: 400; color: #999; }
+  .badge-type { font-size: 9px; padding: 2px 8px; border-radius: 3px; font-weight: 700; text-transform: uppercase; color: white; }
 
   /* ── MODAL HEADER UNIFORME ── */
-  .modal-hdr { height: 52px; padding: 0 16px; border-bottom: 1px solid #eee; background: white; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 1px 0 #f0f0f0; }
-  .modal-hdr-title { font-size: 15px; font-weight: 700; color: #111; display: flex; align-items: center; gap: 10px; }
-  .back-btn { display: flex; align-items: center; gap: 6px; background: none; border: none; cursor: pointer; font-size: 14px; font-weight: 600; color: #111; padding: 6px 0; border-radius: 4px; transition: color 0.15s; }
+  .modal-hdr { height: 54px; padding: 0 16px; border-bottom: 1px solid #f0f0f0; background: white; flex-shrink: 0; display: flex; justify-content: space-between; align-items: center; }
+  .modal-hdr-title { font-size: 15px; font-weight: 700; color: #111; display: flex; align-items: center; gap: 8px; min-width: 0; overflow: hidden; }
+  .modal-hdr-title span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .back-btn { display: inline-flex; align-items: center; gap: 5px; background: none; border: none; cursor: pointer; font-size: 14px; font-weight: 600; color: #111; padding: 6px 8px 6px 0; border-radius: 6px; transition: color 0.15s; flex-shrink: 0; }
   .back-btn:hover { color: #C8102E; }
-  .back-btn svg { transition: transform 0.15s; }
   .back-btn:hover svg { transform: translateX(-2px); }
-  .close-btn { width: 32px; height: 32px; border-radius: 50%; background: #f3f3f3; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; flex-shrink: 0; }
-  .close-btn:hover { background: #ffe8ec; }
-  .modal-handle { width: 36px; height: 4px; background: #ddd; border-radius: 2px; margin: 10px auto 0; flex-shrink: 0; }
+  .back-btn svg { transition: transform 0.15s; flex-shrink: 0; }
+  .close-btn { width: 34px; height: 34px; border-radius: 50%; background: #f5f5f5; border: none; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; flex-shrink: 0; }
+  .close-btn:hover { background: #fce8ec; }
+  .modal-handle { width: 40px; height: 4px; background: #e0e0e0; border-radius: 2px; margin: 12px auto 4px; flex-shrink: 0; }
 
   /* ── MODALS ── */
-  .overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: flex; align-items: flex-end; justify-content: center; }
-  .modal { background: white; border-radius: 18px 18px 0 0; width: 100%; max-height: 92vh; display: flex; flex-direction: column; overflow: hidden; }
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; display: flex; align-items: flex-end; justify-content: center; animation: fadeIn 0.15s ease; }
+  .modal-sheet { background: white; border-radius: 20px 20px 0 0; width: 100%; max-height: 92vh; display: flex; flex-direction: column; overflow: hidden; animation: slideUp 0.22s ease-out; }
+  .tab-bar { display: flex; border-bottom: 1px solid #f0f0f0; flex-shrink: 0; }
   .tab-btn { flex: 1; padding: 13px; border: none; background: none; cursor: pointer; font-weight: 600; font-size: 14px; border-bottom: 2px solid transparent; color: #999; transition: all 0.15s; }
   .tab-btn.on { color: #C8102E; border-bottom-color: #C8102E; }
 
-  /* ── SIDEBAR ── */
-  .sidebar { position: fixed; bottom: 0; left: 0; right: 0; max-height: 88vh; background: white; border-radius: 18px 18px 0 0; z-index: 300; padding: 0 20px 24px; overflow-y: auto; }
-
   /* ── DROPDOWN ── */
   .dropdown { position: relative; }
-  .dd-menu { position: absolute; top: calc(100% + 8px); right: 0; background: white; border: 1px solid #eee; border-radius: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.14); min-width: 200px; z-index: 2000; overflow: hidden; }
-  .dd-item { display: flex; align-items: center; gap: 10px; padding: 12px 16px; font-size: 14px; color: #111; cursor: pointer; border: none; background: none; width: 100%; text-align: left; transition: background 0.12s; }
+  .dd-menu { position: absolute; top: calc(100% + 8px); right: 0; background: white; border: 1px solid #ebebeb; border-radius: 12px; box-shadow: 0 8px 32px rgba(0,0,0,0.14); min-width: 210px; z-index: 2000; overflow: hidden; }
+  .dd-item { display: flex; align-items: center; gap: 11px; padding: 12px 16px; font-size: 14px; color: #111; cursor: pointer; border: none; background: none; width: 100%; text-align: left; transition: background 0.12s; }
   .dd-item:hover { background: #fafafa; }
   .dd-item.red { color: #C8102E; }
-  .dd-sep { height: 1px; background: #f0f0f0; margin: 4px 0; }
+  .dd-sep { height: 1px; background: #f2f2f2; margin: 4px 0; }
 
   /* ── MESSAGERIE ── */
-  .msg-me { background: #C8102E; color: white; border-radius: 18px 18px 4px 18px; padding: 10px 14px; font-size: 14px; max-width: 78%; line-height: 1.55; word-break: break-word; box-shadow: 0 1px 4px rgba(200,16,46,0.2); }
-  .msg-other { background: white; color: #111; border-radius: 18px 18px 18px 4px; padding: 10px 14px; font-size: 14px; max-width: 78%; line-height: 1.55; word-break: break-word; border: 1px solid #eee; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+  .msg-me { background: #C8102E; color: white; border-radius: 18px 18px 4px 18px; padding: 10px 14px; font-size: 14px; max-width: 75%; line-height: 1.55; word-break: break-word; box-shadow: 0 2px 6px rgba(200,16,46,0.2); }
+  .msg-other { background: white; color: #111; border-radius: 18px 18px 18px 4px; padding: 10px 14px; font-size: 14px; max-width: 75%; line-height: 1.55; word-break: break-word; border: 1px solid #eee; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
   .conv-row { display: flex; align-items: center; gap: 12px; padding: 14px 16px; cursor: pointer; border-bottom: 1px solid #f5f5f5; transition: background 0.15s; }
   .conv-row:hover { background: #fafafa; }
-  .conv-row.on { background: #fff0f0; border-left: 3px solid #C8102E; }
-  .msg-inp { flex: 1; padding: 11px 16px; border: 1.5px solid #ddd; border-radius: 24px; font-size: 16px; outline: none; resize: none; -webkit-appearance: none; transition: border-color 0.15s; background: #fafafa; }
-  .msg-inp:focus { border-color: #C8102E; background: white; }
-  select { font-size: 16px !important; -webkit-appearance: none; }
-  input, textarea { font-size: 16px !important; }
+  .conv-row.on { background: #fff0f0; border-left: 3px solid #C8102E; padding-left: 13px; }
+  .msg-inp { flex: 1; min-width: 0; padding: 11px 16px; border: 1.5px solid #e5e5e5; border-radius: 24px; font-size: 16px; outline: none; resize: none; -webkit-appearance: none; transition: border-color 0.15s; background: #fafafa; }
+  .msg-inp:focus { border-color: #C8102E; background: white; box-shadow: 0 0 0 3px rgba(200,16,46,0.08); }
 
   /* ── RÉSEAU ── */
-  .reseau-sidebar { width: 100%; border-right: none; overflow-y: auto; flex-shrink: 0; display: flex; flex-direction: column; }
-  .groupe-item { padding: 13px 16px; cursor: pointer; border-bottom: 1px solid #f5f5f5; transition: background 0.12s; display: flex; align-items: center; gap: 10px; }
+  .reseau-sidebar { width: 100%; overflow-y: auto; flex-shrink: 0; display: flex; flex-direction: column; }
+  .groupe-item { padding: 14px 16px; cursor: pointer; border-bottom: 1px solid #f5f5f5; transition: background 0.12s; display: flex; align-items: center; gap: 10px; }
   .groupe-item:hover { background: #fafafa; }
-  .groupe-item.on { background: #fff0f0; border-left: 3px solid #C8102E; }
+  .groupe-item.on { background: #fff0f0; border-left: 3px solid #C8102E; padding-left: 13px; }
   .domaine-badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 700; text-transform: uppercase; }
-  .match-card { background: white; border: 1px solid #eee; border-radius: 10px; padding: 16px; margin-bottom: 10px; transition: box-shadow 0.15s; }
-  .match-card:hover { box-shadow: 0 2px 12px rgba(0,0,0,0.08); }
-  .score-ring { width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; font-weight: 800; flex-shrink: 0; border: 3px solid; }
+  .match-card { background: white; border: 1px solid #ececec; border-radius: 12px; padding: 16px; margin-bottom: 10px; transition: box-shadow 0.15s; }
+  .match-card:hover { box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
+  .score-ring { width: 48px; height: 48px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; flex-shrink: 0; border: 3px solid; }
 
   /* ── NOTIFICATIONS ── */
   .notif-item { padding: 13px 16px; border-bottom: 1px solid #f5f5f5; cursor: pointer; transition: background 0.12s; display: flex; gap: 12px; align-items: flex-start; }
   .notif-item:hover { background: #fafafa; }
-  .notif-item.unread { background: #fff8f8; border-left: 3px solid #C8102E; }
-  .notif-dot { width: 8px; height: 8px; border-radius: 50%; background: #C8102E; flex-shrink: 0; margin-top: 5px; }
+  .notif-item.unread { background: #fff8f8; border-left: 3px solid #C8102E; padding-left: 13px; }
+  .notif-dot { width: 8px; height: 8px; border-radius: 50%; background: #C8102E; flex-shrink: 0; margin-top: 4px; }
   .notif-dot.read { background: #ddd; }
 
   /* ── PHOTOS ── */
-  .photo-drop { border: 2px dashed #ddd; border-radius: 8px; padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.15s; background: #fafafa; }
+  .photo-drop { border: 2px dashed #ddd; border-radius: 10px; padding: 22px 16px; text-align: center; cursor: pointer; transition: all 0.15s; background: #fafafa; }
   .photo-drop:hover { border-color: #C8102E; background: #fff8f8; }
-  .photo-thumb { position: relative; width: 76px; height: 76px; border-radius: 6px; overflow: hidden; border: 1px solid #ddd; flex-shrink: 0; }
+  .photo-thumb { position: relative; width: 76px; height: 76px; border-radius: 8px; overflow: hidden; border: 1px solid #e0e0e0; flex-shrink: 0; }
   .photo-thumb img { width: 100%; height: 100%; object-fit: cover; }
-  .photo-del { position: absolute; top: 3px; right: 3px; background: rgba(0,0,0,0.6); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
-
-  /* ── HERO ── */
-  .hero-inner { display: flex; flex-direction: column; width: 100%; }
-  .hero-features { display: none; }
-  .hero-text { width: 100%; }
-  .hero-btns { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .photo-del { position: absolute; top: 3px; right: 3px; background: rgba(0,0,0,0.65); color: white; border: none; border-radius: 50%; width: 20px; height: 20px; font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
 
   /* ── ANIMATIONS ── */
-  .spinner { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,0.35); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; margin-right: 6px; vertical-align: middle; }
+  .spinner { width: 16px; height: 16px; border: 2px solid rgba(255,255,255,0.35); border-top-color: white; border-radius: 50%; animation: spin 0.7s linear infinite; display: inline-block; vertical-align: middle; }
   @keyframes spin { to { transform: rotate(360deg); } }
   @keyframes marquee { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
-  @keyframes slideUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  @keyframes slideUp { from { transform: translateY(24px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
   @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-  .marquee { display: flex; white-space: nowrap; animation: marquee 32s linear infinite; }
+  .marquee-track { overflow: hidden; width: 100%; }
+  .marquee { display: flex; white-space: nowrap; animation: marquee 36s linear infinite; }
   .marquee:hover { animation-play-state: paused; }
-  .modal-animate { animation: slideUp 0.22s ease-out; }
-  .overlay-animate { animation: fadeIn 0.18s ease-out; }
+  .fade-in { animation: fadeIn 0.2s ease; }
 
-  .desktop-hint { display: none; }
-  ::-webkit-scrollbar { width: 4px; }
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 4px; height: 4px; }
   ::-webkit-scrollbar-thumb { background: #ddd; border-radius: 2px; }
   ::-webkit-scrollbar-thumb:hover { background: #C8102E; }
 
-  /* ══════════════════════════════════════
+  /* ══════════════════════════════
      DESKTOP >= 768px
-  ══════════════════════════════════════ */
+  ══════════════════════════════ */
   @media (min-width: 768px) {
-    .auth-page { align-items: center; padding: 24px; }
-    .auth-card { min-height: auto; max-width: 860px; flex-direction: row; border-radius: 10px; box-shadow: 0 4px 32px rgba(0,0,0,0.12); overflow: hidden; width: 100%; }
-    .auth-left { display: flex; width: 36%; background: #C8102E; padding: 48px 36px; flex-direction: column; justify-content: center; flex-shrink: 0; }
-    .auth-body { padding: 48px 44px; }
     .form-2col { grid-template-columns: 1fr 1fr; }
-    .overlay { align-items: center; padding: 20px; }
-    .modal { border-radius: 10px; max-width: 580px; max-height: 90vh; }
+    .form-row { flex-direction: row; }
+    .modal-overlay { align-items: center; padding: 24px; }
+    .modal-sheet { border-radius: 12px; max-width: 600px; max-height: 90vh; }
     .modal-handle { display: none; }
-    .sidebar { position: fixed; bottom: auto; left: auto; right: 0; top: 0; height: 100vh; width: 380px; border-radius: 0; padding: 24px; box-shadow: -4px 0 24px rgba(0,0,0,0.1); }
     .cards-grid { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 16px; }
-    .hdr-search { display: flex !important; }
-    .mob-search { display: none !important; }
-    .hero-inner { flex-direction: row; align-items: center; justify-content: space-between; }
-    .hero-features { display: flex !important; }
-    .hero-text { width: auto; flex: 1; }
-    .reseau-sidebar { width: 260px; border-right: 1px solid #eee; }
-    .msg-list-panel { display: flex !important; flex-direction: column; width: 220px !important; min-width: 220px !important; border-right: 1px solid #eee; overflow-y: auto; }
+    .reseau-sidebar { width: 260px; border-right: 1px solid #efefef; }
+    .msg-list-panel { display: flex !important; flex-direction: column; width: 240px !important; min-width: 240px !important; border-right: 1px solid #efefef; overflow-y: auto; }
     .msg-conv-panel { display: flex !important; }
+    .nav-inner { padding: 0 14px; }
   }
 `;
 
@@ -991,143 +990,143 @@ export default function App() {
       <style>{CSS}</style>
 
       {/* ── HEADER ── */}
-      <div style={{background:"#1B0007",position:"sticky",top:0,zIndex:1000,width:"100%",boxShadow:"0 2px 12px rgba(0,0,0,0.3)"}}>
-        <div style={{maxWidth:1280,margin:"0 auto",display:"flex",alignItems:"center",gap:10,height:56,padding:"0 14px",width:"100%",boxSizing:"border-box"}}>
+      <header style={{background:"#1B0007",position:"sticky",top:0,zIndex:1000,boxShadow:"0 2px 16px rgba(0,0,0,0.35)"}}>
+        <div style={{maxWidth:1280,margin:"0 auto",display:"flex",alignItems:"center",height:56,padding:"0 14px",gap:12}}>
           {/* Logo */}
-          <div style={{flexShrink:0,cursor:"pointer",marginRight:8}} onClick={()=>setPage("guest")}>
-            <div style={{color:"white",fontWeight:800,fontSize:15,letterSpacing:-0.3}}>Faso_Karambisi</div>
-            <div style={{color:"#ff9999",fontSize:8,letterSpacing:2.5,textTransform:"uppercase",fontWeight:600}}>Plateforme universitaire</div>
+          <div onClick={()=>setPage("guest")} style={{flexShrink:0,cursor:"pointer",userSelect:"none",lineHeight:1}}>
+            <div style={{color:"white",fontWeight:800,fontSize:16,letterSpacing:"-0.4px"}}>Faso_Karambisi</div>
+            <div style={{color:"rgba(255,180,180,0.85)",fontSize:9,letterSpacing:"2.5px",textTransform:"uppercase",fontWeight:600,marginTop:2}}>Plateforme Universitaire</div>
           </div>
 
-          {/* Search — desktop only */}
-          <div style={{display:isMobile?"none":"flex",flex:1,maxWidth:460,height:38,borderRadius:6,overflow:"hidden",boxShadow:"0 1px 4px rgba(0,0,0,0.3)"}}>
-            <select style={{padding:"0 8px",background:"#f3f3f3",border:"none",fontSize:12,color:"#333",cursor:"pointer",outline:"none",height:"100%",fontWeight:500,flexShrink:0}} value={tag} onChange={e=>setTag(e.target.value)}>
-              {tags.map(t=><option key={t}>{t}</option>)}
-            </select>
-            <input style={{flex:1,minWidth:0,padding:"0 10px",border:"none",fontSize:14,outline:"none",color:"#111",height:"100%",background:"white"}} placeholder="Rechercher..." value={search} onChange={e=>setSearch(e.target.value)}/>
-            <button style={{background:"#C8102E",border:"none",padding:"0 14px",cursor:"pointer",color:"white",height:"100%",display:"flex",alignItems:"center",flexShrink:0,transition:"background 0.15s"}} onMouseEnter={e=>e.currentTarget.style.background="#a00d24"} onMouseLeave={e=>e.currentTarget.style.background="#C8102E"}><Ic n="srch" s={16} c="white"/></button>
-          </div>
+          {/* Barre de recherche desktop */}
+          {!isMobile&&(
+            <div style={{flex:1,maxWidth:480,display:"flex",height:36,borderRadius:8,overflow:"hidden",border:"1px solid rgba(255,255,255,0.18)",background:"rgba(255,255,255,0.1)"}}>
+              <select value={tag} onChange={e=>setTag(e.target.value)} style={{padding:"0 8px",border:"none",borderRight:"1px solid rgba(255,255,255,0.18)",fontSize:12,color:"white",cursor:"pointer",outline:"none",height:"100%",background:"transparent",fontWeight:500,flexShrink:0}}>
+                {tags.map(t=><option key={t} style={{background:"#1B0007",color:"white"}}>{t}</option>)}
+              </select>
+              <input style={{flex:1,minWidth:0,padding:"0 12px",border:"none",fontSize:13,outline:"none",color:"white",height:"100%",background:"transparent"}} placeholder="Rechercher un article ou service..." value={search} onChange={e=>setSearch(e.target.value)}/>
+              <button style={{background:"#C8102E",border:"none",padding:"0 14px",cursor:"pointer",display:"flex",alignItems:"center",flexShrink:0,transition:"background 0.15s"}} onMouseEnter={e=>e.currentTarget.style.background="#a80d26"} onMouseLeave={e=>e.currentTarget.style.background="#C8102E"}><Ic n="srch" s={15} c="white"/></button>
+            </div>
+          )}
 
           <div style={{flex:1}}/>
 
           {/* Panier */}
-          <div style={{cursor:"pointer",display:"flex",alignItems:"center",gap:6,background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:8,padding:"7px 12px",flexShrink:0,transition:"background 0.15s"}} onClick={()=>setShowCart(true)} onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,0.18)"} onMouseLeave={e=>e.currentTarget.style.background="rgba(255,255,255,0.1)"}>
+          <button onClick={()=>setShowCart(true)} style={{display:"flex",alignItems:"center",gap:6,background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.18)",borderRadius:8,padding:"7px 12px",cursor:"pointer",flexShrink:0,transition:"background 0.15s"}} onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,0.18)"} onMouseLeave={e=>e.currentTarget.style.background="rgba(255,255,255,0.1)"}>
             <Ic n="cart" s={18} c="white"/>
-            <span style={{fontSize:12,fontWeight:600,color:"white",display:"none"}} className="hdr-search">Panier</span>
-            {cart.length>0&&<Badge n={cart.length} style={{border:"1.5px solid white"}}/>}
-          </div>
+            {!isMobile&&<span style={{fontSize:12,fontWeight:600,color:"white"}}>Panier</span>}
+            {cart.length>0&&<span style={{background:"#C8102E",color:"white",borderRadius:10,padding:"1px 6px",fontSize:10,fontWeight:700,border:"1.5px solid rgba(27,0,7,0.5)"}}>{cart.length}</span>}
+          </button>
 
-          {/* Visiteur */}
+          {/* Non connecté */}
           {!user?(
             <div style={{display:"flex",gap:6,flexShrink:0}}>
-              <button onClick={()=>setPage("login")} style={{background:"rgba(255,255,255,0.12)",border:"1px solid rgba(255,255,255,0.25)",borderRadius:6,padding:"7px 12px",color:"white",fontSize:12,cursor:"pointer",fontWeight:600,whiteSpace:"nowrap",transition:"background 0.15s"}} onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,0.2)"} onMouseLeave={e=>e.currentTarget.style.background="rgba(255,255,255,0.12)"}>Connexion</button>
-              <button onClick={()=>{setPage("register");setRegStep(1);}} style={{background:"white",border:"none",borderRadius:6,padding:"7px 12px",color:"#C8102E",fontSize:12,cursor:"pointer",fontWeight:700,whiteSpace:"nowrap",boxShadow:"0 1px 4px rgba(0,0,0,0.2)"}}>S'inscrire</button>
+              <button onClick={()=>setPage("login")} style={{background:"transparent",border:"1.5px solid rgba(255,255,255,0.3)",borderRadius:8,padding:"7px 14px",color:"white",fontSize:13,cursor:"pointer",fontWeight:600,transition:"all 0.15s"}} onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,0.1)"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>Connexion</button>
+              <button onClick={()=>{setPage("register");setRegStep(1);}} style={{background:"white",border:"none",borderRadius:8,padding:"7px 14px",color:"#C8102E",fontSize:13,cursor:"pointer",fontWeight:700,boxShadow:"0 2px 8px rgba(0,0,0,0.2)",transition:"transform 0.15s"}} onMouseEnter={e=>e.currentTarget.style.transform="translateY(-1px)"} onMouseLeave={e=>e.currentTarget.style.transform="translateY(0)"}>S'inscrire</button>
             </div>
           ):(
-            /* Menu déroulant */
             <div className="dropdown" ref={ddRef} style={{flexShrink:0}}>
-              <button type="button" style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer",background:"rgba(255,255,255,0.12)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:8,padding:"5px 10px",transition:"background 0.15s"}} onClick={()=>setShowDD(v=>!v)} onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,0.2)"} onMouseLeave={e=>e.currentTarget.style.background="rgba(255,255,255,0.12)"}>
-                <div style={{width:30,height:30,borderRadius:"50%",overflow:"hidden",flexShrink:0,border:"2px solid rgba(255,255,255,0.4)"}}>
+              <button onClick={()=>setShowDD(v=>!v)} style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer",background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:8,padding:"5px 10px 5px 6px",transition:"background 0.15s"}} onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,0.18)"} onMouseLeave={e=>e.currentTarget.style.background="rgba(255,255,255,0.1)"}>
+                <div style={{width:30,height:30,borderRadius:"50%",overflow:"hidden",flexShrink:0,border:"2px solid rgba(255,255,255,0.35)"}}>
                   {user.photo?<img src={user.photo} style={{width:"100%",height:"100%",objectFit:"cover"}} alt=""/>:<div style={{width:"100%",height:"100%",display:"flex",alignItems:"center",justifyContent:"center",background:"#C8102E",color:"white",fontSize:11,fontWeight:700}}>{user.prenom?.[0]}{user.nom?.[0]}</div>}
                 </div>
-                <span style={{fontSize:12,fontWeight:600,color:"white",maxWidth:70,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{user.prenom}</span>
-                <Ic n="chev" s={13} c="rgba(255,255,255,0.7)"/>
-                {(unread+notifCount)>0&&<Badge n={unread+notifCount} style={{border:"1px solid white",fontSize:10}}/>}
+                {!isMobile&&<span style={{fontSize:12,fontWeight:600,color:"white",maxWidth:72,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{user.prenom}</span>}
+                <Ic n="chev" s={12} c="rgba(255,255,255,0.7)"/>
+                {(unread+notifCount)>0&&<span style={{background:"#ff4444",color:"white",borderRadius:10,padding:"1px 5px",fontSize:10,fontWeight:700,border:"1px solid rgba(27,0,7,0.5)"}}>{unread+notifCount}</span>}
               </button>
               {showDD&&(
-                <div className="dd-menu">
-                  <div style={{padding:"12px 16px",borderBottom:"1px solid #f5f5f5",background:"#fafafa"}}>
-                    <div style={{fontSize:13,fontWeight:700,color:"#111"}}>{user.prenom} {user.nom}</div>
-                    <div style={{fontSize:11,color:"#888",marginTop:2}}>{user.filiere} · {user.annee}</div>
+                <div className="dd-menu fade-in">
+                  <div style={{padding:"14px 16px 12px",borderBottom:"1px solid #f0f0f0"}}>
+                    <div style={{fontSize:14,fontWeight:700,color:"#111"}}>{user.prenom} {user.nom}</div>
+                    <div style={{fontSize:12,color:"#999",marginTop:2}}>{user.filiere} · {user.annee}</div>
                   </div>
-                  <button className="dd-item" onClick={openProfil}><Ic n="user" s={15} c="#555"/>Mon profil</button>
-                  <button className="dd-item" onClick={()=>{setShowMyAds(true);setShowDD(false);}}>
-                    <Ic n="list" s={15} c="#555"/>Mes annonces
-                    {myAds.length>0&&<Badge n={myAds.length} style={{marginLeft:"auto"}}/>}
-                  </button>
-                  <button className="dd-item" onClick={()=>{setShowMsgs(true);fetchConvs();setShowDD(false);}}>
-                    <Ic n="msg" s={15} c="#555"/>Messages
-                    {unread>0&&<Badge n={unread} style={{marginLeft:"auto"}}/>}
-                  </button>
+                  <button className="dd-item" onClick={openProfil}><Ic n="user" s={16} c="#555"/>Mon profil</button>
+                  <button className="dd-item" onClick={()=>{setShowMyAds(true);setShowDD(false);}}><Ic n="list" s={16} c="#555"/>Mes annonces{myAds.length>0&&<span style={{background:"#f0f0f0",color:"#555",borderRadius:10,padding:"1px 7px",fontSize:11,fontWeight:700,marginLeft:"auto"}}>{myAds.length}</span>}</button>
+                  <button className="dd-item" onClick={()=>{setShowMsgs(true);fetchConvs();setShowDD(false);}}><Ic n="msg" s={16} c="#555"/>Messages{unread>0&&<span style={{background:"#C8102E",color:"white",borderRadius:10,padding:"1px 7px",fontSize:11,fontWeight:700,marginLeft:"auto"}}>{unread}</span>}</button>
                   <button className="dd-item" onClick={()=>{setShowReseau(true);fetchGroupes();fetchMyGroupes();setShowDD(false);}}>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                    Réseau Innovation
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2" strokeLinecap="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Réseau Innovation
                   </button>
                   <button className="dd-item" onClick={()=>{setShowNotifs(true);fetchNotifs();setShowDD(false);}}>
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
-                    Notifications
-                    {notifCount>0&&<Badge n={notifCount} style={{marginLeft:"auto"}}/>}
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2" strokeLinecap="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>Notifications{notifCount>0&&<span style={{background:"#C8102E",color:"white",borderRadius:10,padding:"1px 7px",fontSize:11,fontWeight:700,marginLeft:"auto"}}>{notifCount}</span>}
                   </button>
                   <div className="dd-sep"/>
-                  <button className="dd-item red" onClick={handleLogout}><Ic n="out" s={15} c="#C8102E"/>Déconnexion</button>
+                  <button className="dd-item red" onClick={handleLogout}><Ic n="out" s={16} c="#C8102E"/>Déconnexion</button>
                 </div>
               )}
             </div>
           )}
         </div>
-      </div>
 
-      {/* Search mobile */}
-      <div style={{background:"#111",padding:"8px 12px",display:isMobile?"flex":"none",gap:8}}>
-        <input style={{flex:1,padding:"9px 12px",border:"none",borderRadius:4,fontSize:16,outline:"none",color:"#111"}} placeholder="Rechercher..." value={search} onChange={e=>setSearch(e.target.value)}/>
-        <select style={{padding:"0 8px",background:"#e3e3e3",border:"none",borderRadius:4,fontSize:16,color:"#333",outline:"none"}} value={tag} onChange={e=>setTag(e.target.value)}>
-          {tags.map(t=><option key={t}>{t}</option>)}
-        </select>
-      </div>
+        {/* Barre de recherche mobile */}
+        {isMobile&&(
+          <div style={{padding:"0 10px 8px",display:"flex",gap:8}}>
+            <div style={{flex:1,display:"flex",height:36,borderRadius:8,overflow:"hidden",background:"rgba(255,255,255,0.12)",border:"1px solid rgba(255,255,255,0.15)"}}>
+              <input style={{flex:1,minWidth:0,padding:"0 12px",border:"none",fontSize:14,outline:"none",color:"white",background:"transparent"}} placeholder="Rechercher..." value={search} onChange={e=>setSearch(e.target.value)}/>
+              <button style={{background:"#C8102E",border:"none",padding:"0 12px",cursor:"pointer",flexShrink:0,display:"flex",alignItems:"center"}}><Ic n="srch" s={15} c="white"/></button>
+            </div>
+          </div>
+        )}
+      </header>
 
       {/* ── NAV ── */}
-      <div style={{background:"#C8102E",overflowX:"auto",WebkitOverflowScrolling:"touch",msOverflowStyle:"none",scrollbarWidth:"none",width:"100%"}}>
-        <div style={{display:"flex",alignItems:"center",height:44,padding:"0 10px",minWidth:"max-content",gap:2,boxSizing:"border-box"}}>
-          {[["all","Tout"],["product","Produits"],["service","Services"]].map(([v,l])=>(
-            <button key={v} className={`nav-btn ${tab===v?"on":""}`} onClick={()=>setTab(v)}>{l}</button>
+      <div className="nav-bar">
+        <div className="nav-inner">
+          {["Tout","Produits","Services"].map(label=>(
+            <button key={label} className={`nav-btn${tag===label||(!["Tout","Produits","Services"].includes(tag)&&label==="Tout")?"":""}`} style={{color:"rgba(255,255,255,0.85)"}} onClick={()=>setTag(label==="Produits"?"product":label==="Services"?"service":"Tout")}>{label}</button>
           ))}
-          <div style={{width:1,height:18,background:"rgba(255,255,255,0.3)",margin:"0 6px"}}/>
-          {tags.slice(1).map(t=><button key={t} className={`nav-btn ${tag===t?"on":""}`} onClick={()=>setTag(tag===t?"Tout":t)}>{t}</button>)}
+          <div style={{width:1,background:"rgba(255,255,255,0.2)",height:20,flexShrink:0}}/>
+          {tags.slice(1).map(label=>(
+            <button key={label} className={`nav-btn${tag===label?" on":""}`} onClick={()=>setTag(label)}>{label}</button>
+          ))}
           <div style={{flex:1}}/>
-          <button onClick={()=>needAuth(()=>setShowForm(true))} style={{background:"white",color:"#C8102E",border:"none",padding:"6px 12px",borderRadius:3,fontSize:13,fontWeight:700,cursor:"pointer",flexShrink:0,whiteSpace:"nowrap"}}>+ Publier</button>
+          {user&&<button className="pub-btn" onClick={()=>setShowForm(true)}>+ Publier</button>}
         </div>
       </div>
 
-      {/* ── BANNIÈRE BIENVENUE ── */}
-      <div style={{background:"linear-gradient(135deg,#1B0007 0%,#C8102E 100%)",overflow:"hidden",width:"100%"}}>
-        {/* Texte défilant */}
-        <div style={{background:"rgba(0,0,0,0.2)",padding:"7px 0",borderBottom:"1px solid rgba(255,255,255,0.1)",overflow:"hidden",width:"100%"}}>
-          <div className="marquee" style={{color:"rgba(255,255,255,0.9)",fontSize:13}}>
-            {["Bienvenue sur Faso_Karambisi","·","Achetez et vendez entre étudiants","·","Proposez vos services sur le campus","·","Connectez-vous avec vos camarades","·","Livres, électronique, vêtements et plus","·","Bienvenue sur Faso_Karambisi","·","Achetez et vendez entre étudiants","·","Proposez vos services sur le campus","·","Connectez-vous avec vos camarades","·"].map((t,i)=>(
-              <span key={i} style={{padding:"0 28px",opacity:t==="·"?0.4:1}}>{t}</span>
+      {/* ── BANDEAU + HERO ── */}
+      <div style={{background:"linear-gradient(135deg,#1B0007 0%,#C8102E 60%,#a80d26 100%)"}}>
+        {/* Bandeau défilant */}
+        <div className="marquee-track" style={{background:"rgba(0,0,0,0.25)",borderBottom:"1px solid rgba(255,255,255,0.1)",height:34,display:"flex",alignItems:"center"}}>
+          <div className="marquee" style={{color:"rgba(255,255,255,0.85)",fontSize:12}}>
+            {["Bienvenue sur Faso_Karambisi","·","Achetez et vendez entre étudiants","·","Proposez vos services sur le campus","·","Connectez-vous avec vos camarades","·","Livres, électronique, vêtements et plus","·","Bienvenue sur Faso_Karambisi","·","Achetez et vendez entre étudiants","·","Proposez vos services sur le campus","·"].map((t,i)=>(
+              <span key={i} style={{padding:"0 24px",opacity:t==="·"?0.35:1,fontWeight:t==="·"?400:500}}>{t}</span>
             ))}
           </div>
         </div>
-        {/* Hero */}
-        <div style={{maxWidth:1280,margin:"0 auto",padding:"16px 14px 20px",gap:16,width:"100%",display:"flex",flexDirection:isMobile?"column":"row",alignItems:"center",justifyContent:"space-between"}}>
-          <div style={{color:"white",minWidth:0,width:isMobile?"100%":"auto",flex:isMobile?"none":1}}>
-            <div style={{fontSize:"clamp(18px,4.5vw,26px)",fontWeight:700,lineHeight:1.25,marginBottom:6}}>La plateforme des étudiants entrepreneurs</div>
-            <div style={{fontSize:12,opacity:0.85,lineHeight:1.5,marginBottom:10,maxWidth:480}}>Vendez vos articles, proposez vos services et connectez-vous avec les étudiants de votre campus.</div>
-            <div className="hero-btns">
+
+      {/* Hero */}
+        <div style={{maxWidth:1280,margin:"0 auto",padding:isMobile?"18px 14px 24px":"28px 20px 36px",display:"flex",flexDirection:isMobile?"column":"row",alignItems:"center",justifyContent:"space-between",gap:20}}>
+          <div style={{color:"white",flex:1,minWidth:0}}>
+            <div style={{display:"inline-block",background:"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:20,padding:"4px 14px",fontSize:11,fontWeight:600,letterSpacing:1,textTransform:"uppercase",marginBottom:12}}>🎓 Pour les étudiants</div>
+            <div style={{fontSize:isMobile?"clamp(20px,6vw,26px)":"clamp(24px,3.5vw,34px)",fontWeight:800,lineHeight:1.2,marginBottom:10,letterSpacing:"-0.5px"}}>La plateforme des<br/>étudiants entrepreneurs</div>
+            <div style={{fontSize:isMobile?13:14,opacity:0.85,lineHeight:1.7,marginBottom:16,maxWidth:480}}>Vendez vos articles, proposez vos services et connectez-vous avec les étudiants de votre campus.</div>
+            <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
               {["Livres & Cours","Electronique","Services","Vetements"].map(label=>(
-                <button key={label} onClick={()=>setTag(label)} style={{background:"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.3)",borderRadius:20,padding:"5px 12px",color:"white",fontSize:11,cursor:"pointer",fontWeight:500,whiteSpace:"nowrap"}}>
+                <button key={label} onClick={()=>setTag(label)} style={{background:"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.25)",borderRadius:20,padding:"6px 14px",color:"white",fontSize:12,cursor:"pointer",fontWeight:500,transition:"background 0.15s"}} onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,0.25)"} onMouseLeave={e=>e.currentTarget.style.background="rgba(255,255,255,0.15)"}>
                   {label}
                 </button>
               ))}
             </div>
           </div>
-          <div style={{gap:8,minWidth:180,flexShrink:0,display:isMobile?"none":"flex",flexDirection:"column"}}>
-            {[["Annonces publiées","Voir les offres de vos camarades"],["Services disponibles","Cours, design, traduction et plus"],["Messagerie intégrée","Échangez avec les vendeurs"]].map(([t,d])=>(
-              <div key={t} style={{background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.18)",borderRadius:6,padding:"9px 12px",display:"flex",alignItems:"center",gap:10}}>
-                <div style={{width:7,height:7,borderRadius:"50%",background:"white",flexShrink:0}}/>
-                <div><div style={{color:"white",fontSize:13,fontWeight:600}}>{t}</div><div style={{color:"rgba(255,255,255,0.65)",fontSize:11,marginTop:2}}>{d}</div></div>
-              </div>
-            ))}
-          </div>
+          {!isMobile&&(
+            <div style={{display:"flex",flexDirection:"column",gap:10,minWidth:220,flexShrink:0}}>
+              {[["📚","Annonces publiées","Offres de vos camarades"],["⚡","Services disponibles","Cours, design, traduction..."],["💬","Messagerie intégrée","Échangez avec les vendeurs"]].map(([icon,t,d])=>(
+                <div key={t} style={{background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:10,padding:"12px 14px",display:"flex",alignItems:"center",gap:12}}>
+                  <span style={{fontSize:20,flexShrink:0}}>{icon}</span>
+                  <div><div style={{color:"white",fontSize:13,fontWeight:600,lineHeight:1.2}}>{t}</div><div style={{color:"rgba(255,255,255,0.6)",fontSize:11,marginTop:2}}>{d}</div></div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
 
       {/* ── ANNONCES ── */}
-      <div style={{background:"white",width:"100%"}}>
-        <div style={{maxWidth:1280,margin:"0 auto",padding:"16px 14px 40px",width:"100%",boxSizing:"border-box"}}>
-        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:12}}>
-          <div style={{fontSize:13,color:"#555"}}>{filtered.length} résultat{filtered.length>1?"s":""}{tag!=="Tout"&&` dans "${tag}"`}</div>
-          <button onClick={fetchListings} style={{background:"none",border:"1px solid #ddd",borderRadius:3,padding:"5px 12px",fontSize:12,cursor:"pointer",color:"#555"}}>Actualiser</button>
+      <div style={{background:"#f5f5f5",width:"100%"}}>
+        <div style={{maxWidth:1280,margin:"0 auto",padding:isMobile?"12px 10px 40px":"20px 20px 48px",width:"100%",boxSizing:"border-box"}}>
+        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:14}}>
+          <div style={{fontSize:13,color:"#777",fontWeight:500}}>{filtered.length} résultat{filtered.length>1?"s":""}{tag!=="Tout"?<span style={{color:"#C8102E",fontWeight:600}}> · {tag}</span>:""}</div>
+          <button onClick={fetchListings} style={{background:"white",border:"1px solid #e0e0e0",borderRadius:6,padding:"5px 14px",fontSize:12,cursor:"pointer",color:"#555",fontWeight:500,transition:"all 0.15s"}} onMouseEnter={e=>{e.currentTarget.style.borderColor="#C8102E";e.currentTarget.style.color="#C8102E";}} onMouseLeave={e=>{e.currentTarget.style.borderColor="#e0e0e0";e.currentTarget.style.color="#555";}}>↻ Actualiser</button>
         </div>
 
         {loadingL?(
@@ -1151,23 +1150,19 @@ export default function App() {
           <div style={{display:"grid",gridTemplateColumns:isMobile?"repeat(2,1fr)":"repeat(auto-fill,minmax(220px,1fr))",gap:isMobile?10:16}}>
             {filtered.map(item=>(
               <div key={item.id} className="card" onClick={async()=>{setModal(item);setMTab("article");setMPhotoIdx(0);
-              // Notifier le vendeur si ce n'est pas le sien
-              if (user && item.seller?.id && item.seller.id !== user.id) {
-                const visitorNom = `${user.prenom} ${user.nom}`;
-                await createNotif(item.seller.id, "visite", `${visitorNom} a consulté votre annonce`, `"${item.title}"`, item.id, user.id);
-              }
+              if(user&&item.seller?.id&&item.seller.id!==user.id){const v=`${user.prenom} ${user.nom}`;await createNotif(item.seller.id,"visite",`${v} a consulté votre annonce`,`"${item.title}"`,item.id,user.id);}
             }}>
-                <div style={{background:"#f3f3f3",height:"clamp(130px,30vw,170px)",display:"flex",alignItems:"center",justifyContent:"center",borderBottom:"1px solid #eee",overflow:"hidden",position:"relative"}}>
-                  {item.photos?.length>0?<img src={item.photos[0]} alt={item.title} style={{width:"100%",height:"100%",objectFit:"cover"}}/>:<Ic n="img" s={36} c="#ccc"/>}
-                  {item.photos?.length>1&&<div style={{position:"absolute",bottom:5,right:5,background:"rgba(0,0,0,0.55)",color:"white",fontSize:10,padding:"2px 6px",borderRadius:2,fontWeight:600}}>+{item.photos.length-1}</div>}
-                  <div style={{position:"absolute",top:6,left:6}}><span style={{fontSize:9,background:item.type==="service"?"#0066cc":"#2d8a2d",color:"white",padding:"2px 7px",borderRadius:2,fontWeight:700,textTransform:"uppercase"}}>{item.type==="service"?"Service":"Produit"}</span></div>
+                <div className="card-img">
+                  {item.photos?.length>0?<img src={item.photos[0]} alt={item.title}/>:<Ic n="img" s={36} c="#ccc"/>}
+                  {item.photos?.length>1&&<div style={{position:"absolute",bottom:6,right:6,background:"rgba(0,0,0,0.6)",color:"white",fontSize:10,padding:"2px 7px",borderRadius:4,fontWeight:600}}>+{item.photos.length-1}</div>}
+                  <div style={{position:"absolute",top:8,left:8}}><span className="badge-type" style={{background:item.type==="service"?"#1565c0":"#2e7d32"}}>{item.type==="service"?"Service":"Produit"}</span></div>
                 </div>
-                <div style={{padding:"10px 11px"}}>
-                  <div style={{fontSize:10,color:"#C8102E",fontWeight:600,textTransform:"uppercase",letterSpacing:1,marginBottom:3}}>{item.tag}</div>
-                  <div style={{fontSize:"clamp(12px,3.5vw,14px)",fontWeight:500,color:"#111",marginBottom:4,lineHeight:1.4,overflow:"hidden",display:"-webkit-box",WebkitLineClamp:2,WebkitBoxOrient:"vertical"}}>{item.title}</div>
-                  <div style={{fontSize:11,color:"#888",marginBottom:3}}>{item.seller?.prenom} {item.seller?.nom}</div>
-                  {(item.ville||item.quartier)&&<div style={{fontSize:10,color:"#aaa",marginBottom:5,display:"flex",alignItems:"center",gap:3}}><Ic n="pin" s={10} c="#aaa"/>{[item.quartier,item.ville].filter(Boolean).join(", ")}</div>}
-                  <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:6}}>
+                <div className="card-body">
+                  <div className="card-tag">{item.tag}</div>
+                  <div className="card-title">{item.title}</div>
+                  <div className="card-seller">{item.seller?.prenom} {item.seller?.nom}</div>
+                  {(item.ville||item.quartier)&&<div style={{fontSize:10,color:"#bbb",marginTop:3,display:"flex",alignItems:"center",gap:3}}><Ic n="pin" s={10} c="#bbb"/>{[item.quartier,item.ville].filter(Boolean).join(", ")}</div>}
+                  <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginTop:8}}>
                     <div><span style={{fontSize:"clamp(14px,4vw,17px)",fontWeight:700}}>{item.price.toLocaleString()}</span><span style={{fontSize:10,color:"#888",marginLeft:2}}>FCFA</span></div>
                     <button className="btn btn-red" style={{fontSize:11,padding:"5px 10px"}} onClick={e=>{e.stopPropagation();user?addCart(item):setPage("login");}}>
                       {item.type==="service"?"Réserver":"Ajouter"}
@@ -1182,9 +1177,9 @@ export default function App() {
 
       {/* ── MODAL ANNONCE ── */}
       {modal&&(
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>setModal(null)}>
-          <div className="modal-animate" style={{background:"white",borderRadius:isMobile?"18px 18px 0 0":"10px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
-            {isMobile&&<div className="modal-handle"/>}
+        <div className="modal-overlay" style={{zIndex:200}} onClick={()=>setModal(null)}>
+          <div className="modal-sheet" onClick={e=>e.stopPropagation()}>
+            <div className="modal-handle"/>
             <ModalHeader
               title={mTab==="vendeur"?"Profil du vendeur":"Détail de l'annonce"}
               onBack={mTab==="vendeur"?()=>setMTab("article"):null}
@@ -1269,9 +1264,9 @@ export default function App() {
 
       {/* ── PUBLIER ANNONCE ── */}
       {showForm&&(
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onMouseDown={e=>{if(e.target===e.currentTarget)setShowForm(false);}}>
-          <div className="modal-animate" style={{background:"white",borderRadius:isMobile?"18px 18px 0 0":"10px",width:"100%",maxWidth:isMobile?"100%":"600px",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
-            {isMobile&&<div className="modal-handle"/>}
+        <div className="modal-overlay" style={{zIndex:200}} onMouseDown={e=>{if(e.target===e.currentTarget)setShowForm(false);}}>
+          <div className="modal-sheet" onClick={e=>e.stopPropagation()}>
+            <div className="modal-handle"/>
             <ModalHeader title="Publier une annonce" onClose={()=>{setShowForm(false);setFormErr({});setFormError("");}}/>
             <div style={{padding:"14px 16px",overflowY:"auto",display:"flex",flexDirection:"column",gap:13}}>
               <div><label className="lbl">Type</label><select className="inp" value={form.type} onChange={e=>setForm(f=>({...f,type:e.target.value}))}><option value="product">Produit à vendre</option><option value="service">Service à offrir</option></select></div>
@@ -1313,9 +1308,9 @@ export default function App() {
 
       {/* ── MES ANNONCES ── */}
       {showMyAds&&(
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onMouseDown={e=>{if(e.target===e.currentTarget)setShowMyAds(false);}}>
-          <div className="modal-animate" style={{background:"white",borderRadius:isMobile?"18px 18px 0 0":"10px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
-            {isMobile&&<div className="modal-handle"/>}
+        <div className="modal-overlay" style={{zIndex:200}} onMouseDown={e=>{if(e.target===e.currentTarget)setShowMyAds(false);}}>
+          <div className="modal-sheet" onClick={e=>e.stopPropagation()}>
+            <div className="modal-handle"/>
             <ModalHeader
               title={`Mes annonces${myAds.length>0?" ("+myAds.length+")":""}`}
               onClose={()=>setShowMyAds(false)}
@@ -1354,9 +1349,9 @@ export default function App() {
 
       {/* ── MODIFIER ANNONCE ── */}
       {editForm&&(
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onMouseDown={e=>{if(e.target===e.currentTarget)setEditForm(null);}}>
-          <div className="modal-animate" style={{background:"white",borderRadius:isMobile?"18px 18px 0 0":"10px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
-            {isMobile&&<div className="modal-handle"/>}
+        <div className="modal-overlay" style={{zIndex:200}} onMouseDown={e=>{if(e.target===e.currentTarget)setEditForm(null);}}>
+          <div className="modal-sheet" onClick={e=>e.stopPropagation()}>
+            <div className="modal-handle"/>
             <ModalHeader title="Modifier l'annonce" onBack={()=>setEditForm(null)} backLabel="Annuler" onClose={()=>setEditForm(null)}/>
             <div style={{padding:"14px 16px",overflowY:"auto",display:"flex",flexDirection:"column",gap:13}}>
               <div><label className="lbl">Type</label><select className="inp" value={editForm.type} onChange={e=>setEditForm(f=>({...f,type:e.target.value}))}><option value="product">Produit</option><option value="service">Service</option></select></div>
@@ -1383,9 +1378,9 @@ export default function App() {
 
       {/* ── MON PROFIL ── */}
       {showProfil&&profilForm&&(
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onMouseDown={e=>{if(e.target===e.currentTarget)setShowProfil(false);}}>
-          <div className="modal-animate" style={{background:"white",borderRadius:isMobile?"18px 18px 0 0":"10px",width:"100%",maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
-            {isMobile&&<div className="modal-handle"/>}
+        <div className="modal-overlay" style={{zIndex:200}} onMouseDown={e=>{if(e.target===e.currentTarget)setShowProfil(false);}}>
+          <div className="modal-sheet" onClick={e=>e.stopPropagation()}>
+            <div className="modal-handle"/>
             <ModalHeader title="Mon profil" onClose={()=>setShowProfil(false)}/>
             <div style={{padding:"14px 16px",overflowY:"auto",display:"flex",flexDirection:"column",gap:13}}>
               <div>
@@ -1546,9 +1541,9 @@ export default function App() {
 
       {/* ── CONTACTER VENDEUR ── */}
       {contactModal&&(
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onMouseDown={e=>{if(e.target===e.currentTarget)setContactModal(null);}}>
-          <div className="modal-animate" style={{background:"white",borderRadius:isMobile?"18px 18px 0 0":"10px",width:"100%",maxWidth:460,display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
-            {isMobile&&<div className="modal-handle"/>}
+        <div className="modal-overlay" style={{zIndex:200}} onMouseDown={e=>{if(e.target===e.currentTarget)setContactModal(null);}}>
+          <div className="modal-sheet" onClick={e=>e.stopPropagation()}>
+            <div className="modal-handle"/>
             <ModalHeader
               title={`Contacter ${contactModal.seller?.prenom} ${contactModal.seller?.nom}`}
               onBack={()=>setContactModal(null)}
@@ -1611,9 +1606,9 @@ export default function App() {
 
       {/* ── SUPPRESSION ── */}
       {delConfirm&&(
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>setDelConfirm(null)}>
-          <div className="modal-animate" style={{background:"white",borderRadius:isMobile?"18px 18px 0 0":"10px",width:"100%",maxWidth:400,display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
-            {isMobile&&<div className="modal-handle"/>}
+        <div className="modal-overlay" style={{zIndex:200}} onClick={()=>setDelConfirm(null)}>
+          <div className="modal-sheet" onClick={e=>e.stopPropagation()}>
+            <div className="modal-handle"/>
             <ModalHeader title="Supprimer l'annonce" onClose={()=>setDelConfirm(null)}/>
             <div style={{padding:"20px 20px 24px",display:"flex",flexDirection:"column",gap:16}}>
               <div style={{display:"flex",alignItems:"flex-start",gap:12,background:"#fff8f8",borderRadius:8,padding:"14px",border:"1px solid #fcc"}}>
@@ -1631,9 +1626,9 @@ export default function App() {
 
       {/* ── RÉSEAU INNOVATION ── */}
       {showReseau && (
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>{setShowReseau(false);setActiveGroupe(null);setShowMatching(false);}}>
-          <div className="modal-animate" style={{background:"white",borderRadius:isMobile?"18px 18px 0 0":"10px",width:"100%",maxWidth:760,height:isMobile?"92vh":"88vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
-            {isMobile&&<div className="modal-handle"/>}
+        <div className="modal-overlay" style={{zIndex:200}} onClick={()=>{setShowReseau(false);setActiveGroupe(null);setShowMatching(false);}}>
+          <div className="modal-sheet" style={{maxWidth:780,height:isMobile?"92vh":"88vh"}} onClick={e=>e.stopPropagation()}>
+            <div className="modal-handle"}
             <ModalHeader
               title={showMatching?"Matching IA":activeGroupe&&isMobile?activeGroupe.nom:"Réseau Innovation"}
               onBack={showMatching?()=>setShowMatching(false):activeGroupe&&isMobile?()=>setActiveGroupe(null):null}
@@ -1787,9 +1782,9 @@ export default function App() {
 
       {/* ── NOTIFICATIONS PANEL ── */}
       {showNotifs && (
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.5)",zIndex:200,display:"flex",alignItems:isMobile?"flex-end":"center",justifyContent:"center",padding:isMobile?"0":"20px"}} onClick={()=>setShowNotifs(false)}>
-          <div className="modal-animate" style={{background:"white",borderRadius:isMobile?"18px 18px 0 0":"10px",width:"100%",maxWidth:400,maxHeight:isMobile?"92vh":"90vh",display:"flex",flexDirection:"column",overflow:"hidden"}} onClick={e=>e.stopPropagation()}>
-            {isMobile&&<div className="modal-handle"/>}
+        <div className="modal-overlay" style={{zIndex:200}} onClick={()=>setShowNotifs(false)}>
+          <div className="modal-sheet" onClick={e=>e.stopPropagation()}>
+            <div className="modal-handle"/>
             <ModalHeader
               title={<>Notifications {notifCount>0&&<Badge n={notifCount}/>}</>}
               onClose={()=>setShowNotifs(false)}
