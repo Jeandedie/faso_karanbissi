@@ -1097,7 +1097,7 @@ export default function App() {
       {/* Hero */}
         <div style={{maxWidth:1280,margin:"0 auto",padding:isMobile?"18px 14px 24px":"28px 20px 36px",display:"flex",flexDirection:isMobile?"column":"row",alignItems:"center",justifyContent:"space-between",gap:20}}>
           <div style={{color:"white",flex:1,minWidth:0}}>
-            <div style={{display:"inline-block",background:"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:20,padding:"4px 14px",fontSize:11,fontWeight:600,letterSpacing:1,textTransform:"uppercase",marginBottom:12}}>🎓 Pour les étudiants</div>
+            <div style={{display:"inline-block",background:"rgba(255,255,255,0.15)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:20,padding:"4px 14px",fontSize:11,fontWeight:600,letterSpacing:1,textTransform:"uppercase",marginBottom:12}}>Plateforme Universitaire</div>
             <div style={{fontSize:isMobile?"clamp(20px,6vw,26px)":"clamp(24px,3.5vw,34px)",fontWeight:800,lineHeight:1.2,marginBottom:10,letterSpacing:"-0.5px"}}>La plateforme des<br/>étudiants entrepreneurs</div>
             <div style={{fontSize:isMobile?13:14,opacity:0.85,lineHeight:1.7,marginBottom:16,maxWidth:480}}>Vendez vos articles, proposez vos services et connectez-vous avec les étudiants de votre campus.</div>
             <div style={{display:"flex",flexWrap:"wrap",gap:8}}>
@@ -1110,9 +1110,9 @@ export default function App() {
           </div>
           {!isMobile&&(
             <div style={{display:"flex",flexDirection:"column",gap:10,minWidth:220,flexShrink:0}}>
-              {[["📚","Annonces publiées","Offres de vos camarades"],["⚡","Services disponibles","Cours, design, traduction..."],["💬","Messagerie intégrée","Échangez avec les vendeurs"]].map(([icon,t,d])=>(
+              {[["","Annonces publiées","Offres de vos camarades"],["","Services disponibles","Cours, design, traduction..."],["","Messagerie intégrée","Échangez avec les vendeurs"]].map(([icon,t,d])=>(
                 <div key={t} style={{background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.15)",borderRadius:10,padding:"12px 14px",display:"flex",alignItems:"center",gap:12}}>
-                  <span style={{fontSize:20,flexShrink:0}}>{icon}</span>
+                  
                   <div><div style={{color:"white",fontSize:13,fontWeight:600,lineHeight:1.2}}>{t}</div><div style={{color:"rgba(255,255,255,0.6)",fontSize:11,marginTop:2}}>{d}</div></div>
                 </div>
               ))}
@@ -1425,7 +1425,7 @@ export default function App() {
                 {activeConv.user?.prenom} {activeConv.user?.nom}
               </button>
             ) : (
-              <div style={{fontSize:17,fontWeight:700,color:"#111"}}>💬 Messagerie</div>
+              <div style={{fontSize:17,fontWeight:700,color:"#111"}}> Messagerie</div>
             )}
             <button onClick={()=>{setShowMsgs(false);setActiveConv(null);}} style={{background:"none",border:"none",cursor:"pointer",padding:8,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center"}}><Ic n="x" s={22} c="#555"/></button>
           </div>
@@ -1496,7 +1496,7 @@ export default function App() {
                             onTouchStart={e=>{e.currentTarget.style.opacity=1;}}
                             onTouchEnd={e=>{if(deletingMsgId!==m.id)setTimeout(()=>{if(e.currentTarget)e.currentTarget.style.opacity=0;},2000);}}
                           >
-                            {deletingMsgId===m.id ? "✓" : <Ic n="del" s={13} c="#C8102E"/>}
+                            {deletingMsgId===m.id ? "" : <Ic n="del" s={13} c="#C8102E"/>}
                           </button>
                         )}
                       </div>
@@ -1626,157 +1626,187 @@ export default function App() {
 
       {/* ── RÉSEAU INNOVATION ── */}
       {showReseau && (
-        <div className="modal-overlay" style={{zIndex:200}} onClick={()=>{setShowReseau(false);setActiveGroupe(null);setShowMatching(false);}}>
-          <div className="modal-sheet" style={{maxWidth:780,height:isMobile?"92vh":"88vh"}} onClick={e=>e.stopPropagation()}>
-            <div className="modal-handle"/>
-            <ModalHeader
-              title={showMatching?"Matching IA":activeGroupe&&isMobile?activeGroupe.nom:"Réseau Innovation"}
-              onBack={showMatching?()=>setShowMatching(false):activeGroupe&&isMobile?()=>setActiveGroupe(null):null}
-              backLabel={showMatching?"Retour":activeGroupe&&isMobile?"Groupes":""}
-              onClose={()=>{setShowReseau(false);setActiveGroupe(null);setShowMatching(false);}}
-              extra={!showMatching&&!activeGroupe&&<button onClick={()=>{setShowMatching(true);if(matchings.length===0)generateMatching();}} style={{background:"#C8102E",color:"white",border:"none",borderRadius:6,padding:"6px 12px",fontSize:12,cursor:"pointer",fontWeight:600,display:"flex",alignItems:"center",gap:5,flexShrink:0}}><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Matching IA</button>}
-            />
+        <div style={{position:"fixed",inset:0,zIndex:200,background:"white",display:"flex",flexDirection:"column"}}>
 
-            {/* MATCHING IA PANEL */}
-            {showMatching ? (
-              <div style={{flex:1,overflowY:"auto",padding:"16px"}}>
-                <div style={{display:"flex",justifyContent:"flex-end",marginBottom:16}}>
-                  <button onClick={generateMatching} disabled={matchingLoading} style={{background:"#C8102E",color:"white",border:"none",borderRadius:6,padding:"7px 14px",fontSize:12,cursor:"pointer",fontWeight:600,display:"flex",alignItems:"center",gap:6}}>
-                    {matchingLoading ? <><span className="spinner"/>Analyse en cours...</> : <><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>Relancer l'analyse</>}
+          {/* ── BARRE TOP style Amazon ── */}
+          <div style={{height:52,borderBottom:"1px solid #e7e7e7",display:"flex",alignItems:"center",padding:"0 16px",gap:12,flexShrink:0,background:"white"}}>
+            <button
+              onClick={()=>{
+                if(showMatching){setShowMatching(false);}
+                else if(activeGroupe&&isMobile){setActiveGroupe(null);}
+                else{setShowReseau(false);}
+              }}
+              style={{display:"flex",alignItems:"center",gap:6,background:"none",border:"none",cursor:"pointer",color:"#C8102E",fontWeight:700,fontSize:14,padding:"6px 0",flexShrink:0}}
+            >
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#C8102E" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
+              {showMatching?"Retour":activeGroupe&&isMobile?"Groupes":"Retour"}
+            </button>
+            <div style={{flex:1,fontWeight:700,fontSize:16,color:"#111",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>
+              {showMatching?"Matching IA":activeGroupe&&isMobile?activeGroupe.nom:"Réseau Innovation"}
+            </div>
+            {!showMatching&&!activeGroupe&&(
+              <button
+                onClick={()=>{setShowMatching(true);if(matchings.length===0)generateMatching();}}
+                style={{background:"#C8102E",color:"white",border:"none",borderRadius:6,padding:"7px 14px",fontSize:13,cursor:"pointer",fontWeight:600,flexShrink:0,display:"flex",alignItems:"center",gap:6}}
+              >
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+                Matching IA
+              </button>
+            )}
+            <button onClick={()=>{setShowReseau(false);setActiveGroupe(null);setShowMatching(false);}} style={{width:34,height:34,borderRadius:"50%",background:"#f5f5f5",border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+          </div>
+
+          {/* ── CONTENU ── */}
+          {showMatching ? (
+
+            /* MATCHING IA */
+            <div style={{flex:1,overflowY:"auto",background:"#f5f5f5"}}>
+              <div style={{maxWidth:680,margin:"0 auto",padding:"16px 14px"}}>
+                <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:16}}>
+                  <div style={{fontSize:13,color:"#555"}}>Partenaires suggérés par l'IA selon votre profil</div>
+                  <button onClick={generateMatching} disabled={matchingLoading} style={{background:"white",color:"#C8102E",border:"1px solid #C8102E",borderRadius:6,padding:"7px 14px",fontSize:12,cursor:"pointer",fontWeight:600,display:"flex",alignItems:"center",gap:6}}>
+                    {matchingLoading?<><span className="spinner" style={{borderTopColor:"#C8102E",border:"2px solid rgba(200,16,46,0.2)",borderTopColor:"#C8102E"}}/>Analyse...</>:"Relancer l'analyse"}
                   </button>
                 </div>
-
-                {matchingLoading ? (
-                  <div style={{textAlign:"center",padding:"48px 0",color:"#888"}}>
-                    <div style={{width:32,height:32,border:"3px solid #eee",borderTopColor:"#C8102E",borderRadius:"50%",animation:"spin 0.7s linear infinite",margin:"0 auto 16px"}}/>
-                    <div style={{fontSize:14,fontWeight:500}}>L'IA analyse les profils...</div>
-                    <div style={{fontSize:12,color:"#aaa",marginTop:6}}>Recherche des meilleurs partenaires pour vous</div>
+                {matchingLoading?(
+                  <div style={{textAlign:"center",padding:"60px 0",color:"#888",background:"white",borderRadius:10}}>
+                    <div style={{width:36,height:36,border:"3px solid #eee",borderTopColor:"#C8102E",borderRadius:"50%",animation:"spin 0.7s linear infinite",margin:"0 auto 16px"}}/>
+                    <div style={{fontSize:14,fontWeight:500}}>Analyse des profils en cours...</div>
                   </div>
-                ) : matchings.length === 0 ? (
-                  <div style={{textAlign:"center",padding:"40px 20px",color:"#aaa"}}>
+                ):matchings.length===0?(
+                  <div style={{textAlign:"center",padding:"60px 20px",color:"#aaa",background:"white",borderRadius:10}}>
                     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ddd" strokeWidth="1.5" style={{margin:"0 auto 14px"}}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                    <div style={{fontSize:14,marginBottom:8}}>Pas encore de suggestions</div>
-                    <div style={{fontSize:12,marginBottom:16}}>Cliquez sur "Relancer l'analyse" pour trouver vos partenaires</div>
+                    <div style={{fontSize:14,fontWeight:500,marginBottom:6}}>Aucune suggestion</div>
+                    <div style={{fontSize:12}}>Lancez l'analyse pour trouver vos partenaires</div>
                   </div>
-                ) : (
-                  <>
-                    <div style={{fontSize:13,color:"#555",marginBottom:14}}>
-                      <strong>{matchings.length} partenaire{matchings.length>1?"s":""}</strong> suggéré{matchings.length>1?"s":""} par l'IA selon votre profil
-                    </div>
-                    {matchings.map((m,i) => {
-                      const scoreColor = m.score>=80?"#2d7a2d":m.score>=60?"#c07000":"#C8102E";
-                      const domaineColors = {tech:"#0066cc",sante:"#2d8a2d",agriculture:"#7a5c00",business:"#8b008b",education:"#c05000",droit:"#444",arts:"#b06000"};
-                      return (
-                        <div key={m.id} className="match-card">
-                          <div style={{display:"flex",gap:14,alignItems:"center",marginBottom:12}}>
-                            <div style={{width:44,height:44,borderRadius:"50%",overflow:"hidden",flexShrink:0,background:"#C8102E",display:"flex",alignItems:"center",justifyContent:"center"}}>
-                              {m.photo_url?<img src={m.photo_url} style={{width:"100%",height:"100%",objectFit:"cover"}} alt=""/>:<span style={{color:"white",fontSize:14,fontWeight:700}}>{m.prenom?.[0]}{m.nom?.[0]}</span>}
-                            </div>
-                            <div style={{flex:1}}>
-                              <div style={{fontSize:14,fontWeight:700}}>{m.prenom} {m.nom}</div>
-                              <div style={{fontSize:12,color:"#888"}}>{m.filiere} · {m.annee}</div>
-                              {m.domaine && <span className="domaine-badge" style={{background:domaineColors[m.domaine]+"22",color:domaineColors[m.domaine],marginTop:4,display:"inline-block"}}>{m.domaine}</span>}
-                            </div>
-                            <div className="score-ring" style={{color:scoreColor,borderColor:scoreColor}}>
-                              {m.score}
-                            </div>
+                ):(
+                  matchings.map((m,i)=>{
+                    const scoreColor=m.score>=80?"#2e7d32":m.score>=60?"#e65100":"#C8102E";
+                    const domaineColors={tech:"#1565c0",sante:"#2e7d32",agriculture:"#6d4c41",business:"#6a1b9a",education:"#bf360c",droit:"#37474f",arts:"#4e342e"};
+                    return(
+                      <div key={m.id} style={{background:"white",borderRadius:10,border:"1px solid #e7e7e7",padding:"16px",marginBottom:10}}>
+                        <div style={{display:"flex",gap:14,alignItems:"center",marginBottom:12}}>
+                          <div style={{width:48,height:48,borderRadius:"50%",overflow:"hidden",flexShrink:0,background:"#C8102E",display:"flex",alignItems:"center",justifyContent:"center",border:"2px solid #eee"}}>
+                            {m.photo_url?<img src={m.photo_url} style={{width:"100%",height:"100%",objectFit:"cover"}} alt=""/>:<span style={{color:"white",fontSize:15,fontWeight:700}}>{m.prenom?.[0]}{m.nom?.[0]}</span>}
                           </div>
-                          {m.raison && <div style={{fontSize:12,color:"#555",background:"#f8f8f8",borderRadius:4,padding:"8px 12px",marginBottom:10,lineHeight:1.6}}>{m.raison}</div>}
-                          <button onClick={()=>{sendMsg(m.id,null,`Bonjour ${m.prenom}, l'IA nous a suggérés comme partenaires potentiels ! Je suis ${user.prenom}, étudiant(e) en ${user.filiere}. Je serais ravi(e) d'échanger avec vous.`);setShowReseau(false);setShowMsgs(true);}} style={{width:"100%",background:"#C8102E",color:"white",border:"none",borderRadius:4,padding:"9px",fontSize:13,cursor:"pointer",fontWeight:600,display:"flex",alignItems:"center",justifyContent:"center",gap:7}}>
-                            <Ic n="msg" s={14} c="white"/>Contacter {m.prenom}
-                          </button>
+                          <div style={{flex:1,minWidth:0}}>
+                            <div style={{fontSize:15,fontWeight:700,color:"#111"}}>{m.prenom} {m.nom}</div>
+                            <div style={{fontSize:12,color:"#888",marginTop:2}}>{m.filiere} · {m.annee}</div>
+                            {m.domaine&&<span style={{display:"inline-block",marginTop:4,fontSize:10,padding:"2px 8px",borderRadius:10,fontWeight:700,textTransform:"uppercase",background:(domaineColors[m.domaine]||"#555")+"18",color:domaineColors[m.domaine]||"#555"}}>{m.domaine}</span>}
+                          </div>
+                          <div style={{width:46,height:46,borderRadius:"50%",border:`3px solid ${scoreColor}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:15,fontWeight:800,color:scoreColor,flexShrink:0}}>{m.score}</div>
                         </div>
-                      );
-                    })}
+                        {m.raison&&<div style={{fontSize:12,color:"#555",background:"#f8f8f8",borderRadius:6,padding:"10px 12px",marginBottom:12,lineHeight:1.7,borderLeft:"3px solid #e0e0e0"}}>{m.raison}</div>}
+                        <button
+                          onClick={()=>{sendMsg(m.id,null,`Bonjour ${m.prenom}, l'IA nous a suggérés comme partenaires ! Je suis ${user.prenom} en ${user.filiere}. Je serais ravi(e) d'échanger avec vous.`);setShowReseau(false);setShowMsgs(true);}}
+                          className="btn btn-red btn-block"
+                        >
+                          <Ic n="msg" s={14} c="white"/>Contacter {m.prenom}
+                        </button>
+                      </div>
+                    );
+                  })
+                )}
+              </div>
+            </div>
+
+          ):(
+
+            /* GROUPES */
+            <div style={{display:"flex",flex:1,overflow:"hidden"}}>
+
+              {/* Sidebar groupes — masquée mobile si groupe actif */}
+              <div style={{
+                display: isMobile&&activeGroupe ? "none" : "flex",
+                flexDirection:"column",
+                width: isMobile?"100%":"240px",
+                minWidth: isMobile?"auto":"240px",
+                flexShrink:0,
+                borderRight: isMobile?"none":"1px solid #e7e7e7",
+                overflowY:"auto",
+                background:"#fafafa",
+              }}>
+                <div style={{padding:"12px 16px 8px",fontSize:11,fontWeight:700,color:"#999",textTransform:"uppercase",letterSpacing:1.2,borderBottom:"1px solid #efefef"}}>Domaines</div>
+                {groupes.map(g=>{
+                  const isMember=myGroupes.includes(g.id);
+                  const colors={tech:"#1565c0",sante:"#2e7d32",agriculture:"#6d4c41",business:"#6a1b9a",education:"#bf360c",droit:"#37474f",arts:"#4e342e"};
+                  const col=colors[g.domaine]||"#555";
+                  const isActive=activeGroupe?.id===g.id;
+                  return(
+                    <div key={g.id} onClick={()=>openGroupe(g)} style={{display:"flex",alignItems:"center",gap:12,padding:"13px 16px",cursor:"pointer",borderBottom:"1px solid #efefef",background:isActive?"#fff0f0":"transparent",borderLeft:isActive?`3px solid #C8102E`:"3px solid transparent",transition:"all 0.12s"}}>
+                      <div style={{width:10,height:10,borderRadius:"50%",background:col,flexShrink:0}}/>
+                      <div style={{flex:1,minWidth:0}}>
+                        <div style={{fontSize:13,fontWeight:isActive?700:500,color:isActive?"#C8102E":"#111",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{g.nom}</div>
+                        {isMember&&<div style={{fontSize:10,color:col,fontWeight:600,marginTop:2}}>Membre</div>}
+                      </div>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#ccc" strokeWidth="2" strokeLinecap="round"><polyline points="9 18 15 12 9 6"/></svg>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Panel groupe actif */}
+              <div style={{flex:1,display:isMobile&&!activeGroupe?"none":"flex",flexDirection:"column",overflow:"hidden",background:"white"}}>
+                {!activeGroupe?(
+                  <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",color:"#aaa",padding:32,textAlign:"center"}}>
+                    <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#ddd" strokeWidth="1.5" style={{marginBottom:16}}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    <div style={{fontSize:15,fontWeight:600,color:"#555",marginBottom:6}}>Choisissez un domaine</div>
+                    <div style={{fontSize:13,color:"#aaa",lineHeight:1.6}}>Sélectionnez un groupe dans la liste pour échanger avec vos camarades</div>
+                  </div>
+                ):(
+                  <>
+                    {/* Header groupe avec info */}
+                    <div style={{padding:"14px 16px",borderBottom:"1px solid #e7e7e7",flexShrink:0,background:"white"}}>
+                      <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",gap:12}}>
+                        <div style={{flex:1,minWidth:0}}>
+                          <div style={{fontSize:15,fontWeight:700,color:"#111"}}>{activeGroupe.nom}</div>
+                          <div style={{fontSize:12,color:"#888",marginTop:2}}>{groupeMembers.length} membre{groupeMembers.length!==1?"s":""}</div>
+                        </div>
+                        {myGroupes.includes(activeGroupe.id)?(
+                          <button onClick={()=>leaveGroupe(activeGroupe.id)} style={{background:"white",border:"1px solid #e0e0e0",borderRadius:6,padding:"7px 14px",fontSize:13,cursor:"pointer",color:"#555",fontWeight:500,flexShrink:0,transition:"all 0.15s"}} onMouseEnter={e=>{e.currentTarget.style.borderColor="#C8102E";e.currentTarget.style.color="#C8102E";}} onMouseLeave={e=>{e.currentTarget.style.borderColor="#e0e0e0";e.currentTarget.style.color="#555";}}>Quitter</button>
+                        ):(
+                          <button onClick={()=>joinGroupe(activeGroupe.id)} className="btn btn-red" style={{padding:"7px 16px",fontSize:13,flexShrink:0}}>Rejoindre</button>
+                        )}
+                      </div>
+                      {activeGroupe.description&&<div style={{fontSize:12,color:"#888",marginTop:8,lineHeight:1.6}}>{activeGroupe.description}</div>}
+                    </div>
+
+                    {/* Messages du groupe */}
+                    <div style={{flex:1,overflowY:"auto",padding:"14px 16px",display:"flex",flexDirection:"column",gap:10,background:"#f8f8f8"}}>
+                      {groupeMsgs.length===0?(
+                        <div style={{textAlign:"center",color:"#bbb",paddingTop:40,fontSize:13}}>Aucun message — lancez la discussion !</div>
+                      ):groupeMsgs.map((m,i)=>{
+                        const isMe=m.user_id===user?.id;
+                        return(
+                          <div key={i} style={{display:"flex",flexDirection:"column",alignItems:isMe?"flex-end":"flex-start"}}>
+                            {!isMe&&<div style={{fontSize:11,color:"#aaa",marginBottom:4,fontWeight:500}}>{m.utilisateurs?.prenom} {m.utilisateurs?.nom} · {m.utilisateurs?.filiere}</div>}
+                            <div className={isMe?"msg-me":"msg-other"}>{m.contenu}</div>
+                            <div style={{fontSize:10,color:"#bbb",marginTop:4}}>{new Date(m.created_at).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}</div>
+                          </div>
+                        );
+                      })}
+                      <div ref={groupeMsgsEndRef}/>
+                    </div>
+
+                    {/* Saisie message */}
+                    {myGroupes.includes(activeGroupe.id)?(
+                      <div style={{padding:"10px 12px",borderTop:"1px solid #e7e7e7",display:"flex",gap:8,alignItems:"flex-end",flexShrink:0,background:"white"}}>
+                        <textarea className="msg-inp" placeholder="Écrire dans le groupe..." value={newGroupeMsg} onChange={e=>setNewGroupeMsg(e.target.value)} rows={1} style={{flex:1}} onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendGroupeMsg();}}}/>
+                        <button className="btn btn-red" style={{padding:"10px 16px",borderRadius:22,flexShrink:0,display:"flex",alignItems:"center",gap:6}} onClick={sendGroupeMsg}><Ic n="send" s={15} c="white"/>{!isMobile&&"Envoyer"}</button>
+                      </div>
+                    ):(
+                      <div style={{padding:"14px 16px",borderTop:"1px solid #e7e7e7",textAlign:"center",fontSize:13,color:"#888",background:"#fafafa"}}>
+                        <span>Rejoignez ce groupe pour participer</span>
+                        <button onClick={()=>joinGroupe(activeGroupe.id)} className="btn btn-red" style={{marginLeft:10,padding:"6px 14px",fontSize:12}}>Rejoindre</button>
+                      </div>
+                    )}
                   </>
                 )}
               </div>
-            ) : (
-              /* GROUPES DE DOMAINES */
-              <div style={{display:"flex",flex:1,overflow:"hidden"}}>
-                {/* Liste des groupes */}
-                <div style={{display:isMobile&&activeGroupe?"none":"flex",flexDirection:"column",width:isMobile?"100%":"260px",minWidth:isMobile?"auto":"260px",flexShrink:0,borderRight:isMobile?"none":"1px solid #eee",overflowY:"auto"}}>
-                  <div style={{padding:"10px 14px",fontSize:11,fontWeight:700,color:"#aaa",textTransform:"uppercase",letterSpacing:1,borderBottom:"1px solid #f0f0f0"}}>Domaines</div>
-                  {groupes.map(g => {
-                    const isMember = myGroupes.includes(g.id);
-                    const colors = {tech:"#0066cc",sante:"#2d8a2d",agriculture:"#7a5c00",business:"#8b008b",education:"#c05000",droit:"#444",arts:"#b06000"};
-                    const col = colors[g.domaine]||"#555";
-                    return (
-                      <div key={g.id} className={`groupe-item ${activeGroupe?.id===g.id?"on":""}`} onClick={()=>openGroupe(g)}>
-                        <div style={{width:8,height:8,borderRadius:"50%",background:col,flexShrink:0}}/>
-                        <div style={{flex:1,minWidth:0}}>
-                          <div style={{fontSize:13,fontWeight:600,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{g.nom}</div>
-                          {isMember && <span style={{fontSize:10,color:col,fontWeight:600}}>Membre</span>}
-                        </div>
-                      </div>
-                    );
-                  })}
-                </div>
-
-                {/* Contenu groupe */}
-                <div style={{flex:1,display:isMobile&&!activeGroupe?"none":"flex",flexDirection:"column",overflow:"hidden"}}>
-                  {!activeGroupe ? (
-                    <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",color:"#aaa",padding:24,textAlign:"center"}}>
-                      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="#ddd" strokeWidth="1.5" style={{marginBottom:14}}><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-                      <div style={{fontSize:14,fontWeight:500,marginBottom:6}}>Sélectionnez un domaine</div>
-                      <div style={{fontSize:12}}>Rejoignez un groupe pour échanger avec des étudiants de votre domaine</div>
-                    </div>
-                  ) : (
-                    <>
-                      {/* Header groupe */}
-                      <div style={{padding:"10px 14px",borderBottom:"1px solid #eee",background:"#fafafa",flexShrink:0}}>
-                        <div style={{display:"flex",justifyContent:"space-between",alignItems:"center"}}>
-                          <button onClick={()=>setActiveGroupe(null)} className="msg-back-btn" style={{background:"none",border:"none",cursor:"pointer",padding:"2px 6px 2px 0",display:"flex",alignItems:"center"}}>
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-                          </button>
-                          <div>
-                            <div style={{fontSize:14,fontWeight:700}}>{activeGroupe.nom}</div>
-                            <div style={{fontSize:11,color:"#888"}}>{groupeMembers.length} membre{groupeMembers.length>1?"s":""}</div>
-                          </div>
-                          {myGroupes.includes(activeGroupe.id) ? (
-                            <button onClick={()=>leaveGroupe(activeGroupe.id)} style={{background:"#fff3f3",border:"1px solid #fcc",borderRadius:4,padding:"5px 12px",fontSize:12,cursor:"pointer",color:"#C8102E",fontWeight:500}}>Quitter</button>
-                          ) : (
-                            <button onClick={()=>joinGroupe(activeGroupe.id)} style={{background:"#C8102E",color:"white",border:"none",borderRadius:4,padding:"5px 12px",fontSize:12,cursor:"pointer",fontWeight:600}}>Rejoindre</button>
-                          )}
-                        </div>
-                        <div style={{fontSize:11,color:"#888",marginTop:4}}>{activeGroupe.description}</div>
-                      </div>
-
-                      {/* Messages */}
-                      <div style={{flex:1,overflowY:"auto",padding:"12px 14px",display:"flex",flexDirection:"column",gap:8}}>
-                        {groupeMsgs.length===0 ? (
-                          <div style={{textAlign:"center",color:"#aaa",paddingTop:32,fontSize:13}}>Aucun message — soyez le premier à écrire !</div>
-                        ) : groupeMsgs.map((m,i) => {
-                          const isMe = m.user_id === user?.id;
-                          return (
-                            <div key={i} style={{display:"flex",flexDirection:"column",alignItems:isMe?"flex-end":"flex-start"}}>
-                              {!isMe && <div style={{fontSize:10,color:"#aaa",marginBottom:2}}>{m.utilisateurs?.prenom} {m.utilisateurs?.nom} · {m.utilisateurs?.filiere}</div>}
-                              <div className={isMe?"msg-me":"msg-other"}>{m.contenu}</div>
-                              <div style={{fontSize:10,color:"#aaa",marginTop:2}}>{new Date(m.created_at).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}</div>
-                            </div>
-                          );
-                        })}
-                        <div ref={groupeMsgsEndRef}/>
-                      </div>
-
-                      {/* Input message */}
-                      {myGroupes.includes(activeGroupe.id) ? (
-                        <div style={{padding:"10px 14px",borderTop:"1px solid #eee",display:"flex",gap:8,alignItems:"flex-end",flexShrink:0}}>
-                          <textarea className="msg-inp" placeholder="Écrire dans le groupe..." value={newGroupeMsg} onChange={e=>setNewGroupeMsg(e.target.value)} rows={1}
-                            onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendGroupeMsg();}}}/>
-                          <button className="btn btn-red" style={{padding:"10px 14px",borderRadius:22,flexShrink:0}} onClick={sendGroupeMsg}>Envoyer</button>
-                        </div>
-                      ) : (
-                        <div style={{padding:"12px 14px",borderTop:"1px solid #eee",textAlign:"center",fontSize:13,color:"#888",background:"#fafafa"}}>
-                          Rejoignez ce groupe pour participer à la discussion
-                        </div>
-                      )}
-                    </>
-                  )}
-                </div>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       )}
 
