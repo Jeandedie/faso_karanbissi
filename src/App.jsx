@@ -50,25 +50,56 @@ const emptyReg = {nom:"",prenom:"",dateNaissance:"",sexe:"",filiere:"",annee:"",
 
 /* ─── AUTH WRAPPER — défini HORS de App pour éviter le remontage des inputs à chaque render ─── */
 const AuthWrap = ({title, sub, children, isMobile}) => (
-  <div style={{minHeight:"100vh",width:"100%",background:"#f3f3f3",display:"flex",alignItems:isMobile?"flex-start":"center",justifyContent:"center",padding:isMobile?"0":"24px",overflowY:"auto",WebkitOverflowScrolling:"touch"}}>
+  <div style={{
+    position:"fixed", inset:0, background:isMobile?"white":"#f0f0f0",
+    display:"flex", alignItems:isMobile?"flex-start":"center",
+    justifyContent:"center", overflowY:"auto",
+    WebkitOverflowScrolling:"touch", padding:isMobile?"0":"24px"
+  }}>
     <style>{CSS}</style>
-    <div style={{width:"100%",maxWidth:isMobile?"100%":"860px",minHeight:isMobile?"100vh":"auto",background:"white",display:"flex",flexDirection:isMobile?"column":"row",flex:isMobile?1:"none",borderRadius:isMobile?0:"8px",overflow:isMobile?"visible":"hidden",boxShadow:isMobile?"none":"0 2px 24px rgba(0,0,0,0.10)"}}>
-      <div style={{display:isMobile?"none":"flex",width:"36%",background:"#C8102E",padding:"48px 36px",flexDirection:"column",justifyContent:"center",flexShrink:0}}>
+    <div style={{
+      width:"100%", maxWidth:isMobile?"100%":"860px",
+      minHeight:isMobile?"100%":"auto", background:"white",
+      display:"flex", flexDirection:isMobile?"column":"row",
+      borderRadius:isMobile?0:"10px",
+      overflow:"hidden",
+      boxShadow:isMobile?"none":"0 4px 32px rgba(0,0,0,0.12)"
+    }}>
+      {/* Panneau gauche — desktop only */}
+      <div style={{display:isMobile?"none":"flex",width:"36%",background:"linear-gradient(160deg,#C8102E,#8b0020)",padding:"48px 36px",flexDirection:"column",justifyContent:"center",flexShrink:0}}>
         <div style={{color:"white"}}>
-          <div style={{fontSize:11,fontWeight:600,letterSpacing:2.5,textTransform:"uppercase",opacity:0.75,marginBottom:12}}>Bienvenue sur</div>
-          <div style={{fontSize:26,fontWeight:700,lineHeight:1.25,marginBottom:8}}>Faso_Karambisi</div>
-          <div style={{width:36,height:2,background:"rgba(255,255,255,0.4)",marginBottom:20}}/>
-          <p style={{fontSize:13,lineHeight:1.8,opacity:0.85,fontWeight:300,marginBottom:28}}>La plateforme qui connecte les étudiants de votre campus pour vendre, acheter et proposer des services.</p>
+          <div style={{fontSize:10,fontWeight:700,letterSpacing:3,textTransform:"uppercase",opacity:0.7,marginBottom:14}}>Bienvenue sur</div>
+          <div style={{fontSize:28,fontWeight:800,lineHeight:1.2,marginBottom:10,letterSpacing:"-0.5px"}}>Faso_Karambisi</div>
+          <div style={{width:40,height:3,background:"rgba(255,255,255,0.35)",borderRadius:2,marginBottom:22}}/>
+          <p style={{fontSize:13,lineHeight:1.85,opacity:0.82,fontWeight:400,marginBottom:32}}>La plateforme qui connecte les étudiants pour vendre, acheter et proposer des services sur le campus.</p>
           {["Vendez vos articles","Proposez vos services","Entraide entre étudiants"].map(item=>(
-            <div key={item} style={{display:"flex",alignItems:"center",gap:10,fontSize:13,opacity:0.9,marginBottom:10}}>
-              <div style={{width:5,height:5,borderRadius:"50%",background:"white",flexShrink:0}}/>{item}
+            <div key={item} style={{display:"flex",alignItems:"center",gap:12,fontSize:13,opacity:0.9,marginBottom:12}}>
+              <div style={{width:6,height:6,borderRadius:"50%",background:"rgba(255,255,255,0.7)",flexShrink:0}}/>{item}
             </div>
           ))}
         </div>
       </div>
-      <div style={{flex:1,padding:isMobile?"24px 18px":"48px 44px",display:"flex",flexDirection:"column",justifyContent:isMobile?"flex-start":"center",overflowY:"auto",paddingBottom:isMobile?120:44,WebkitOverflowScrolling:"touch"}}>
-        <div style={{fontSize:isMobile?20:24,fontWeight:700,color:"#111",marginBottom:4}}>{title}</div>
-        <div style={{fontSize:14,color:"#888",marginBottom:24}}>{sub}</div>
+
+      {/* Corps du formulaire */}
+      <div style={{
+        flex:1, display:"flex", flexDirection:"column",
+        overflowY:"auto", WebkitOverflowScrolling:"touch",
+        padding:isMobile?"20px 18px 40px":"48px 44px",
+      }}>
+        {/* Header mobile avec logo */}
+        {isMobile&&(
+          <div style={{display:"flex",alignItems:"center",marginBottom:28,paddingTop:8}}>
+            <div style={{width:36,height:36,borderRadius:8,background:"#C8102E",display:"flex",alignItems:"center",justifyContent:"center",marginRight:12,flexShrink:0}}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            </div>
+            <div>
+              <div style={{fontSize:15,fontWeight:800,color:"#111",letterSpacing:"-0.3px"}}>Faso_Karambisi</div>
+              <div style={{fontSize:10,color:"#999",letterSpacing:1.5,textTransform:"uppercase"}}>Plateforme Universitaire</div>
+            </div>
+          </div>
+        )}
+        <div style={{fontSize:isMobile?20:24,fontWeight:800,color:"#111",marginBottom:4,letterSpacing:"-0.4px"}}>{title}</div>
+        <div style={{fontSize:14,color:"#888",marginBottom:24,lineHeight:1.5}}>{sub}</div>
         {children}
       </div>
     </div>
@@ -1414,124 +1445,120 @@ export default function App() {
       )}
 
       {/* ── MESSAGERIE ── */}
-            {showMsgs&&(
+      {showMsgs&&(
         <div style={{position:"fixed",inset:0,zIndex:200,display:"flex",flexDirection:"column",background:"white"}}>
-          {/* Header */}
-          <div style={{padding:"0 16px",borderBottom:"1px solid #eee",background:"white",flexShrink:0,display:"flex",justifyContent:"space-between",alignItems:"center",height:56,boxShadow:"0 1px 4px rgba(0,0,0,0.06)"}}>
-            {activeConv ? (
-              <button onClick={()=>setActiveConv(null)} style={{background:"none",border:"none",cursor:"pointer",display:"flex",alignItems:"center",gap:8,fontSize:15,fontWeight:700,color:"#111",padding:"8px 0"}}>
+
+          {/* HEADER */}
+          <div style={{height:54,borderBottom:"1px solid #ebebeb",display:"flex",alignItems:"center",padding:"0 12px",gap:10,flexShrink:0,background:"white",boxShadow:"0 1px 4px rgba(0,0,0,0.06)"}}>
+            {activeConv&&isMobile?(
+              <button onClick={()=>setActiveConv(null)} style={{display:"flex",alignItems:"center",background:"none",border:"none",cursor:"pointer",color:"#C8102E",padding:"6px 6px 6px 0",flexShrink:0}}>
                 <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#C8102E" strokeWidth="2.5" strokeLinecap="round"><polyline points="15 18 9 12 15 6"/></svg>
-                <div style={{width:32,height:32,borderRadius:"50%",background:"#C8102E",display:"flex",alignItems:"center",justifyContent:"center",color:"white",fontSize:12,fontWeight:700,flexShrink:0}}>{activeConv.user?.prenom?.[0]}{activeConv.user?.nom?.[0]}</div>
-                {activeConv.user?.prenom} {activeConv.user?.nom}
               </button>
-            ) : (
-              <div style={{fontSize:17,fontWeight:700,color:"#111"}}> Messagerie</div>
+            ):null}
+            {activeConv&&isMobile?(
+              <>
+                <div style={{width:36,height:36,borderRadius:"50%",background:"#C8102E",display:"flex",alignItems:"center",justifyContent:"center",color:"white",fontSize:13,fontWeight:700,flexShrink:0}}>{activeConv.user?.prenom?.[0]}{activeConv.user?.nom?.[0]}</div>
+                <div style={{flex:1,minWidth:0}}>
+                  <div style={{fontSize:15,fontWeight:700,color:"#111",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{activeConv.user?.prenom} {activeConv.user?.nom}</div>
+                  <div style={{fontSize:11,color:"#888"}}>{activeConv.user?.filiere||""}</div>
+                </div>
+              </>
+            ):(
+              <div style={{flex:1,fontSize:16,fontWeight:700,color:"#111"}}>Messages</div>
             )}
-            <button onClick={()=>{setShowMsgs(false);setActiveConv(null);}} style={{background:"none",border:"none",cursor:"pointer",padding:8,borderRadius:"50%",display:"flex",alignItems:"center",justifyContent:"center"}}><Ic n="x" s={22} c="#555"/></button>
+            <button onClick={()=>{setShowMsgs(false);setActiveConv(null);}} style={{width:34,height:34,borderRadius:"50%",background:"#f5f5f5",border:"none",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0}}>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#555" strokeWidth="2.5" strokeLinecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
           </div>
 
           <div style={{display:"flex",flex:1,overflow:"hidden"}}>
-            {/* Liste conversations — masquée sur mobile si conv active */}
-            <div style={{
-              display: isMobile && activeConv ? "none" : "flex",
-              flexDirection: "column",
-              width: isMobile ? "100%" : "260px",
-              minWidth: isMobile ? "auto" : "260px",
-              flexShrink: 0,
-              borderRight: isMobile ? "none" : "1px solid #eee",
-              overflowY: "auto",
-              background: "#fafafa",
-            }}>
+
+            {/* LISTE DES CONVERSATIONS */}
+            <div style={{display:isMobile&&activeConv?"none":"flex",flexDirection:"column",width:isMobile?"100%":"260px",minWidth:isMobile?"auto":"260px",flexShrink:0,borderRight:isMobile?"none":"1px solid #ebebeb",overflowY:"auto",background:"white"}}>
               {convs.length===0?(
-                <div style={{textAlign:"center",padding:"48px 16px",color:"#bbb"}}>
-                  <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#ddd" strokeWidth="1.5" strokeLinecap="round" style={{margin:"0 auto 12px"}}><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                  <div style={{fontSize:14}}>Aucune conversation</div>
+                <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:32,color:"#bbb",textAlign:"center",gap:12}}>
+                  <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" strokeWidth="1.5" strokeLinecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                  <div style={{fontSize:14,fontWeight:500,color:"#ccc"}}>Aucune conversation</div>
                 </div>
-              ):convs.map(cv=>(
-                <div key={cv.userId} className={"conv-row"+(activeConv?.userId===cv.userId?" on":"")} onClick={()=>openConv(cv)} style={{background:activeConv?.userId===cv.userId?"#fff0f0":"transparent"}}>
-                  <div style={{width:42,height:42,borderRadius:"50%",background:"#C8102E",display:"flex",alignItems:"center",justifyContent:"center",color:"white",fontSize:14,fontWeight:700,flexShrink:0}}>{cv.user?.prenom?.[0]}{cv.user?.nom?.[0]}</div>
-                  <div style={{flex:1,minWidth:0}}>
-                    <div style={{fontSize:14,fontWeight:cv.unread>0?700:600,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",color:"#111"}}>{cv.user?.prenom} {cv.user?.nom}</div>
-                    <div style={{fontSize:12,color:"#999",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",marginTop:2}}>{cv.lastMsg?.contenu}</div>
+              ):convs.map(cv=>{
+                const isActive=activeConv?.userId===cv.userId;
+                return(
+                  <div key={cv.userId} onClick={()=>openConv(cv)} style={{display:"flex",alignItems:"center",gap:12,padding:"13px 14px",cursor:"pointer",borderBottom:"1px solid #f5f5f5",background:isActive?"#fff0f0":"white",borderLeft:isActive?"3px solid #C8102E":"3px solid transparent",transition:"background 0.12s"}}>
+                    <div style={{position:"relative",flexShrink:0}}>
+                      <div style={{width:44,height:44,borderRadius:"50%",background:"#C8102E",display:"flex",alignItems:"center",justifyContent:"center",color:"white",fontSize:15,fontWeight:700}}>{cv.user?.prenom?.[0]}{cv.user?.nom?.[0]}</div>
+                      {cv.unread>0&&<div style={{position:"absolute",top:-2,right:-2,width:18,height:18,borderRadius:"50%",background:"#C8102E",border:"2px solid white",display:"flex",alignItems:"center",justifyContent:"center"}}><span style={{fontSize:9,fontWeight:800,color:"white"}}>{cv.unread>9?"9+":cv.unread}</span></div>}
+                    </div>
+                    <div style={{flex:1,minWidth:0}}>
+                      <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:3}}>
+                        <div style={{fontSize:14,fontWeight:cv.unread>0?700:600,color:"#111",overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{cv.user?.prenom} {cv.user?.nom}</div>
+                        {cv.lastMsg?.created_at&&<div style={{fontSize:10,color:"#bbb",flexShrink:0,marginLeft:8}}>{new Date(cv.lastMsg.created_at).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}</div>}
+                      </div>
+                      <div style={{fontSize:12,color:cv.unread>0?"#555":"#aaa",fontWeight:cv.unread>0?500:400,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{cv.lastMsg?.contenu||"Nouvelle conversation"}</div>
+                    </div>
                   </div>
-                  {cv.unread>0&&<span style={{background:"#C8102E",color:"white",borderRadius:10,padding:"2px 7px",fontSize:11,fontWeight:700,flexShrink:0}}>{cv.unread}</span>}
-                </div>
-              ))}
+                );
+              })}
             </div>
 
-            {/* Conversation active */}
-            {activeConv ? (
-              <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden",minWidth:0,background:"white"}}>
-                {activeConv.annonce&&(
-                  <div style={{padding:"7px 16px",background:"#fff8e6",borderBottom:"1px solid #f5d78e",fontSize:12,color:"#7a5c00",display:"flex",alignItems:"center",gap:6}}>
-                    <span style={{fontWeight:600}}>Re:</span> {activeConv.annonce?.titre}
+            {/* CONVERSATION ACTIVE */}
+            {activeConv?(
+              <div style={{flex:1,display:"flex",flexDirection:"column",overflow:"hidden",minWidth:0}}>
+                {!isMobile&&(
+                  <div style={{height:54,borderBottom:"1px solid #ebebeb",display:"flex",alignItems:"center",padding:"0 16px",gap:12,flexShrink:0,background:"white"}}>
+                    <div style={{width:36,height:36,borderRadius:"50%",background:"#C8102E",display:"flex",alignItems:"center",justifyContent:"center",color:"white",fontSize:13,fontWeight:700,flexShrink:0}}>{activeConv.user?.prenom?.[0]}{activeConv.user?.nom?.[0]}</div>
+                    <div>
+                      <div style={{fontSize:14,fontWeight:700,color:"#111"}}>{activeConv.user?.prenom} {activeConv.user?.nom}</div>
+                      <div style={{fontSize:11,color:"#888"}}>{activeConv.user?.filiere||""}</div>
+                    </div>
                   </div>
                 )}
-                {/* Zone messages */}
-                <div style={{flex:1,overflowY:"auto",padding:"16px",display:"flex",flexDirection:"column",gap:10,background:"#f7f7f7"}}>
-                  {msgLoading ? (
-                    <div style={{textAlign:"center",color:"#aaa",paddingTop:32}}>Chargement...</div>
-                  ) : convMsgs.length===0 ? (
-                    <div style={{textAlign:"center",color:"#bbb",paddingTop:40,fontSize:13}}>Démarrez la conversation !</div>
-                  ) : convMsgs.map((m,i)=>(
-                    <div key={m.id||i} style={{display:"flex",flexDirection:"column",alignItems:m.expediteur_id===user.id?"flex-end":"flex-start"}}>
-                      <div style={{display:"flex",alignItems:"center",gap:6,flexDirection:m.expediteur_id===user.id?"row-reverse":"row",maxWidth:"80%"}}>
-                        <div className={m.expediteur_id===user.id?"msg-me":"msg-other"} style={{position:"relative"}}>
-                          {m.contenu}
+                {activeConv.annonce&&(
+                  <div style={{padding:"8px 16px",background:"#fffbea",borderBottom:"1px solid #f0d060",fontSize:12,color:"#7a5c00",display:"flex",alignItems:"center",gap:6,flexShrink:0}}>
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#b08000" strokeWidth="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="3" y1="9" x2="21" y2="9"/></svg>
+                    <span style={{fontWeight:600}}>Annonce :</span> {activeConv.annonce?.titre}
+                  </div>
+                )}
+                <div style={{flex:1,overflowY:"auto",padding:"12px 14px",display:"flex",flexDirection:"column",gap:2,background:"#f0f0f0"}}>
+                  {msgLoading?(
+                    <div style={{textAlign:"center",paddingTop:40,color:"#aaa",fontSize:13}}>Chargement...</div>
+                  ):convMsgs.length===0?(
+                    <div style={{textAlign:"center",paddingTop:40,color:"#bbb",fontSize:13}}>Démarrez la conversation !</div>
+                  ):convMsgs.map((m,i)=>{
+                    const isMe=m.expediteur_id===user.id;
+                    const prevM=convMsgs[i-1];
+                    const showTime=!prevM||new Date(m.created_at)-new Date(prevM.created_at)>300000;
+                    return(
+                      <div key={m.id||i}>
+                        {showTime&&<div style={{textAlign:"center",fontSize:10,color:"#aaa",margin:"10px 0 6px",userSelect:"none"}}>{new Date(m.created_at).toLocaleDateString("fr-FR",{weekday:"short",hour:"2-digit",minute:"2-digit"})}</div>}
+                        <div style={{display:"flex",alignItems:"flex-end",gap:6,justifyContent:isMe?"flex-end":"flex-start",marginBottom:3}}>
+                          {!isMe&&<div style={{width:26,height:26,borderRadius:"50%",background:"#C8102E",display:"flex",alignItems:"center",justifyContent:"center",color:"white",fontSize:9,fontWeight:700,flexShrink:0,marginBottom:4}}>{m.expediteur?.prenom?.[0]}{m.expediteur?.nom?.[0]}</div>}
+                          <div style={{maxWidth:"72%",display:"flex",flexDirection:"column",alignItems:isMe?"flex-end":"flex-start"}}>
+                            <div className={isMe?"msg-me":"msg-other"} onContextMenu={isMe?e=>{e.preventDefault();deleteMsg(m.id);}:undefined}>{m.contenu}</div>
+                            <div style={{fontSize:10,color:"#aaa",marginTop:3}}>{new Date(m.created_at).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}{isMe&&<span style={{marginLeft:3,color:"#C8102E",opacity:0.7}}>✓</span>}</div>
+                          </div>
+                          {isMe&&(
+                            <button onClick={()=>deleteMsg(m.id)} style={{width:22,height:22,borderRadius:"50%",border:"none",background:deletingMsgId===m.id?"#C8102E":"transparent",cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,opacity:deletingMsgId===m.id?1:0,transition:"opacity 0.15s",marginBottom:20}} onMouseEnter={e=>e.currentTarget.style.opacity=1} onMouseLeave={e=>{if(deletingMsgId!==m.id)e.currentTarget.style.opacity=0;}}>
+                              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke={deletingMsgId===m.id?"white":"#C8102E"} strokeWidth="2.5" strokeLinecap="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+                            </button>
+                          )}
                         </div>
-                        {m.expediteur_id===user.id&&(
-                          <button
-                            onClick={()=>deleteMsg(m.id)}
-                            title={deletingMsgId===m.id?"Confirmer ?":"Supprimer"}
-                            style={{
-                              background: deletingMsgId===m.id?"#C8102E":"#fee",
-                              border: deletingMsgId===m.id?"none":"1px solid #fcc",
-                              borderRadius:"50%",width:28,height:28,cursor:"pointer",
-                              display:"flex",alignItems:"center",justifyContent:"center",
-                              flexShrink:0,transition:"all 0.2s",color:"white",fontSize:11,fontWeight:700,
-                              opacity: deletingMsgId===m.id?1:0,
-                            }}
-                            onMouseEnter={e=>{if(deletingMsgId!==m.id)e.currentTarget.style.opacity=1;}}
-                            onMouseLeave={e=>{if(deletingMsgId!==m.id)e.currentTarget.style.opacity=0;}}
-                            onTouchStart={e=>{e.currentTarget.style.opacity=1;}}
-                            onTouchEnd={e=>{if(deletingMsgId!==m.id)setTimeout(()=>{if(e.currentTarget)e.currentTarget.style.opacity=0;},2000);}}
-                          >
-                            {deletingMsgId===m.id ? "" : <Ic n="del" s={13} c="#C8102E"/>}
-                          </button>
-                        )}
                       </div>
-                      <div style={{fontSize:10,color:"#bbb",marginTop:4,paddingLeft:4}}>{new Date(m.created_at).toLocaleTimeString("fr-FR",{hour:"2-digit",minute:"2-digit"})}</div>
-                    </div>
-                  ))}
+                    );
+                  })}
                   <div ref={msgsEndRef}/>
                 </div>
-                {/* Zone saisie */}
-                <div style={{padding:"10px 12px",borderTop:"1px solid #eee",display:"flex",gap:8,alignItems:"flex-end",flexShrink:0,background:"white"}}>
-                  <textarea
-                    className="msg-inp"
-                    placeholder="Écrire un message..."
-                    value={newMsg}
-                    onChange={e=>setNewMsg(e.target.value)}
-                    rows={1}
-                    style={{flex:1}}
-                    onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMsg(activeConv.userId,activeConv.annonce?.id||null);}}}
-                  />
-                  <button
-                    className="btn btn-red"
-                    style={{padding:"10px 16px",borderRadius:22,flexShrink:0,display:"flex",alignItems:"center",gap:6,height:44}}
-                    onClick={()=>sendMsg(activeConv.userId,activeConv.annonce?.id||null)}
-                  >
-                    <Ic n="send" s={15} c="white"/>
-                    {!isMobile&&"Envoyer"}
+                <div style={{padding:"8px 10px",borderTop:"1px solid #ebebeb",display:"flex",gap:8,alignItems:"flex-end",flexShrink:0,background:"white"}}>
+                  <textarea className="msg-inp" placeholder="Écrire un message..." value={newMsg} onChange={e=>{setNewMsg(e.target.value);e.target.style.height="auto";e.target.style.height=Math.min(e.target.scrollHeight,120)+"px";}} rows={1} style={{flex:1,maxHeight:120,overflowY:"auto"}} onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();sendMsg(activeConv.userId,activeConv.annonce?.id||null);}}}/>
+                  <button onClick={()=>sendMsg(activeConv.userId,activeConv.annonce?.id||null)} disabled={!newMsg.trim()} style={{width:44,height:44,borderRadius:"50%",background:newMsg.trim()?"#C8102E":"#e0e0e0",border:"none",cursor:newMsg.trim()?"pointer":"default",display:"flex",alignItems:"center",justifyContent:"center",flexShrink:0,transition:"background 0.2s",boxShadow:newMsg.trim()?"0 2px 8px rgba(200,16,46,0.3)":"none"}}>
+                    <Ic n="send" s={17} c="white"/>
                   </button>
                 </div>
               </div>
-            ) : (
-              /* État vide — desktop uniquement */
+            ):(
               !isMobile&&(
-                <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",color:"#ccc",gap:12}}>
-                  <svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" strokeWidth="1.5" strokeLinecap="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-                  <div style={{fontSize:14}}>Sélectionnez une conversation</div>
+                <div style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",color:"#ccc",gap:14,background:"#fafafa"}}>
+                  <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="#e0e0e0" strokeWidth="1.5" strokeLinecap="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
+                  <div style={{fontSize:15,fontWeight:500,color:"#ccc"}}>Sélectionnez une conversation</div>
                 </div>
               )
             )}
