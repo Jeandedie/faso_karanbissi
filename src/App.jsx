@@ -191,8 +191,11 @@ const CSS = `
   .modal-handle { width: 40px; height: 4px; background: #e0e0e0; border-radius: 2px; margin: 12px auto 4px; flex-shrink: 0; }
 
   /* ── MODALS ── */
-  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.45); z-index: 200; display: flex; align-items: flex-end; justify-content: center; animation: fadeIn 0.15s ease; }
-  .modal-sheet { background: white; border-radius: 20px 20px 0 0; width: 100%; max-height: 92vh; display: flex; flex-direction: column; overflow: hidden; animation: slideUp 0.22s ease-out; }
+  /* Bottom-sheet mobile : laisse toujours visible le haut de l'écran (zone tap-to-close),
+     ne dépasse jamais 86vh pour garder le dernier champ/bouton accessible au-dessus du clavier */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 200; display: flex; align-items: flex-end; justify-content: center; animation: fadeIn 0.15s ease; }
+  .modal-sheet { background: white; border-radius: 20px 20px 0 0; width: 100%; max-height: 86vh; display: flex; flex-direction: column; overflow: hidden; animation: slideUp 0.22s ease-out; }
+  .modal-sheet-scroll { flex: 1; overflow-y: auto; -webkit-overflow-scrolling: touch; }
   .tab-bar { display: flex; border-bottom: 1px solid #f0f0f0; flex-shrink: 0; }
   .tab-btn { flex: 1; padding: 13px; border: none; background: none; cursor: pointer; font-weight: 600; font-size: 14px; border-bottom: 2px solid transparent; color: #999; transition: all 0.15s; }
   .tab-btn.on { color: #C8102E; border-bottom-color: #C8102E; }
@@ -1022,11 +1025,11 @@ export default function App() {
 
       {/* ── HEADER ── */}
       <header style={{background:"#1B0007",position:"sticky",top:0,zIndex:1000,boxShadow:"0 2px 16px rgba(0,0,0,0.35)"}}>
-        <div style={{maxWidth:1280,margin:"0 auto",display:"flex",alignItems:"center",height:56,padding:"0 14px",gap:12}}>
+        <div style={{maxWidth:1280,margin:"0 auto",display:"flex",alignItems:"center",height:56,padding:isMobile?"0 10px":"0 14px",gap:isMobile?8:12}}>
           {/* Logo */}
-          <div onClick={()=>setPage("guest")} style={{flexShrink:0,cursor:"pointer",userSelect:"none",lineHeight:1}}>
-            <div style={{color:"white",fontWeight:800,fontSize:16,letterSpacing:"-0.4px"}}>Faso_Karambisi</div>
-            <div style={{color:"rgba(255,180,180,0.85)",fontSize:9,letterSpacing:"2.5px",textTransform:"uppercase",fontWeight:600,marginTop:2}}>Plateforme Universitaire</div>
+          <div onClick={()=>setPage("guest")} style={{flexShrink:0,cursor:"pointer",userSelect:"none",lineHeight:1,minWidth:0}}>
+            <div style={{color:"white",fontWeight:800,fontSize:isMobile?14:16,letterSpacing:"-0.4px",whiteSpace:"nowrap"}}>Faso_Karambisi</div>
+            {!isMobile&&<div style={{color:"rgba(255,180,180,0.85)",fontSize:9,letterSpacing:"2.5px",textTransform:"uppercase",fontWeight:600,marginTop:2}}>Plateforme Universitaire</div>}
           </div>
 
           {/* Barre de recherche desktop */}
@@ -1043,18 +1046,25 @@ export default function App() {
           <div style={{flex:1}}/>
 
           {/* Panier */}
-          <button onClick={()=>setShowCart(true)} style={{display:"flex",alignItems:"center",gap:6,background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.18)",borderRadius:8,padding:"7px 12px",cursor:"pointer",flexShrink:0,transition:"background 0.15s"}} onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,0.18)"} onMouseLeave={e=>e.currentTarget.style.background="rgba(255,255,255,0.1)"}>
+          <button onClick={()=>setShowCart(true)} style={{display:"flex",alignItems:"center",gap:6,background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.18)",borderRadius:8,padding:isMobile?"7px 9px":"7px 12px",cursor:"pointer",flexShrink:0,transition:"background 0.15s",position:"relative"}} onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,0.18)"} onMouseLeave={e=>e.currentTarget.style.background="rgba(255,255,255,0.1)"}>
             <Ic n="cart" s={18} c="white"/>
             {!isMobile&&<span style={{fontSize:12,fontWeight:600,color:"white"}}>Panier</span>}
-            {cart.length>0&&<span style={{background:"#C8102E",color:"white",borderRadius:10,padding:"1px 6px",fontSize:10,fontWeight:700,border:"1.5px solid rgba(27,0,7,0.5)"}}>{cart.length}</span>}
+            {cart.length>0&&<span style={{background:"#C8102E",color:"white",borderRadius:10,padding:"1px 6px",fontSize:10,fontWeight:700,border:"1.5px solid rgba(27,0,7,0.5)",position:isMobile?"absolute":"static",top:isMobile?-4:"auto",right:isMobile?-4:"auto"}}>{cart.length}</span>}
           </button>
 
           {/* Non connecté */}
           {!user?(
-            <div style={{display:"flex",gap:6,flexShrink:0}}>
-              <button onClick={()=>setPage("login")} style={{background:"transparent",border:"1.5px solid rgba(255,255,255,0.3)",borderRadius:8,padding:"7px 14px",color:"white",fontSize:13,cursor:"pointer",fontWeight:600,transition:"all 0.15s"}} onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,0.1)"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>Connexion</button>
-              <button onClick={()=>{setPage("register");setRegStep(1);}} style={{background:"white",border:"none",borderRadius:8,padding:"7px 14px",color:"#C8102E",fontSize:13,cursor:"pointer",fontWeight:700,boxShadow:"0 2px 8px rgba(0,0,0,0.2)",transition:"transform 0.15s"}} onMouseEnter={e=>e.currentTarget.style.transform="translateY(-1px)"} onMouseLeave={e=>e.currentTarget.style.transform="translateY(0)"}>S'inscrire</button>
-            </div>
+            isMobile?(
+              <div style={{display:"flex",alignItems:"center",gap:6,flexShrink:0}}>
+                <button onClick={()=>setPage("login")} style={{background:"none",border:"none",color:"rgba(255,255,255,0.8)",fontSize:12,cursor:"pointer",fontWeight:600,padding:"8px 4px",whiteSpace:"nowrap"}}>Connexion</button>
+                <button onClick={()=>{setPage("register");setRegStep(1);}} style={{background:"white",border:"none",borderRadius:8,padding:"8px 12px",color:"#C8102E",fontSize:12.5,cursor:"pointer",fontWeight:800,boxShadow:"0 2px 8px rgba(0,0,0,0.25)",flexShrink:0,whiteSpace:"nowrap"}}>S'inscrire</button>
+              </div>
+            ):(
+              <div style={{display:"flex",gap:6,flexShrink:0}}>
+                <button onClick={()=>setPage("login")} style={{background:"transparent",border:"1.5px solid rgba(255,255,255,0.3)",borderRadius:8,padding:"7px 14px",color:"white",fontSize:13,cursor:"pointer",fontWeight:600,transition:"all 0.15s",whiteSpace:"nowrap"}} onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,0.1)"} onMouseLeave={e=>e.currentTarget.style.background="transparent"}>Connexion</button>
+                <button onClick={()=>{setPage("register");setRegStep(1);}} style={{background:"white",border:"none",borderRadius:8,padding:"7px 14px",color:"#C8102E",fontSize:13,cursor:"pointer",fontWeight:700,boxShadow:"0 2px 8px rgba(0,0,0,0.2)",transition:"transform 0.15s",whiteSpace:"nowrap"}} onMouseEnter={e=>e.currentTarget.style.transform="translateY(-1px)"} onMouseLeave={e=>e.currentTarget.style.transform="translateY(0)"}>S'inscrire</button>
+              </div>
+            )
           ):(
             <div className="dropdown" ref={ddRef} style={{flexShrink:0}}>
               <button onClick={()=>setShowDD(v=>!v)} style={{display:"flex",alignItems:"center",gap:8,cursor:"pointer",background:"rgba(255,255,255,0.1)",border:"1px solid rgba(255,255,255,0.2)",borderRadius:8,padding:"5px 10px 5px 6px",transition:"background 0.15s"}} onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,0.18)"} onMouseLeave={e=>e.currentTarget.style.background="rgba(255,255,255,0.1)"}>
@@ -1299,7 +1309,7 @@ export default function App() {
           <div className="modal-sheet" onClick={e=>e.stopPropagation()}>
             <div className="modal-handle"/>
             <ModalHeader title="Publier une annonce" onClose={()=>{setShowForm(false);setFormErr({});setFormError("");}}/>
-            <div style={{padding:"14px 16px",overflowY:"auto",display:"flex",flexDirection:"column",gap:13}}>
+            <div style={{padding:"14px 16px",overflowY:"auto",display:"flex",flexDirection:"column",gap:13,flex:1,minHeight:0}}>
               <div><label className="lbl">Type</label><select className="inp" value={form.type} onChange={e=>setForm(f=>({...f,type:e.target.value}))}><option value="product">Produit à vendre</option><option value="service">Service à offrir</option></select></div>
               <div><label className="lbl">Titre *</label><input className={`inp ${formErr.title?"err":""}`} placeholder="Titre de l'annonce" value={form.title} onChange={e=>setForm(f=>({...f,title:e.target.value}))}/></div>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
@@ -1384,7 +1394,7 @@ export default function App() {
           <div className="modal-sheet" onClick={e=>e.stopPropagation()}>
             <div className="modal-handle"/>
             <ModalHeader title="Modifier l'annonce" onBack={()=>setEditForm(null)} backLabel="Annuler" onClose={()=>setEditForm(null)}/>
-            <div style={{padding:"14px 16px",overflowY:"auto",display:"flex",flexDirection:"column",gap:13}}>
+            <div style={{padding:"14px 16px",overflowY:"auto",display:"flex",flexDirection:"column",gap:13,flex:1,minHeight:0}}>
               <div><label className="lbl">Type</label><select className="inp" value={editForm.type} onChange={e=>setEditForm(f=>({...f,type:e.target.value}))}><option value="product">Produit</option><option value="service">Service</option></select></div>
               <div><label className="lbl">Titre *</label><input className="inp" value={editForm.title} onChange={e=>setEditForm(f=>({...f,title:e.target.value}))}/></div>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
@@ -1413,7 +1423,7 @@ export default function App() {
           <div className="modal-sheet" onClick={e=>e.stopPropagation()}>
             <div className="modal-handle"/>
             <ModalHeader title="Mon profil" onClose={()=>setShowProfil(false)}/>
-            <div style={{padding:"14px 16px",overflowY:"auto",display:"flex",flexDirection:"column",gap:13}}>
+            <div style={{padding:"14px 16px",overflowY:"auto",display:"flex",flexDirection:"column",gap:13,flex:1,minHeight:0}}>
               <div>
                 <label className="lbl lbl-opt">Photo de profil</label>
                 <div style={{display:"flex",alignItems:"center",gap:14}}>
@@ -1592,13 +1602,13 @@ export default function App() {
       {showCart&&(
         <>
           <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.45)",zIndex:250}} onClick={()=>setShowCart(false)}/>
-          <div style={{position:"fixed",bottom:isMobile?0:"auto",left:isMobile?0:"auto",right:0,top:isMobile?"auto":0,height:isMobile?"auto":"100vh",maxHeight:isMobile?"88vh":"100vh",width:isMobile?"100%":"380px",background:"white",borderRadius:isMobile?"18px 18px 0 0":"0",zIndex:300,overflowY:"auto",boxShadow:"-4px 0 24px rgba(0,0,0,0.12)",display:"flex",flexDirection:"column"}}>
+          <div style={{position:"fixed",bottom:isMobile?0:"auto",left:isMobile?0:"auto",right:0,top:isMobile?"auto":0,height:isMobile?"auto":"100vh",maxHeight:isMobile?"86vh":"100vh",width:isMobile?"100%":"380px",background:"white",borderRadius:isMobile?"18px 18px 0 0":"0",zIndex:300,boxShadow:"-4px 0 24px rgba(0,0,0,0.12)",display:"flex",flexDirection:"column",overflow:"hidden"}}>
             {isMobile&&<div style={{width:36,height:4,background:"#ddd",borderRadius:2,margin:"12px auto 0",flexShrink:0}}/>}
             <div style={{height:52,padding:"0 16px",borderBottom:"1px solid #eee",display:"flex",justifyContent:"space-between",alignItems:"center",flexShrink:0}}>
               <div style={{fontSize:15,fontWeight:700,display:"flex",alignItems:"center",gap:8}}><Ic n="cart" s={18} c="#111"/>Panier {cart.length>0&&<Badge n={cart.length}/>}</div>
               <CloseBtn onClick={()=>setShowCart(false)}/>
             </div>
-            <div style={{flex:1,overflowY:"auto",padding:"16px 20px 24px"}}>
+            <div style={{flex:1,minHeight:0,overflowY:"auto",WebkitOverflowScrolling:"touch",padding:"16px 20px 24px"}}>
             {cart.length===0?(
               <div style={{textAlign:"center",color:"#aaa",paddingTop:36}}>
                 <Ic n="cart" s={36} c="#ddd"/>
