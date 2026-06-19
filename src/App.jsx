@@ -723,10 +723,10 @@ export default function App() {
       };
 
       const getRaison = (domLui, domMoi, score) => {
-        if (score >= 90) return "Profil tres complementaire, combinaison ideale pour innover ensemble";
-        if (score >= 80) return "Bonne complementarite, fort potentiel de collaboration sur un projet";
-        if (score >= 70) return "Competences qui se completent bien pour un projet commun";
-        return "Collaboration possible avec diversite de competences interessante";
+        if (score >= 90) return "Profil très complémentaire, combinaison idéale pour innover ensemble";
+        if (score >= 80) return "Bonne complémentarité, fort potentiel de collaboration sur un projet";
+        if (score >= 70) return "Compétences qui se complètent bien pour un projet commun";
+        return "Collaboration possible avec diversité de compétences intéressante";
       };
 
       const monDomaine = getDomaine(user.filiere);
@@ -1314,13 +1314,13 @@ export default function App() {
               <div><label className="lbl">Titre *</label><input className={`inp ${formErr.title?"err":""}`} placeholder="Titre de l'annonce" value={form.title} onChange={e=>setForm(f=>({...f,title:e.target.value}))}/></div>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
                 <div><label className="lbl">Prix (FCFA) *</label><input className={`inp ${formErr.price?"err":""}`} type="number" placeholder="0" value={form.price} onChange={e=>setForm(f=>({...f,price:e.target.value}))}/></div>
-                <div><label className="lbl">Categorie</label><select className="inp" value={form.tag} onChange={e=>setForm(f=>({...f,tag:e.target.value}))}>{tags.slice(1).map(t=><option key={t}>{t}</option>)}</select></div>
+                <div><label className="lbl">Catégorie</label><select className="inp" value={form.tag} onChange={e=>setForm(f=>({...f,tag:e.target.value}))}>{tags.slice(1).map(t=><option key={t}>{t}</option>)}</select></div>
               </div>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
                 <div><label className="lbl">Ville</label><input className="inp" placeholder="Bobo-Dioulasso" value={form.ville} onChange={e=>setForm(f=>({...f,ville:e.target.value}))}/></div>
                 <div><label className="lbl">Quartier</label><input className="inp" placeholder="Secteur 22" value={form.quartier} onChange={e=>setForm(f=>({...f,quartier:e.target.value}))}/></div>
               </div>
-              <div><label className="lbl">Etat</label><input className="inp" placeholder="ex: Bon état, Neuf..." value={form.condition} onChange={e=>setForm(f=>({...f,condition:e.target.value}))}/></div>
+              <div><label className="lbl">État</label><input className="inp" placeholder="ex: Bon état, Neuf..." value={form.condition} onChange={e=>setForm(f=>({...f,condition:e.target.value}))}/></div>
               <div><label className="lbl">Description *</label><textarea className={`inp ${formErr.description?"err":""}`} placeholder="Décrivez votre article..." rows={3} style={{resize:"vertical"}} value={form.description} onChange={e=>setForm(f=>({...f,description:e.target.value}))}/></div>
               <div>
                 <label className="lbl lbl-opt">Photos</label>
@@ -1399,13 +1399,13 @@ export default function App() {
               <div><label className="lbl">Titre *</label><input className="inp" value={editForm.title} onChange={e=>setEditForm(f=>({...f,title:e.target.value}))}/></div>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
                 <div><label className="lbl">Prix *</label><input className="inp" type="number" value={editForm.price} onChange={e=>setEditForm(f=>({...f,price:e.target.value}))}/></div>
-                <div><label className="lbl">Categorie</label><select className="inp" value={editForm.tag} onChange={e=>setEditForm(f=>({...f,tag:e.target.value}))}>{tags.slice(1).map(t=><option key={t}>{t}</option>)}</select></div>
+                <div><label className="lbl">Catégorie</label><select className="inp" value={editForm.tag} onChange={e=>setEditForm(f=>({...f,tag:e.target.value}))}>{tags.slice(1).map(t=><option key={t}>{t}</option>)}</select></div>
               </div>
               <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:12}}>
                 <div><label className="lbl">Ville</label><input className="inp" value={editForm.ville} onChange={e=>setEditForm(f=>({...f,ville:e.target.value}))}/></div>
                 <div><label className="lbl">Quartier</label><input className="inp" value={editForm.quartier} onChange={e=>setEditForm(f=>({...f,quartier:e.target.value}))}/></div>
               </div>
-              <div><label className="lbl">Etat</label><input className="inp" value={editForm.condition} onChange={e=>setEditForm(f=>({...f,condition:e.target.value}))}/></div>
+              <div><label className="lbl">État</label><input className="inp" value={editForm.condition} onChange={e=>setEditForm(f=>({...f,condition:e.target.value}))}/></div>
               <div><label className="lbl">Description *</label><textarea className="inp" rows={3} style={{resize:"vertical"}} value={editForm.description} onChange={e=>setEditForm(f=>({...f,description:e.target.value}))}/></div>
               {editErr&&<div className="err-box">{editErr}</div>}
               <div style={{display:"flex",gap:10}}>
@@ -1440,7 +1440,7 @@ export default function App() {
                 <div><label className="lbl">Nom *</label><input className="inp" value={profilForm.nom} onChange={e=>setProfilForm(f=>({...f,nom:e.target.value}))}/></div>
                 <div><label className="lbl">Prenom *</label><input className="inp" value={profilForm.prenom} onChange={e=>setProfilForm(f=>({...f,prenom:e.target.value}))}/></div>
               </div>
-              <div><label className="lbl">Filiere *</label><input className="inp" value={profilForm.filiere} onChange={e=>setProfilForm(f=>({...f,filiere:e.target.value}))}/></div>
+              <div><label className="lbl">Filière *</label><input className="inp" value={profilForm.filiere} onChange={e=>setProfilForm(f=>({...f,filiere:e.target.value}))}/></div>
               <div><label className="lbl">Annee</label><input className="inp" value={profilForm.annee} onChange={e=>setProfilForm(f=>({...f,annee:e.target.value}))}/></div>
               <div><label className="lbl">Telephone *</label><input className="inp" value={profilForm.telephone} onChange={e=>setProfilForm(f=>({...f,telephone:e.target.value}))}/></div>
               {profilErr&&<div className="err-box">{profilErr}</div>}
